@@ -8,7 +8,7 @@ export type GummyRow = {
   created_at: string
 }
 
-export type GummyInsert = Omit<GummyRow, 'id' | 'created_at'>
+export type GummyInsert = Omit<GummyRow, 'id' | 'created_at' | 'image_url'>
 
 export type ReviewRow = {
   id: number
