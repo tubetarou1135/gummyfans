@@ -64,6 +64,7 @@ export default function RootLayout({
         </header>
         <div className="flex-1">{children}</div>
         <footer className="border-t border-pink-100 mt-12 py-6 text-center text-xs text-gray-400 space-x-4">
+          <Link href="/about" className="hover:text-pink-400 transition-colors">運営者情報</Link>
           <Link href="/contact" className="hover:text-pink-400 transition-colors">お問い合わせ</Link>
           <Link href="/privacy" className="hover:text-pink-400 transition-colors">プライバシーポリシー</Link>
           <Link href="/terms" className="hover:text-pink-400 transition-colors">利用規約</Link>
