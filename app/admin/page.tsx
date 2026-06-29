@@ -4,7 +4,17 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import type { GummyRow, ReviewRow } from '@/lib/database.types'
 
-type Tab = 'register' | 'gummies' | 'reviews'
+type Tab = 'register' | 'gummies' | 'reviews' | 'requests'
+
+type GummyRequest = {
+  id: number
+  name: string
+  maker: string
+  flavor: string | null
+  description: string | null
+  status: string
+  created_at: string
+}
 
 // ---- グミ登録タブ ----
 function RegisterTab() {
@@ -217,11 +227,82 @@ function ReviewsTab() {
   )
 }
 
+// ---- 申請管理タブ ----
+function RequestsTab() {
+  const [requests, setRequests] = useState<GummyRequest[]>([])
+  const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
+
+  async function load() {
+    const { data } = await supabase
+      .from('gummy_requests')
+      .select('*')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+    setRequests(data ?? [])
+  }
+
+  useEffect(() => { load() }, [])
+
+  async function handleApprove(req: GummyRequest) {
+    const { error } = await supabase.from('gummies').insert({
+      name: req.name,
+      maker: req.maker,
+      flavor: req.flavor,
+      description: req.description,
+    })
+    if (error) {
+      setMsg({ type: 'err', text: '登録に失敗しました: ' + error.message })
+      return
+    }
+    await supabase.from('gummy_requests').update({ status: 'approved' }).eq('id', req.id)
+    setMsg({ type: 'ok', text: `「${req.name}」を承認しました！` })
+    load()
+  }
+
+  async function handleReject(req: GummyRequest) {
+    if (!confirm(`「${req.name}」を却下しますか？`)) return
+    await supabase.from('gummy_requests').update({ status: 'rejected' }).eq('id', req.id)
+    load()
+  }
+
+  return (
+    <div className="space-y-3">
+      {msg && <p className={`text-sm ${msg.type === 'ok' ? 'text-green-600' : 'text-red-500'}`}>{msg.text}</p>}
+      {requests.length === 0 && <p className="text-gray-400 text-sm">未処理の申請はありません</p>}
+      {requests.map((r) => (
+        <div key={r.id} className="border-2 border-pink-100 rounded-2xl px-4 py-3 space-y-2">
+          <div>
+            <p className="font-semibold text-sm text-gray-800">{r.name}</p>
+            <p className="text-xs text-gray-500">{r.maker}{r.flavor && ` / ${r.flavor}`}</p>
+            {r.description && <p className="text-xs text-gray-400 mt-1">{r.description}</p>}
+            <p className="text-xs text-gray-300 mt-1">{new Date(r.created_at).toLocaleDateString('ja-JP')}</p>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => handleApprove(r)}
+              className="flex-1 text-xs bg-green-50 text-green-600 px-3 py-2 rounded-full hover:bg-green-100 transition-colors font-semibold"
+            >
+              承認して登録
+            </button>
+            <button
+              onClick={() => handleReject(r)}
+              className="flex-1 text-xs bg-red-50 text-red-400 px-3 py-2 rounded-full hover:bg-red-100 transition-colors font-semibold"
+            >
+              却下
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 // ---- メイン ----
 const tabs: { key: Tab; label: string }[] = [
   { key: 'register', label: 'グミ登録' },
   { key: 'gummies', label: 'グミ編集・削除' },
   { key: 'reviews', label: 'レビュー削除' },
+  { key: 'requests', label: '新グミ申請' },
 ]
 
 export default function AdminPage() {
@@ -244,6 +325,7 @@ export default function AdminPage() {
       {tab === 'register' && <RegisterTab />}
       {tab === 'gummies' && <GummiesTab />}
       {tab === 'reviews' && <ReviewsTab />}
+      {tab === 'requests' && <RequestsTab />}
     </main>
   )
 }

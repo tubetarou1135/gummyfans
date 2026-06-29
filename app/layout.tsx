@@ -55,6 +55,9 @@ export default function RootLayout({
               <Link href="/ranking" className="bg-pink-50 text-pink-500 font-semibold px-3 sm:px-4 py-2 rounded-full hover:bg-pink-100 transition-colors whitespace-nowrap">
                 ランキング
               </Link>
+              <Link href="/request" className="bg-pink-500 text-white font-semibold px-3 sm:px-4 py-2 rounded-full hover:bg-pink-600 transition-colors whitespace-nowrap">
+                ＋ 新グミ申請
+              </Link>
             </nav>
           </div>
         </header>
