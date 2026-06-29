@@ -7,20 +7,20 @@ export const revalidate = 60
 
 type TabKey = 'overall' | 'hardness' | 'sweetness' | 'sourness' | 'value'
 
-const tabs: { key: TabKey; label: string; field: keyof GummyWithAvg; note?: string }[] = [
-  { key: 'overall',   label: '総合',       field: 'avg_overall' },
-  { key: 'hardness',  label: '硬さ',       field: 'avg_hardness',  note: '★が少ないほど柔らかい' },
-  { key: 'sweetness', label: '甘さ',       field: 'avg_sweetness' },
-  { key: 'sourness',  label: '酸っぱさ',   field: 'avg_sourness' },
-  { key: 'value',     label: 'コスパ',     field: 'avg_value' },
+const tabs: { key: TabKey; label: string; field: keyof GummyWithAvg }[] = [
+  { key: 'overall',   label: '総合',     field: 'avg_overall' },
+  { key: 'hardness',  label: '硬さ',     field: 'avg_hardness' },
+  { key: 'sweetness', label: '甘さ',     field: 'avg_sweetness' },
+  { key: 'sourness',  label: '酸っぱさ', field: 'avg_sourness' },
+  { key: 'value',     label: 'コスパ',   field: 'avg_value' },
 ]
 
-async function getRanking(field: keyof GummyWithAvg): Promise<GummyWithAvg[]> {
+async function getRanking(field: keyof GummyWithAvg, ascending: boolean): Promise<GummyWithAvg[]> {
   const { data, error } = await supabase
     .from('gummies_with_avg')
     .select('*')
     .not(field as string, 'is', null)
-    .order(field as string, { ascending: false })
+    .order(field as string, { ascending })
     .limit(20)
   if (error) throw error
   return (data ?? []) as GummyWithAvg[]
@@ -31,11 +31,15 @@ const medals = ['🥇', '🥈', '🥉']
 export default async function RankingPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string }>
+  searchParams: Promise<{ tab?: string; order?: string }>
 }) {
-  const { tab } = await searchParams
+  const { tab, order } = await searchParams
   const currentTab = tabs.find((t) => t.key === tab) ?? tabs[0]
-  const gummies = await getRanking(currentTab.field)
+  const isHardness = currentTab.key === 'hardness'
+  const ascending = isHardness ? order === 'asc' : false
+  const gummies = await getRanking(currentTab.field, ascending)
+
+  const tabHref = (key: TabKey) => key === 'overall' ? '/ranking' : `/ranking?tab=${key}`
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
@@ -45,11 +49,11 @@ export default async function RankingPage({
       <h1 className="text-2xl font-bold mb-5">ランキング</h1>
 
       {/* タブ */}
-      <div className="flex gap-1.5 flex-wrap mb-6">
+      <div className="flex gap-1.5 flex-wrap mb-4">
         {tabs.map((t) => (
           <Link
             key={t.key}
-            href={t.key === 'overall' ? '/ranking' : `/ranking?tab=${t.key}`}
+            href={tabHref(t.key)}
             className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${
               currentTab.key === t.key
                 ? 'bg-pink-500 text-white'
@@ -61,11 +65,31 @@ export default async function RankingPage({
         ))}
       </div>
 
-      {/* 硬さ注記 */}
-      {currentTab.note && (
-        <p className="text-xs text-gray-400 mb-4 bg-pink-50 rounded-2xl px-4 py-2">
-          ℹ️ {currentTab.note}
-        </p>
+      {/* 硬さ：注記＋昇順降順ボタン */}
+      {isHardness && (
+        <div className="mb-5 bg-pink-50 rounded-2xl px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+          <p className="text-xs text-gray-500 flex-1">
+            ⭐ 星が多いほど硬い！　少ないほど柔らかい！
+          </p>
+          <div className="flex gap-2 shrink-0">
+            <Link
+              href={`/ranking?tab=hardness&order=desc`}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold transition-colors ${
+                !ascending ? 'bg-pink-500 text-white' : 'bg-white text-pink-500 border-2 border-pink-200 hover:bg-pink-50'
+              }`}
+            >
+              硬い順
+            </Link>
+            <Link
+              href={`/ranking?tab=hardness&order=asc`}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold transition-colors ${
+                ascending ? 'bg-pink-500 text-white' : 'bg-white text-pink-500 border-2 border-pink-200 hover:bg-pink-50'
+              }`}
+            >
+              柔らかい順
+            </Link>
+          </div>
+        </div>
       )}
 
       {gummies.length === 0 ? (
