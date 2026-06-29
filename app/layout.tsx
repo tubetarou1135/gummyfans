@@ -39,23 +39,23 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col" style={{background: 'var(--background)', fontFamily: 'var(--font-mochiy), var(--font-nunito), sans-serif'}}>
         <header className="bg-white shadow-sm sticky top-0 z-10">
           <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 text-xl font-black tracking-tight">
-              <Image src="/favicon.ico" alt="gummyfans" width={44} height={44} className="rounded-xl" />
-              <span style={{color:'#f472b6'}}>G</span>
-              <span style={{color:'#fb923c'}}>u</span>
-              <span style={{color:'#facc15'}}>m</span>
-              <span style={{color:'#4ade80'}}>m</span>
-              <span style={{color:'#60a5fa'}}>y</span>
-              <span style={{color:'#f472b6'}}>F</span>
-              <span style={{color:'#fb923c'}}>a</span>
-              <span style={{color:'#facc15'}}>n</span>
-              <span style={{color:'#4ade80'}}>s</span>
+            <Link href="/" className="flex items-center gap-1 font-black tracking-tight shrink-0">
+              <Image src="/favicon.ico" alt="gummyfans" width={36} height={36} className="rounded-xl" />
+              <span className="text-base sm:text-xl" style={{color:'#f472b6'}}>G</span>
+              <span className="text-base sm:text-xl" style={{color:'#fb923c'}}>u</span>
+              <span className="text-base sm:text-xl" style={{color:'#facc15'}}>m</span>
+              <span className="text-base sm:text-xl" style={{color:'#4ade80'}}>m</span>
+              <span className="text-base sm:text-xl" style={{color:'#60a5fa'}}>y</span>
+              <span className="text-base sm:text-xl" style={{color:'#f472b6'}}>F</span>
+              <span className="text-base sm:text-xl" style={{color:'#fb923c'}}>a</span>
+              <span className="text-base sm:text-xl" style={{color:'#facc15'}}>n</span>
+              <span className="text-base sm:text-xl" style={{color:'#4ade80'}}>s</span>
             </Link>
-            <nav className="flex gap-2 text-sm">
-              <Link href="/ranking" className="bg-pink-50 text-pink-500 font-semibold px-4 py-2 rounded-full hover:bg-pink-100 transition-colors">
+            <nav className="flex gap-1 sm:gap-2 text-xs sm:text-sm ml-2">
+              <Link href="/ranking" className="bg-pink-50 text-pink-500 font-semibold px-3 sm:px-4 py-2 rounded-full hover:bg-pink-100 transition-colors whitespace-nowrap">
                 ランキング
               </Link>
-              <Link href="/admin" className="bg-pink-500 text-white font-semibold px-4 py-2 rounded-full hover:bg-pink-600 transition-colors">
+              <Link href="/admin" className="bg-pink-500 text-white font-semibold px-3 sm:px-4 py-2 rounded-full hover:bg-pink-600 transition-colors whitespace-nowrap">
                 ＋ グミ登録
               </Link>
             </nav>

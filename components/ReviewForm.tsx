@@ -109,8 +109,8 @@ export default function ReviewForm({ gummyId }: { gummyId: number }) {
             <div className="space-y-2">
               {basicFields.map(({ key, label }) => (
                 <div key={key} className="flex items-center gap-3">
-                  <span className="text-sm text-gray-600 w-20">{label}</span>
-                  <StarRating value={basic[key]} onChange={(v) => setBasic((p) => ({ ...p, [key]: v }))} />
+                  <span className="text-sm text-gray-600 w-20 shrink-0">{label}</span>
+                  <StarRating value={basic[key]} onChange={(v) => setBasic((p) => ({ ...p, [key]: v }))} size="md" />
                 </div>
               ))}
             </div>
@@ -124,10 +124,10 @@ export default function ReviewForm({ gummyId }: { gummyId: number }) {
               {expertFields.map(({ key, label, desc }) => (
                 <div key={key}>
                   <div className="flex items-center gap-3">
-                    <span className="text-sm text-gray-600 w-28 shrink-0">{label}</span>
-                    <StarRating value={expert[key]} onChange={(v) => setExpert((p) => ({ ...p, [key]: v }))} />
+                    <span className="text-sm text-gray-600 w-40 shrink-0 whitespace-nowrap">{label}</span>
+                    <StarRating value={expert[key]} onChange={(v) => setExpert((p) => ({ ...p, [key]: v }))} size="md" />
                   </div>
-                  <p className="text-xs text-gray-400 ml-28 pl-3">{desc}</p>
+                  <p className="text-xs text-gray-400 ml-40 pl-3">{desc}</p>
                 </div>
               ))}
             </div>
