@@ -37,7 +37,7 @@ export default function RequestPage() {
   return (
     <main className="max-w-lg mx-auto px-4 py-10">
       <h1 className="text-2xl font-bold mb-2">新グミ申請</h1>
-      <p className="text-sm text-gray-500 mb-8">掲載してほしいグミを申請できます。審査後に掲載されます。</p>
+      <p className="text-sm text-gray-500 mb-8">掲載してほしいグミを申請できます。管理人が確認し掲載されます。</p>
 
       {msg?.type === 'ok' ? (
         <div className="text-center py-12">
@@ -53,9 +53,9 @@ export default function RequestPage() {
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           {[
-            { key: 'name', label: '商品名 *', placeholder: 'コーラアップ' },
-            { key: 'maker', label: 'メーカー *', placeholder: 'ハリボー' },
-            { key: 'flavor', label: 'フレーバー', placeholder: 'コーラ（任意）' },
+            { key: 'name', label: '商品名 *', placeholder: '' },
+            { key: 'maker', label: 'メーカー *', placeholder: '' },
+            { key: 'flavor', label: 'フレーバー / 味', placeholder: '' },
           ].map(({ key, label, placeholder }) => (
             <div key={key}>
               <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
@@ -72,7 +72,7 @@ export default function RequestPage() {
             <textarea
               value={form.description}
               onChange={(e) => set('description', e.target.value)}
-              placeholder="どんなグミか教えてください"
+              placeholder=""
               rows={3}
               className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50 resize-none"
             />
