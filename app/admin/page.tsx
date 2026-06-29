@@ -531,25 +531,30 @@ function ContactsTab() {
 
 // ---- 終売報告タブ ----
 function DiscontinuedTab() {
-  const [rows, setRows] = useState<{ name: string; maker: string; flavor: string | null; count: number; gummy_id: number }[]>([])
+  const [rows, setRows] = useState<{ name: string; maker: string; flavor: string | null; count: number; gummy_id: number; discontinued: boolean }[]>([])
 
-  useEffect(() => {
-    supabase
+  async function load() {
+    const { data } = await supabase
       .from('discontinued_reports')
-      .select('gummy_id, gummies(name, maker, flavor)')
-      .then(({ data }) => {
-        if (!data) return
-        const map = new Map<number, { name: string; maker: string; flavor: string | null; count: number; gummy_id: number }>()
-        for (const row of data as any[]) {
-          const id = row.gummy_id
-          if (!map.has(id)) {
-            map.set(id, { gummy_id: id, name: row.gummies.name, maker: row.gummies.maker, flavor: row.gummies.flavor, count: 0 })
-          }
-          map.get(id)!.count++
-        }
-        setRows([...map.values()].sort((a, b) => b.count - a.count))
-      })
-  }, [])
+      .select('gummy_id, gummies(name, maker, flavor, discontinued)')
+    if (!data) return
+    const map = new Map<number, { name: string; maker: string; flavor: string | null; count: number; gummy_id: number; discontinued: boolean }>()
+    for (const row of data as any[]) {
+      const id = row.gummy_id
+      if (!map.has(id)) {
+        map.set(id, { gummy_id: id, name: row.gummies.name, maker: row.gummies.maker, flavor: row.gummies.flavor, discontinued: row.gummies.discontinued, count: 0 })
+      }
+      map.get(id)!.count++
+    }
+    setRows([...map.values()].sort((a, b) => b.count - a.count))
+  }
+
+  useEffect(() => { load() }, [])
+
+  async function confirmDiscontinued(gummy_id: number) {
+    await supabase.from('gummies').update({ discontinued: true }).eq('id', gummy_id)
+    setRows((prev) => prev.map((r) => r.gummy_id === gummy_id ? { ...r, discontinued: true } : r))
+  }
 
   if (rows.length === 0) return <p className="text-sm text-gray-400">終売報告はまだありません</p>
 
@@ -558,10 +563,26 @@ function DiscontinuedTab() {
       {rows.map((r) => (
         <div key={r.gummy_id} className="flex items-center justify-between border border-pink-100 rounded-2xl px-4 py-3">
           <div>
-            <p className="font-semibold text-gray-800">{r.name}</p>
+            <div className="flex items-center gap-2">
+              <p className="font-semibold text-gray-800">{r.name}</p>
+              {r.discontinued && (
+                <span className="text-xs bg-gray-200 text-gray-500 px-2 py-0.5 rounded-full font-bold">終売確定済</span>
+              )}
+            </div>
             <p className="text-xs text-gray-400">{r.maker}{r.flavor && ` / ${r.flavor}`}</p>
           </div>
-          <span className="text-orange-500 font-bold text-sm">{r.count}件</span>
+          <div className="flex items-center gap-3">
+            <span className="text-orange-500 font-bold text-sm">{r.count}件</span>
+            {!r.discontinued && (
+              <button
+                type="button"
+                onClick={() => confirmDiscontinued(r.gummy_id)}
+                className="text-xs bg-red-500 text-white px-3 py-1.5 rounded-full font-bold hover:bg-red-600 transition-colors"
+              >
+                終売確定
+              </button>
+            )}
+          </div>
         </div>
       ))}
     </div>

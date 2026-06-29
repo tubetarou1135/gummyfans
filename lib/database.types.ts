@@ -6,12 +6,14 @@ export type GummyRow = {
   description: string | null
   image_url: string | null
   rakuten_url: string | null
+  discontinued: boolean
   created_at: string
 }
 
-export type GummyInsert = Omit<GummyRow, 'id' | 'created_at' | 'image_url' | 'rakuten_url'> & {
+export type GummyInsert = Omit<GummyRow, 'id' | 'created_at' | 'image_url' | 'rakuten_url' | 'discontinued'> & {
   image_url?: string | null
   rakuten_url?: string | null
+  discontinued?: boolean
 }
 
 export type ReviewRow = {

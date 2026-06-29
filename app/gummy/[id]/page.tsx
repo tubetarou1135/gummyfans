@@ -113,7 +113,12 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
 
       <div className="flex items-start justify-between gap-2 mb-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-1">{gummy.name}</h1>
+          <div className="flex items-center gap-2 mb-1">
+            <h1 className="text-2xl font-bold text-gray-800">{gummy.name}</h1>
+            {gummy.discontinued && (
+              <span className="text-xs bg-gray-700 text-white px-2 py-0.5 rounded-full font-bold shrink-0">終売</span>
+            )}
+          </div>
           <p className="text-sm text-gray-500">
             {gummy.maker}
             {gummy.flavor && ` / ${gummy.flavor}`}
