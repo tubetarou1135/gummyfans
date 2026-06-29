@@ -14,6 +14,8 @@ export default function TermsPage() {
           <ul className="list-disc list-inside space-y-1">
             <li>他者を誹謗中傷するレビューや投稿</li>
             <li>虚偽・スパムのレビュー投稿</li>
+            <li>スクレイピング・クローリング・データマイニングなど、自動的な手段によるコンテンツの収集・複製</li>
+            <li>当サイトのコンテンツを無断で転載・二次利用する行為</li>
             <li>当サイトの運営を妨害する行為</li>
             <li>その他、公序良俗に反する行為</li>
           </ul>
