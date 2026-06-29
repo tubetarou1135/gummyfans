@@ -23,9 +23,18 @@ export default function GummyCard({ gummy }: { gummy: GummyWithAvg }) {
       className="block border-2 border-pink-100 rounded-3xl p-4 hover:shadow-lg hover:border-pink-300 transition-all bg-white"
     >
       {/* 商品画像 */}
-      {gummy.image_url && (
+      {gummy.image_url ? (
         <div className="relative w-full aspect-[3/2] rounded-2xl overflow-hidden mb-3 bg-pink-50">
           <Image src={gummy.image_url} alt={gummy.name} fill className="object-contain" />
+        </div>
+      ) : (
+        <div className="w-full aspect-[3/2] rounded-2xl mb-3 bg-pink-50 flex flex-col items-center justify-center gap-1 border-2 border-dashed border-pink-200">
+          <span className="text-2xl">🍬</span>
+          <p className="text-[10px] text-gray-400 text-center leading-relaxed px-2">
+            画像がありません<br />
+            画像提供お待ちしております<br />
+            <span className="text-[9px] text-gray-300">※メーカーHPの写真はNG</span>
+          </p>
         </div>
       )}
 
