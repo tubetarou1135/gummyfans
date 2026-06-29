@@ -47,7 +47,7 @@ function RegisterTab() {
     setResults([])
     const appId = process.env.NEXT_PUBLIC_RAKUTEN_APP_ID
     const affiliateId = process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID
-    const url = `https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601?format=json&keyword=${encodeURIComponent(query + ' グミ')}&applicationId=${appId}&affiliateId=${affiliateId}&hits=20&sort=-reviewCount`
+    const url = `https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601?format=json&keyword=${encodeURIComponent(query + ' グミ')}&applicationId=${appId}&affiliateId=${affiliateId}&hits=20`
     const res = await fetch(url)
     const data = await res.json()
     setResults(data.Items?.map((i: { Item: RakutenItem }) => i.Item) ?? [])
