@@ -13,11 +13,11 @@ const tabs: { key: TabKey; label: string; field: keyof GummyWithAvg }[] = [
   { key: 'sweetness',        label: '甘さ',           field: 'avg_sweetness' },
   { key: 'sourness',         label: '酸っぱさ',       field: 'avg_sourness' },
   { key: 'value',            label: 'コスパ',         field: 'avg_value' },
-  { key: 'first_bite',       label: '初噛み',         field: 'avg_first_bite' },
-  { key: 'second_bounding',  label: '二段バウンド',   field: 'avg_second_bounding' },
-  { key: 'gelatin_toughness',label: 'ゼラチン強度',   field: 'avg_gelatin_toughness' },
-  { key: 'fruit_taste',      label: '果実感',         field: 'avg_fruit_taste' },
-  { key: 'after_flavor',     label: '後味',           field: 'avg_after_flavor' },
+  { key: 'first_bite',        label: 'ファーストバイト',       field: 'avg_first_bite' },
+  { key: 'second_bounding',   label: 'セカンドバウンディング', field: 'avg_second_bounding' },
+  { key: 'gelatin_toughness', label: 'ゼラチンタフネス',       field: 'avg_gelatin_toughness' },
+  { key: 'fruit_taste',       label: 'フルーツテイスト',       field: 'avg_fruit_taste' },
+  { key: 'after_flavor',      label: 'アフターフレーバー',     field: 'avg_after_flavor' },
 ]
 
 async function getRanking(field: keyof GummyWithAvg, ascending: boolean): Promise<GummyWithAvg[]> {
