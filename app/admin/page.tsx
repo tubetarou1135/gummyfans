@@ -561,6 +561,11 @@ function DiscontinuedTab() {
     setRows((prev) => prev.map((r) => r.gummy_id === gummy_id ? { ...r, discontinued: false } : r))
   }
 
+  async function deleteReports(gummy_id: number) {
+    await supabase.from('discontinued_reports').delete().eq('gummy_id', gummy_id)
+    setRows((prev) => prev.filter((r) => r.gummy_id !== gummy_id))
+  }
+
   if (rows.length === 0) return <p className="text-sm text-gray-400">終売報告はまだありません</p>
 
   return (
@@ -578,6 +583,13 @@ function DiscontinuedTab() {
           </div>
           <div className="flex items-center gap-3">
             <span className="text-orange-500 font-bold text-sm">{r.count}件</span>
+            <button
+              type="button"
+              onClick={() => deleteReports(r.gummy_id)}
+              className="text-xs bg-red-50 text-red-400 px-3 py-1.5 rounded-full font-bold hover:bg-red-100 transition-colors"
+            >
+              報告削除
+            </button>
             {r.discontinued ? (
               <button
                 type="button"
