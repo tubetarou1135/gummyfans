@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { GummyWithAvg } from '@/lib/database.types'
+import StarRating from './StarRating'
 
 function ScoreItem({ label, value }: { label: string; value: number | null }) {
   return (
@@ -36,6 +37,7 @@ export default function GummyCard({ gummy }: { gummy: GummyWithAvg }) {
         {hasReview && (
           <div className="shrink-0 flex flex-col items-center gap-1.5">
             <ScoreItem label="総合" value={gummy.avg_overall} />
+            <StarRating value={Math.round(gummy.avg_overall ?? 0)} readonly size="sm" />
             <div className="grid grid-cols-2 gap-x-3 gap-y-1">
               <ScoreItem label="硬さ" value={gummy.avg_hardness} />
               <ScoreItem label="甘さ" value={gummy.avg_sweetness} />
