@@ -20,12 +20,12 @@ export default function SearchBar({ defaultValue }: { defaultValue?: string }) {
       <input
         name="q"
         defaultValue={defaultValue}
-        placeholder="🔍 商品名・メーカー・フレーバーで検索..."
-        className="flex-1 border-2 border-pink-200 rounded-full px-5 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-white"
+        placeholder="🔍 商品名・メーカー・フレーバー..."
+        className="flex-1 min-w-0 border-2 border-pink-200 rounded-full px-4 py-2 text-xs sm:text-sm focus:outline-none focus:border-pink-400 bg-white"
       />
       <button
         type="submit"
-        className="bg-pink-500 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-pink-600 transition-colors"
+        className="bg-pink-500 text-white px-4 py-2 rounded-full text-xs sm:text-sm font-semibold hover:bg-pink-600 transition-colors shrink-0"
       >
         検索
       </button>
