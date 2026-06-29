@@ -10,7 +10,11 @@ export async function GET(request: NextRequest) {
 
   const url = `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?format=json&keyword=${encodeURIComponent(query + ' グミ')}&applicationId=${appId}&accessKey=${accessKey}&affiliateId=${affiliateId}&hits=20`
 
-  const res = await fetch(url)
+  const res = await fetch(url, {
+    headers: {
+      Referer: 'https://gummyfans.vercel.app/',
+    },
+  })
   const data = await res.json()
 
   if (!res.ok) {
