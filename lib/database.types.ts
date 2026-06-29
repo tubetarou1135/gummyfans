@@ -36,6 +36,18 @@ export type ReviewInsert = Omit<ReviewRow, 'id' | 'created_at' | 'first_bite' | 
   after_flavor?: number | null
 }
 
+export type GummyRequestRow = {
+  id: number
+  name: string
+  maker: string
+  flavor: string | null
+  description: string | null
+  status: string
+  created_at: string
+}
+
+export type GummyRequestInsert = Omit<GummyRequestRow, 'id' | 'created_at' | 'status'>
+
 export type GummyWithAvg = GummyRow & {
   avg_overall: number | null
   avg_hardness: number | null
@@ -63,6 +75,12 @@ export type Database = {
         Row: ReviewRow
         Insert: ReviewInsert
         Update: Partial<ReviewInsert>
+        Relationships: []
+      }
+      gummy_requests: {
+        Row: GummyRequestRow
+        Insert: GummyRequestInsert
+        Update: Partial<GummyRequestRow>
         Relationships: []
       }
     }
