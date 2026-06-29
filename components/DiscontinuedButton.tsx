@@ -17,9 +17,9 @@ export default function DiscontinuedButton({ gummyId, reportCount }: { gummyId: 
   }
 
   return (
-    <div className="mt-3">
-      <p className="text-xs text-gray-400 mb-1.5">
-        終売の情報を見かけたら教えてください
+    <div className="flex flex-col items-end gap-1">
+      <p className="text-xs text-gray-400 text-right">
+        終売情報を<br />見かけたら↓
       </p>
       <button
         type="button"
@@ -39,7 +39,7 @@ export default function DiscontinuedButton({ gummyId, reportCount }: { gummyId: 
           </span>
         )}
       </button>
-      {done && <p className="text-xs text-gray-400 mt-1">ご報告ありがとうございます！</p>}
+      {done && <p className="text-xs text-gray-400 text-right">ありがとうございます！</p>}
     </div>
   )
 }

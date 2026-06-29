@@ -111,13 +111,18 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
         )}
       </div>
 
-      <h1 className="text-2xl font-bold text-gray-800 mb-1">{gummy.name}</h1>
-      <p className="text-sm text-gray-500">
-        {gummy.maker}
-        {gummy.flavor && ` / ${gummy.flavor}`}
-      </p>
-      <DiscontinuedButton gummyId={gummy.id} reportCount={discontinuedCount} />
-      <div className="mb-4" />
+      <div className="flex items-start justify-between gap-2 mb-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800 mb-1">{gummy.name}</h1>
+          <p className="text-sm text-gray-500">
+            {gummy.maker}
+            {gummy.flavor && ` / ${gummy.flavor}`}
+          </p>
+        </div>
+        <div className="shrink-0 mt-1">
+          <DiscontinuedButton gummyId={gummy.id} reportCount={discontinuedCount} />
+        </div>
+      </div>
 
       {gummy.avg_overall != null && (
         <div className="bg-pink-50 rounded-2xl p-5 mb-6">
