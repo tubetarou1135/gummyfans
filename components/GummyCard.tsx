@@ -32,7 +32,7 @@ export default function GummyCard({ gummy }: { gummy: GummyWithAvg }) {
           <span className="text-2xl">🍬</span>
           <p className="text-[10px] text-gray-400 text-center leading-relaxed px-2">
             画像がありません<br />
-            画像提供お待ちしております
+            画像提供お願いします。
           </p>
         </div>
       )}
