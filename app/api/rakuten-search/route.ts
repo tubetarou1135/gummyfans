@@ -8,21 +8,26 @@ export async function GET(request: NextRequest) {
   const accessKey = process.env.RAKUTEN_ACCESS_KEY
   const affiliateId = process.env.RAKUTEN_AFFILIATE_ID ?? process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID
 
+  const siteUrl = 'https://gummyfans.vercel.app'
   const body = {
     applicationId: appId,
     accessKey: accessKey,
     affiliateId: affiliateId,
     keyword: query + ' グミ',
     format: 'json',
-    httpReferrer: 'https://gummyfans.vercel.app/',
+    httpReferrer: siteUrl,
+    httpReferer: siteUrl,
+    referrer: siteUrl,
+    referer: siteUrl,
     hits: 20,
   }
 
-  const res = await fetch(`https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey ?? '')}`, {
+  const res = await fetch(`https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey ?? '')}&httpReferrer=${encodeURIComponent(siteUrl)}&referrer=${encodeURIComponent(siteUrl)}`, {
     method: 'POST',
+    referrer: siteUrl,
     headers: {
       'Content-Type': 'application/json',
-      Referer: 'https://gummyfans.vercel.app/',
+      'Referer': siteUrl,
       'Authorization': `Bearer ${accessKey}`,
     },
     body: JSON.stringify(body),
