@@ -120,6 +120,12 @@ export type Database = {
         Update: Partial<ContactInsert>
         Relationships: []
       }
+      discontinued_reports: {
+        Row: DiscontinuedReportRow
+        Insert: DiscontinuedReportInsert
+        Update: Partial<DiscontinuedReportInsert>
+        Relationships: []
+      }
     }
     Views: {
       gummies_with_avg: {
@@ -138,6 +144,8 @@ export type DiscontinuedReportRow = {
   gummy_id: number
   created_at: string
 }
+
+export type DiscontinuedReportInsert = { gummy_id: number }
 
 export type Gummy = GummyRow
 export type Review = ReviewRow
