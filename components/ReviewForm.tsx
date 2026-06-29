@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import StarRating from './StarRating'
 
-type RatingKey = 'hardness' | 'sweetness' | 'sourness' | 'value' | 'overall'
+type BasicKey = 'hardness' | 'sweetness' | 'sourness' | 'value' | 'overall'
+type ExpertKey = 'first_bite' | 'second_bounding' | 'gelatin_toughness' | 'fruit_taste' | 'after_flavor'
 
-const ratingFields: { key: RatingKey; label: string }[] = [
+const basicFields: { key: BasicKey; label: string }[] = [
   { key: 'hardness', label: '硬さ' },
   { key: 'sweetness', label: '甘さ' },
   { key: 'sourness', label: '酸っぱさ' },
@@ -15,41 +16,65 @@ const ratingFields: { key: RatingKey; label: string }[] = [
   { key: 'overall', label: '総合評価' },
 ]
 
-const defaultRatings: Record<RatingKey, number> = {
-  hardness: 0,
-  sweetness: 0,
-  sourness: 0,
-  value: 0,
-  overall: 0,
+const expertFields: { key: ExpertKey; label: string; desc: string }[] = [
+  { key: 'first_bite', label: 'ファーストバイト', desc: '口に入れた瞬間の硬さや柔らかさ' },
+  { key: 'second_bounding', label: 'セカンドバウンディング', desc: '噛んだ際の弾力や跳ね返るような噛み応え' },
+  { key: 'gelatin_toughness', label: 'ゼラチンタフネス', desc: 'ゼラチン特有の歯切れの良さや舌触り' },
+  { key: 'fruit_taste', label: 'フルーツテイスト', desc: '噛んだ瞬間に広がる果汁感や味の濃淡' },
+  { key: 'after_flavor', label: 'アフターフレーバー', desc: '飲み込んだ後に残る香りや余韻' },
+]
+
+const defaultBasic: Record<BasicKey, number> = {
+  hardness: 0, sweetness: 0, sourness: 0, value: 0, overall: 0,
+}
+const defaultExpert: Record<ExpertKey, number> = {
+  first_bite: 0, second_bounding: 0, gelatin_toughness: 0, fruit_taste: 0, after_flavor: 0,
 }
 
 export default function ReviewForm({ gummyId }: { gummyId: number }) {
   const router = useRouter()
+  const [tab, setTab] = useState<'basic' | 'expert'>('basic')
   const [nickname, setNickname] = useState('')
   const [comment, setComment] = useState('')
-  const [ratings, setRatings] = useState(defaultRatings)
+  const [basic, setBasic] = useState(defaultBasic)
+  const [expert, setExpert] = useState(defaultExpert)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const unrated = ratingFields.filter((f) => ratings[f.key] === 0)
-    if (unrated.length > 0) {
-      setError(`${unrated.map((f) => f.label).join('・')}を評価してください`)
-      return
-    }
     if (!nickname.trim()) {
       setError('ニックネームを入力してください')
       return
     }
+    if (tab === 'basic') {
+      const unrated = basicFields.filter((f) => basic[f.key] === 0)
+      if (unrated.length > 0) {
+        setError(`${unrated.map((f) => f.label).join('・')}を評価してください`)
+        return
+      }
+    } else {
+      const unrated = expertFields.filter((f) => expert[f.key] === 0)
+      if (unrated.length > 0) {
+        setError(`${unrated.map((f) => f.label).join('・')}を評価してください`)
+        return
+      }
+    }
     setSubmitting(true)
     setError(null)
-    const { error: err } = await supabase.from('reviews').insert({
-      gummy_id: gummyId,
-      nickname: nickname.trim(),
-      comment: comment.trim() || null,
-      ...ratings,
-    })
+
+    const payload =
+      tab === 'basic'
+        ? { gummy_id: gummyId, nickname: nickname.trim(), comment: comment.trim() || null, ...basic }
+        : {
+            gummy_id: gummyId,
+            nickname: nickname.trim(),
+            comment: comment.trim() || null,
+            hardness: 0, sweetness: 0, sourness: 0, value: 0, overall: 0,
+            ...expert,
+          }
+
+    const { error: err } = await supabase.from('reviews').insert(payload)
     if (err) {
       setError('送信に失敗しました。もう一度お試しください。')
       setSubmitting(false)
@@ -58,12 +83,36 @@ export default function ReviewForm({ gummyId }: { gummyId: number }) {
     router.refresh()
     setNickname('')
     setComment('')
-    setRatings(defaultRatings)
+    setBasic(defaultBasic)
+    setExpert(defaultExpert)
     setSubmitting(false)
   }
 
   return (
     <form onSubmit={handleSubmit} className="border-2 border-pink-100 rounded-3xl p-5 space-y-4 bg-white">
+      <div className="flex rounded-full bg-pink-50 p-1 gap-1">
+        <button
+          type="button"
+          onClick={() => setTab('basic')}
+          className={`flex-1 py-2 rounded-full text-sm font-semibold transition-colors ${tab === 'basic' ? 'bg-pink-500 text-white' : 'text-gray-500 hover:text-pink-500'}`}
+        >
+          一般評価
+        </button>
+        <button
+          type="button"
+          onClick={() => setTab('expert')}
+          className={`flex-1 py-2 rounded-full text-sm font-semibold transition-colors ${tab === 'expert' ? 'bg-pink-500 text-white' : 'text-gray-500 hover:text-pink-500'}`}
+        >
+          グミ協会指標
+        </button>
+      </div>
+
+      {tab === 'expert' && (
+        <p className="text-xs text-gray-400 text-center">
+          この評価指標は日本グミ協会の許可を得て使用しています
+        </p>
+      )}
+
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">ニックネーム</label>
         <input
@@ -76,15 +125,22 @@ export default function ReviewForm({ gummyId }: { gummyId: number }) {
       </div>
 
       <div className="space-y-2">
-        {ratingFields.map(({ key, label }) => (
-          <div key={key} className="flex items-center gap-3">
-            <span className="text-sm text-gray-600 w-20">{label}</span>
-            <StarRating
-              value={ratings[key]}
-              onChange={(v) => setRatings((prev) => ({ ...prev, [key]: v }))}
-            />
-          </div>
-        ))}
+        {tab === 'basic'
+          ? basicFields.map(({ key, label }) => (
+              <div key={key} className="flex items-center gap-3">
+                <span className="text-sm text-gray-600 w-20">{label}</span>
+                <StarRating value={basic[key]} onChange={(v) => setBasic((p) => ({ ...p, [key]: v }))} />
+              </div>
+            ))
+          : expertFields.map(({ key, label, desc }) => (
+              <div key={key} className="space-y-0.5">
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-gray-600 w-28 shrink-0">{label}</span>
+                  <StarRating value={expert[key]} onChange={(v) => setExpert((p) => ({ ...p, [key]: v }))} />
+                </div>
+                <p className="text-xs text-gray-400 ml-28 pl-3">{desc}</p>
+              </div>
+            ))}
       </div>
 
       <div>

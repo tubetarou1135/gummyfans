@@ -20,10 +20,21 @@ export type ReviewRow = {
   sourness: number
   value: number
   overall: number
+  first_bite: number | null
+  second_bounding: number | null
+  gelatin_toughness: number | null
+  fruit_taste: number | null
+  after_flavor: number | null
   created_at: string
 }
 
-export type ReviewInsert = Omit<ReviewRow, 'id' | 'created_at'>
+export type ReviewInsert = Omit<ReviewRow, 'id' | 'created_at' | 'first_bite' | 'second_bounding' | 'gelatin_toughness' | 'fruit_taste' | 'after_flavor'> & {
+  first_bite?: number | null
+  second_bounding?: number | null
+  gelatin_toughness?: number | null
+  fruit_taste?: number | null
+  after_flavor?: number | null
+}
 
 export type GummyWithAvg = GummyRow & {
   avg_overall: number | null
@@ -31,6 +42,11 @@ export type GummyWithAvg = GummyRow & {
   avg_sweetness: number | null
   avg_sourness: number | null
   avg_value: number | null
+  avg_first_bite: number | null
+  avg_second_bounding: number | null
+  avg_gelatin_toughness: number | null
+  avg_fruit_taste: number | null
+  avg_after_flavor: number | null
   review_count: number
 }
 
