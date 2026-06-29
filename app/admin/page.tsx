@@ -17,14 +17,53 @@ type GummyRequest = {
   created_at: string
 }
 
+type RakutenItem = {
+  itemName: string
+  shopName: string
+  itemPrice: number
+  itemUrl: string
+  mediumImageUrls: { imageUrl: string }[]
+}
+
 // ---- グミ登録タブ ----
 function RegisterTab() {
-  const [form, setForm] = useState({ name: '', maker: '', flavor: '', description: '' })
+  const [mode, setMode] = useState<'rakuten' | 'manual'>('rakuten')
+  const [query, setQuery] = useState('')
+  const [searching, setSearching] = useState(false)
+  const [results, setResults] = useState<RakutenItem[]>([])
+  const [selected, setSelected] = useState<RakutenItem | null>(null)
+  const [form, setForm] = useState({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '' })
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
   const [loading, setLoading] = useState(false)
 
   function set(key: string, value: string) {
     setForm((prev) => ({ ...prev, [key]: value }))
+  }
+
+  async function handleSearch(e: React.FormEvent) {
+    e.preventDefault()
+    if (!query.trim()) return
+    setSearching(true)
+    setResults([])
+    const appId = process.env.NEXT_PUBLIC_RAKUTEN_APP_ID
+    const affiliateId = process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID
+    const url = `https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601?format=json&keyword=${encodeURIComponent(query + ' グミ')}&applicationId=${appId}&affiliateId=${affiliateId}&hits=20&sort=-reviewCount`
+    const res = await fetch(url)
+    const data = await res.json()
+    setResults(data.Items?.map((i: { Item: RakutenItem }) => i.Item) ?? [])
+    setSearching(false)
+  }
+
+  function handleSelect(item: RakutenItem) {
+    setSelected(item)
+    setForm({
+      name: item.itemName,
+      maker: item.shopName,
+      flavor: '',
+      description: '',
+      image_url: item.mediumImageUrls[0]?.imageUrl ?? '',
+      rakuten_url: item.itemUrl,
+    })
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -39,47 +78,101 @@ function RegisterTab() {
       maker: form.maker.trim(),
       flavor: form.flavor.trim() || null,
       description: form.description.trim() || null,
+      image_url: form.image_url.trim() || null,
+      rakuten_url: form.rakuten_url.trim() || null,
     })
     setLoading(false)
     if (error) {
       setMsg({ type: 'err', text: '登録に失敗しました: ' + error.message })
     } else {
       setMsg({ type: 'ok', text: '登録しました！' })
-      setForm({ name: '', maker: '', flavor: '', description: '' })
+      setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '' })
+      setSelected(null)
+      setResults([])
+      setQuery('')
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {[
-        { key: 'name', label: '商品名 *', placeholder: 'コーラアップ' },
-        { key: 'maker', label: 'メーカー *', placeholder: 'ハリボー' },
-        { key: 'flavor', label: 'フレーバー', placeholder: 'コーラ' },
-      ].map(({ key, label, placeholder }) => (
-        <div key={key}>
-          <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-          <input
-            value={(form as Record<string, string>)[key]}
-            onChange={(e) => set(key, e.target.value)}
-            placeholder={placeholder}
-            className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
-          />
-        </div>
-      ))}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">説明</label>
-        <textarea
-          value={form.description}
-          onChange={(e) => set('description', e.target.value)}
-          rows={3}
-          className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50 resize-none"
-        />
+    <div className="space-y-4">
+      {/* モード切替 */}
+      <div className="flex rounded-full bg-pink-50 p-1 gap-1">
+        <button onClick={() => setMode('rakuten')} className={`flex-1 py-2 rounded-full text-xs font-semibold transition-colors ${mode === 'rakuten' ? 'bg-pink-500 text-white' : 'text-gray-500'}`}>楽天から検索</button>
+        <button onClick={() => setMode('manual')} className={`flex-1 py-2 rounded-full text-xs font-semibold transition-colors ${mode === 'manual' ? 'bg-pink-500 text-white' : 'text-gray-500'}`}>手動入力</button>
       </div>
-      {msg && <p className={`text-sm ${msg.type === 'ok' ? 'text-green-600' : 'text-red-500'}`}>{msg.text}</p>}
-      <button type="submit" disabled={loading} className="w-full bg-pink-500 text-white py-3 rounded-full text-sm font-bold hover:bg-pink-600 transition-colors disabled:opacity-50">
-        {loading ? '登録中...' : '登録する'}
-      </button>
-    </form>
+
+      {mode === 'rakuten' && !selected && (
+        <div className="space-y-3">
+          <form onSubmit={handleSearch} className="flex gap-2">
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="グミ名で検索..."
+              className="flex-1 border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+            />
+            <button type="submit" disabled={searching} className="bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-pink-600 disabled:opacity-50">
+              {searching ? '...' : '検索'}
+            </button>
+          </form>
+          <div className="space-y-2 max-h-96 overflow-y-auto">
+            {results.map((item, i) => (
+              <button key={i} onClick={() => handleSelect(item)} className="w-full flex items-center gap-3 border-2 border-pink-100 rounded-2xl p-3 hover:border-pink-400 hover:bg-pink-50 transition-colors text-left">
+                {item.mediumImageUrls[0] && (
+                  <Image src={item.mediumImageUrls[0].imageUrl} alt={item.itemName} width={48} height={48} className="rounded-xl object-contain shrink-0" />
+                )}
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-gray-800 line-clamp-2">{item.itemName}</p>
+                  <p className="text-xs text-gray-400">{item.shopName} · ¥{item.itemPrice.toLocaleString()}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {(mode === 'manual' || selected) && (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {selected && (
+            <div className="flex items-center gap-3 bg-pink-50 rounded-2xl p-3">
+              {form.image_url && <Image src={form.image_url} alt={form.name} width={48} height={48} className="rounded-xl object-contain shrink-0" />}
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-semibold text-gray-700 line-clamp-1">{selected.itemName}</p>
+                <p className="text-xs text-gray-400">選択中</p>
+              </div>
+              <button type="button" onClick={() => { setSelected(null); setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '' }) }} className="text-xs text-gray-400 hover:text-red-400">変更</button>
+            </div>
+          )}
+          {[
+            { key: 'name', label: '商品名 *', placeholder: '' },
+            { key: 'maker', label: 'メーカー *', placeholder: '' },
+            { key: 'flavor', label: 'フレーバー', placeholder: '' },
+          ].map(({ key, label, placeholder }) => (
+            <div key={key}>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+              <input
+                value={(form as Record<string, string>)[key]}
+                onChange={(e) => set(key, e.target.value)}
+                placeholder={placeholder}
+                className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+              />
+            </div>
+          ))}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">説明</label>
+            <textarea
+              value={form.description}
+              onChange={(e) => set('description', e.target.value)}
+              rows={3}
+              className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50 resize-none"
+            />
+          </div>
+          {msg && <p className={`text-sm ${msg.type === 'ok' ? 'text-green-600' : 'text-red-500'}`}>{msg.text}</p>}
+          <button type="submit" disabled={loading} className="w-full bg-pink-500 text-white py-3 rounded-full text-sm font-bold hover:bg-pink-600 transition-colors disabled:opacity-50">
+            {loading ? '登録中...' : '登録する'}
+          </button>
+        </form>
+      )}
+    </div>
   )
 }
 
@@ -250,6 +343,8 @@ function RequestsTab() {
       maker: req.maker,
       flavor: req.flavor,
       description: req.description,
+      image_url: null,
+      rakuten_url: null,
     })
     if (error) {
       setMsg({ type: 'err', text: '登録に失敗しました: ' + error.message })

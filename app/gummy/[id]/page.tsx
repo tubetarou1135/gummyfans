@@ -75,14 +75,19 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
       </Link>
 
       {/* 商品画像 */}
-      {imageUrl && (
+      {(gummy.image_url || imageUrl) && (
         <div className="mb-4">
           <div className="relative w-full aspect-square max-w-sm mx-auto rounded-3xl overflow-hidden border-2 border-pink-100">
-            <Image src={imageUrl} alt={gummy.name} fill className="object-contain" />
+            <Image src={gummy.image_url ?? imageUrl!} alt={gummy.name} fill className="object-contain" />
           </div>
-          <p className="text-center text-xs text-gray-400 mt-2">
-            📸 {approvedImage!.nickname}さんからの画像提供
-          </p>
+          {!gummy.image_url && approvedImage && (
+            <p className="text-center text-xs text-gray-400 mt-2">
+              📸 {approvedImage.nickname}さんからの画像提供
+            </p>
+          )}
+          {gummy.image_url && (
+            <p className="text-center text-xs text-gray-400 mt-2">画像提供：楽天市場</p>
+          )}
         </div>
       )}
 
@@ -107,7 +112,18 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
       )}
 
       {gummy.description && (
-        <p className="text-sm text-gray-600 mb-6">{gummy.description}</p>
+        <p className="text-sm text-gray-600 mb-4">{gummy.description}</p>
+      )}
+
+      {gummy.rakuten_url && (
+        <a
+          href={gummy.rakuten_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 bg-red-500 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-red-600 transition-colors mb-6"
+        >
+          🛒 楽天市場で買う
+        </a>
       )}
 
       {/* レビュー投稿 / 画像提供 タブ */}

@@ -5,10 +5,14 @@ export type GummyRow = {
   flavor: string | null
   description: string | null
   image_url: string | null
+  rakuten_url: string | null
   created_at: string
 }
 
-export type GummyInsert = Omit<GummyRow, 'id' | 'created_at' | 'image_url'>
+export type GummyInsert = Omit<GummyRow, 'id' | 'created_at' | 'image_url' | 'rakuten_url'> & {
+  image_url?: string | null
+  rakuten_url?: string | null
+}
 
 export type ReviewRow = {
   id: number
