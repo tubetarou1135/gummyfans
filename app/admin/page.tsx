@@ -45,7 +45,20 @@ function RegisterTab() {
     if (!query.trim()) return
     setSearching(true)
     setResults([])
-    const res = await fetch(`/api/rakuten-search?query=${encodeURIComponent(query)}`)
+    const appId = process.env.NEXT_PUBLIC_RAKUTEN_APP_ID
+    const accessKey = process.env.NEXT_PUBLIC_RAKUTEN_ACCESS_KEY
+    const affiliateId = process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID
+    const res = await fetch(`https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey ?? '')}&format=json`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        applicationId: appId,
+        accessKey: accessKey,
+        affiliateId: affiliateId,
+        keyword: query + ' グミ',
+        hits: 20,
+      }),
+    })
     const data = await res.json()
     setResults(data.Items?.map((i: { Item: RakutenItem }) => i.Item) ?? [])
     setSearching(false)
