@@ -108,9 +108,11 @@ export default function ImageUploadForm({ gummyId }: { gummyId: number }) {
         )}
       </div>
 
-      <p className="text-xs text-gray-400">
-        ※ 投稿された画像は審査後に掲載されます。掲載された画像の著作権は投稿者に帰属します。
-      </p>
+      <div className="text-xs text-gray-400 space-y-1">
+        <p>※ 投稿された画像は審査後に掲載されます。掲載された画像の著作権は投稿者に帰属します。</p>
+        <p>※ 著作権等の権利があるサイトからの転載はご遠慮下さい。</p>
+        <p>※ 自身が著作権を持つ画像（自分で撮った写真等）をご提供下さい。</p>
+      </div>
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
 

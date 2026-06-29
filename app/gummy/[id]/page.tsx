@@ -75,21 +75,31 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
       </Link>
 
       {/* 商品画像 */}
-      {(gummy.image_url || imageUrl) && (
-        <div className="mb-4">
-          <div className="relative w-full aspect-square max-w-sm mx-auto rounded-3xl overflow-hidden border-2 border-pink-100">
-            <Image src={gummy.image_url ?? imageUrl!} alt={gummy.name} fill className="object-contain" />
-          </div>
-          {!gummy.image_url && approvedImage && (
-            <p className="text-center text-xs text-gray-400 mt-2">
-              📸 {approvedImage.nickname}さんからの画像提供
+      <div className="mb-4">
+        {(gummy.image_url || imageUrl) ? (
+          <>
+            <div className="relative w-full aspect-square max-w-sm mx-auto rounded-3xl overflow-hidden border-2 border-pink-100">
+              <Image src={gummy.image_url ?? imageUrl!} alt={gummy.name} fill className="object-contain" />
+            </div>
+            {!gummy.image_url && approvedImage && (
+              <p className="text-center text-xs text-gray-400 mt-2">
+                📸 {approvedImage.nickname}さんからの画像提供
+              </p>
+            )}
+            {gummy.image_url && (
+              <p className="text-center text-xs text-gray-400 mt-2">画像提供：楽天市場</p>
+            )}
+          </>
+        ) : (
+          <div className="w-full aspect-square max-w-sm mx-auto rounded-3xl border-2 border-dashed border-pink-200 bg-pink-50 flex flex-col items-center justify-center gap-2">
+            <span className="text-5xl">🍬</span>
+            <p className="text-sm text-gray-400 text-center leading-relaxed">
+              画像がありません<br />
+              画像提供お願いします。
             </p>
-          )}
-          {gummy.image_url && (
-            <p className="text-center text-xs text-gray-400 mt-2">画像提供：楽天市場</p>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+      </div>
 
       <h1 className="text-2xl font-bold text-gray-800 mb-1">{gummy.name}</h1>
       <p className="text-sm text-gray-500 mb-4">
