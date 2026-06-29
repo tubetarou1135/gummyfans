@@ -48,6 +48,16 @@ export type GummyRequestRow = {
 
 export type GummyRequestInsert = Omit<GummyRequestRow, 'id' | 'created_at' | 'status'>
 
+export type ContactRow = {
+  id: number
+  name: string
+  email: string
+  message: string
+  created_at: string
+}
+
+export type ContactInsert = Omit<ContactRow, 'id' | 'created_at'>
+
 export type GummyWithAvg = GummyRow & {
   avg_overall: number | null
   avg_hardness: number | null
@@ -81,6 +91,12 @@ export type Database = {
         Row: GummyRequestRow
         Insert: GummyRequestInsert
         Update: Partial<GummyRequestRow>
+        Relationships: []
+      }
+      contacts: {
+        Row: ContactRow
+        Insert: ContactInsert
+        Update: Partial<ContactInsert>
         Relationships: []
       }
     }

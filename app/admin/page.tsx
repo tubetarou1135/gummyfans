@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
-import type { GummyRow, ReviewRow } from '@/lib/database.types'
+import type { GummyRow, ReviewRow, ContactRow } from '@/lib/database.types'
 
-type Tab = 'register' | 'gummies' | 'reviews' | 'requests'
+type Tab = 'register' | 'gummies' | 'reviews' | 'requests' | 'contacts'
 
 type GummyRequest = {
   id: number
@@ -297,12 +297,58 @@ function RequestsTab() {
   )
 }
 
+// ---- 問い合わせタブ ----
+function ContactsTab() {
+  const [contacts, setContacts] = useState<ContactRow[]>([])
+
+  async function load() {
+    const { data } = await supabase
+      .from('contacts')
+      .select('*')
+      .order('created_at', { ascending: false })
+    setContacts(data ?? [])
+  }
+
+  useEffect(() => { load() }, [])
+
+  async function handleDelete(id: number) {
+    if (!confirm('削除しますか？')) return
+    await supabase.from('contacts').delete().eq('id', id)
+    load()
+  }
+
+  return (
+    <div className="space-y-3">
+      {contacts.length === 0 && <p className="text-gray-400 text-sm">問い合わせはありません</p>}
+      {contacts.map((c) => (
+        <div key={c.id} className="border-2 border-pink-100 rounded-2xl px-4 py-3 space-y-1">
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0">
+              <p className="font-semibold text-sm text-gray-800">{c.name}</p>
+              <p className="text-xs text-pink-400">{c.email}</p>
+              <p className="text-xs text-gray-300 mt-0.5">{new Date(c.created_at).toLocaleDateString('ja-JP')}</p>
+            </div>
+            <button
+              onClick={() => handleDelete(c.id)}
+              className="text-xs bg-red-50 text-red-400 px-3 py-1.5 rounded-full hover:bg-red-100 transition-colors font-semibold shrink-0"
+            >
+              削除
+            </button>
+          </div>
+          <p className="text-sm text-gray-600 whitespace-pre-wrap border-t border-pink-50 pt-2 mt-2">{c.message}</p>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 // ---- メイン ----
 const tabs: { key: Tab; label: string }[] = [
   { key: 'register', label: 'グミ登録' },
   { key: 'gummies', label: 'グミ編集・削除' },
   { key: 'reviews', label: 'レビュー削除' },
   { key: 'requests', label: '新グミ申請' },
+  { key: 'contacts', label: '問い合わせ' },
 ]
 
 export default function AdminPage() {
@@ -326,6 +372,7 @@ export default function AdminPage() {
       {tab === 'gummies' && <GummiesTab />}
       {tab === 'reviews' && <ReviewsTab />}
       {tab === 'requests' && <RequestsTab />}
+      {tab === 'contacts' && <ContactsTab />}
     </main>
   )
 }
