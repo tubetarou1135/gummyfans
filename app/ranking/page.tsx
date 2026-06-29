@@ -69,7 +69,7 @@ export default async function RankingPage({
       {isHardness && (
         <div className="mb-5 bg-pink-50 rounded-2xl px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
           <p className="text-xs text-gray-500 flex-1">
-            ⭐ 星が多いほど硬い！　少ないほど柔らかい！
+            ⭐ 星が多いほど硬いよ！　少ないほど柔らかいよ！
           </p>
           <div className="flex gap-2 shrink-0">
             <Link
