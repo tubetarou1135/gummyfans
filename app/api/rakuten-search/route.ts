@@ -8,11 +8,12 @@ export async function GET(request: NextRequest) {
   const accessKey = process.env.RAKUTEN_ACCESS_KEY
   const affiliateId = process.env.RAKUTEN_AFFILIATE_ID
 
-  const url = `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?format=json&keyword=${encodeURIComponent(query + ' グミ')}&applicationId=${appId}&accessKey=${accessKey}&affiliateId=${affiliateId}&hits=20`
+  const url = `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?format=json&keyword=${encodeURIComponent(query + ' グミ')}&applicationId=${appId}&accessKey=${accessKey}&affiliateId=${affiliateId}&httpReferrer=${encodeURIComponent('https://gummyfans.vercel.app/')}&hits=20`
 
   const res = await fetch(url, {
     headers: {
       Referer: 'https://gummyfans.vercel.app/',
+      'User-Agent': 'GummyFans/1.0',
     },
   })
   const data = await res.json()
