@@ -23,6 +23,7 @@ type RakutenItem = {
   itemPrice: number
   itemUrl: string
   mediumImageUrls: { imageUrl: string }[]
+  largeImageUrls: { imageUrl: string }[]
 }
 
 // ---- グミ登録タブ ----
@@ -71,7 +72,7 @@ function RegisterTab() {
       maker: item.shopName,
       flavor: '',
       description: '',
-      image_url: item.mediumImageUrls[0]?.imageUrl ?? '',
+      image_url: item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0]?.imageUrl ?? '',
       rakuten_url: item.itemUrl,
     })
   }
@@ -127,8 +128,8 @@ function RegisterTab() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[600px] overflow-y-auto pr-1">
             {results.map((item, i) => (
               <button key={i} onClick={() => handleSelect(item)} className="flex items-center gap-3 border-2 border-pink-100 rounded-2xl p-3 hover:border-pink-400 hover:bg-pink-50 transition-colors text-left">
-                {item.mediumImageUrls[0] && (
-                  <Image src={item.mediumImageUrls[0].imageUrl} alt={item.itemName} width={64} height={64} className="rounded-xl object-contain shrink-0" />
+                {( item.largeImageUrls?.[0] || item.mediumImageUrls[0]) && (
+                  <Image src={item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0].imageUrl} alt={item.itemName} width={64} height={64} className="rounded-xl object-contain shrink-0" />
                 )}
                 <div className="min-w-0">
                   <p className="text-xs font-semibold text-gray-800 line-clamp-3">{item.itemName}</p>
