@@ -4,9 +4,9 @@ export async function GET(request: NextRequest) {
   const query = request.nextUrl.searchParams.get('query')
   if (!query) return NextResponse.json({ error: 'query required' }, { status: 400 })
 
-  const appId = process.env.RAKUTEN_APP_ID
+  const appId = process.env.RAKUTEN_APP_ID ?? process.env.NEXT_PUBLIC_RAKUTEN_APP_ID
   const accessKey = process.env.RAKUTEN_ACCESS_KEY
-  const affiliateId = process.env.RAKUTEN_AFFILIATE_ID
+  const affiliateId = process.env.RAKUTEN_AFFILIATE_ID ?? process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID
 
   const body = {
     applicationId: appId,
