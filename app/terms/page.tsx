@@ -30,7 +30,12 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="font-bold text-base text-gray-800 mb-2">5. 広告・収益化について</h2>
+          <h2 className="font-bold text-base text-gray-800 mb-2">5. ユーザー提供画像について</h2>
+          <p>当サイトに掲載されている商品画像はユーザーの皆様からご提供いただいたものです。画像の著作権は各投稿者に帰属します。画像を提供いただくことで、当サイトでの商品紹介目的での使用にご同意いただいたものとみなします。</p>
+        </section>
+
+        <section>
+          <h2 className="font-bold text-base text-gray-800 mb-2">6. 広告・収益化について</h2>
           <p>当サイトは、将来的にGoogle AdSenseおよびアフィリエイトプログラムを利用した広告を掲載する予定です。</p>
         </section>
 

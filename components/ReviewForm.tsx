@@ -31,7 +31,7 @@ const defaultExpert: Record<ExpertKey, number> = {
   first_bite: 0, second_bounding: 0, gelatin_toughness: 0, fruit_taste: 0, after_flavor: 0,
 }
 
-export default function ReviewForm({ gummyId }: { gummyId: number }) {
+export default function ReviewForm({ gummyId, inner }: { gummyId: number; inner?: boolean }) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [nickname, setNickname] = useState('')
@@ -79,6 +79,74 @@ export default function ReviewForm({ gummyId }: { gummyId: number }) {
     setSubmitting(false)
   }
 
+  const fields = (
+    <>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">ニックネーム</label>
+        <input
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
+          placeholder="例：グミ好き太郎"
+          className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+          maxLength={30}
+        />
+      </div>
+      <div>
+        <p className="text-sm font-semibold text-gray-700 mb-2">一般評価</p>
+        <div className="space-y-2">
+          {basicFields.map(({ key, label }) => (
+            <div key={key} className="flex items-center gap-3">
+              <span className="text-sm text-gray-600 w-20 shrink-0">{label}</span>
+              <StarRating value={basic[key]} onChange={(v) => setBasic((p) => ({ ...p, [key]: v }))} size="md" />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div>
+        <p className="text-sm font-semibold text-gray-700 mb-0.5">日本グミ協会指標 <span className="text-gray-400 font-normal text-xs">（任意）</span></p>
+        <p className="text-xs text-gray-300 mb-2">この評価指標は日本グミ協会の許可を得て使用しています</p>
+        <div className="space-y-3">
+          {expertFields.map(({ key, label, desc }) => (
+            <div key={key}>
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-gray-600 w-40 shrink-0 whitespace-nowrap">{label}</span>
+                <StarRating value={expert[key]} onChange={(v) => setExpert((p) => ({ ...p, [key]: v }))} size="md" />
+              </div>
+              <p className="text-xs text-gray-400 ml-40 pl-3">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">コメント <span className="text-gray-400 font-normal text-xs">（任意）</span></label>
+        <textarea
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          placeholder="食感・味・おすすめポイントなど..."
+          rows={3}
+          className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50 resize-none"
+          maxLength={500}
+        />
+      </div>
+      {error && <p className="text-red-500 text-sm">{error}</p>}
+      <button
+        type="submit"
+        disabled={submitting}
+        className="w-full bg-pink-500 text-white py-3 rounded-full text-sm font-bold hover:bg-pink-600 transition-colors disabled:opacity-50"
+      >
+        {submitting ? '送信中...' : 'レビューを投稿'}
+      </button>
+    </>
+  )
+
+  if (inner) {
+    return (
+      <form onSubmit={handleSubmit} className="space-y-5 pt-4">
+        {fields}
+      </form>
+    )
+  }
+
   return (
     <div className="border-2 border-pink-100 rounded-3xl bg-white overflow-hidden">
       <button
@@ -92,69 +160,7 @@ export default function ReviewForm({ gummyId }: { gummyId: number }) {
 
       {open && (
         <form onSubmit={handleSubmit} className="px-5 pb-5 space-y-5 border-t-2 border-pink-50 pt-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">ニックネーム</label>
-            <input
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
-              placeholder="例：グミ好き太郎"
-              className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
-              maxLength={30}
-            />
-          </div>
-
-          {/* 一般評価 */}
-          <div>
-            <p className="text-sm font-semibold text-gray-700 mb-2">一般評価</p>
-            <div className="space-y-2">
-              {basicFields.map(({ key, label }) => (
-                <div key={key} className="flex items-center gap-3">
-                  <span className="text-sm text-gray-600 w-20 shrink-0">{label}</span>
-                  <StarRating value={basic[key]} onChange={(v) => setBasic((p) => ({ ...p, [key]: v }))} size="md" />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* 日本グミ協会指標（任意） */}
-          <div>
-            <p className="text-sm font-semibold text-gray-700 mb-0.5">日本グミ協会指標 <span className="text-gray-400 font-normal text-xs">（任意）</span></p>
-            <p className="text-xs text-gray-300 mb-2">この評価指標は日本グミ協会の許可を得て使用しています</p>
-            <div className="space-y-3">
-              {expertFields.map(({ key, label, desc }) => (
-                <div key={key}>
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm text-gray-600 w-40 shrink-0 whitespace-nowrap">{label}</span>
-                    <StarRating value={expert[key]} onChange={(v) => setExpert((p) => ({ ...p, [key]: v }))} size="md" />
-                  </div>
-                  <p className="text-xs text-gray-400 ml-40 pl-3">{desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* コメント（任意） */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">コメント <span className="text-gray-400 font-normal text-xs">（任意）</span></label>
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="食感・味・おすすめポイントなど..."
-              rows={3}
-              className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50 resize-none"
-              maxLength={500}
-            />
-          </div>
-
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full bg-pink-500 text-white py-3 rounded-full text-sm font-bold hover:bg-pink-600 transition-colors disabled:opacity-50"
-          >
-            {submitting ? '送信中...' : 'レビューを投稿'}
-          </button>
+          {fields}
         </form>
       )}
     </div>

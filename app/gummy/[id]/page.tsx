@@ -1,10 +1,11 @@
 import { supabase } from '@/lib/supabase'
-import type { Review } from '@/lib/database.types'
+import type { Review, GummyImageRow } from '@/lib/database.types'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import StarRating from '@/components/StarRating'
-import ReviewForm from '@/components/ReviewForm'
 import ScoreTabs from '@/components/ScoreTabs'
+import PostTabs from '@/components/PostTabs'
 
 export const revalidate = 60
 
@@ -24,6 +25,18 @@ async function getReviews(gummyId: number): Promise<Review[]> {
     .eq('gummy_id', gummyId)
     .order('created_at', { ascending: false })
   return data ?? []
+}
+
+async function getApprovedImage(gummyId: number): Promise<GummyImageRow | null> {
+  const { data } = await supabase
+    .from('gummy_images')
+    .select('*')
+    .eq('gummy_id', gummyId)
+    .eq('status', 'approved')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single()
+  return data ?? null
 }
 
 const basicLabels: { key: keyof Review; label: string }[] = [
@@ -46,13 +59,32 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
   const { id } = await params
   const gummy = await getGummy(Number(id))
   if (!gummy) notFound()
-  const reviews = await getReviews(gummy.id)
+  const [reviews, approvedImage] = await Promise.all([
+    getReviews(gummy.id),
+    getApprovedImage(gummy.id),
+  ])
+
+  const imageUrl = approvedImage
+    ? supabase.storage.from('gummy-images').getPublicUrl(approvedImage.storage_path).data.publicUrl
+    : null
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
       <Link href="/" className="text-pink-500 text-sm hover:underline mb-4 inline-block">
         ← 一覧に戻る
       </Link>
+
+      {/* 商品画像 */}
+      {imageUrl && (
+        <div className="mb-4">
+          <div className="relative w-full aspect-square max-w-sm mx-auto rounded-3xl overflow-hidden border-2 border-pink-100">
+            <Image src={imageUrl} alt={gummy.name} fill className="object-contain" />
+          </div>
+          <p className="text-center text-xs text-gray-400 mt-2">
+            📸 {approvedImage!.nickname}さんからの画像提供
+          </p>
+        </div>
+      )}
 
       <h1 className="text-2xl font-bold text-gray-800 mb-1">{gummy.name}</h1>
       <p className="text-sm text-gray-500 mb-4">
@@ -78,8 +110,8 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
         <p className="text-sm text-gray-600 mb-6">{gummy.description}</p>
       )}
 
-      <h2 className="text-lg font-semibold mb-4">レビューを投稿</h2>
-      <ReviewForm gummyId={gummy.id} />
+      {/* レビュー投稿 / 画像提供 タブ */}
+      <PostTabs gummyId={gummy.id} />
 
       {reviews.length > 0 && (
         <>
@@ -125,3 +157,4 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
     </main>
   )
 }
+

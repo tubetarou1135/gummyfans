@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
-import type { GummyRow, ReviewRow, ContactRow } from '@/lib/database.types'
+import type { GummyRow, ReviewRow, ContactRow, GummyImageRow } from '@/lib/database.types'
+import Image from 'next/image'
 
-type Tab = 'register' | 'gummies' | 'reviews' | 'requests' | 'contacts'
+type Tab = 'register' | 'gummies' | 'reviews' | 'requests' | 'contacts' | 'images'
 
 type GummyRequest = {
   id: number
@@ -297,6 +298,85 @@ function RequestsTab() {
   )
 }
 
+// ---- 画像承認タブ ----
+function ImagesTab() {
+  const [images, setImages] = useState<(GummyImageRow & { gummy_name: string })[]>([])
+  const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
+
+  async function load() {
+    const { data } = await supabase
+      .from('gummy_images')
+      .select('*, gummies(name)')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+    setImages(
+      (data ?? []).map((r: GummyImageRow & { gummies: { name: string } | null }) => ({
+        ...r,
+        gummy_name: r.gummies?.name ?? '不明',
+      }))
+    )
+  }
+
+  useEffect(() => { load() }, [])
+
+  async function handleApprove(img: GummyImageRow & { gummy_name: string }) {
+    // 既存の承認済み画像を却下
+    await supabase
+      .from('gummy_images')
+      .update({ status: 'rejected' })
+      .eq('gummy_id', img.gummy_id)
+      .eq('status', 'approved')
+    // 今回の画像を承認
+    const { error } = await supabase
+      .from('gummy_images')
+      .update({ status: 'approved' })
+      .eq('id', img.id)
+    if (error) { setMsg({ type: 'err', text: '承認に失敗しました' }); return }
+    setMsg({ type: 'ok', text: `「${img.gummy_name}」の画像を承認しました！` })
+    load()
+  }
+
+  async function handleReject(img: GummyImageRow) {
+    await supabase.from('gummy_images').update({ status: 'rejected' }).eq('id', img.id)
+    load()
+  }
+
+  return (
+    <div className="space-y-4">
+      {msg && <p className={`text-sm ${msg.type === 'ok' ? 'text-green-600' : 'text-red-500'}`}>{msg.text}</p>}
+      {images.length === 0 && <p className="text-gray-400 text-sm">未処理の画像投稿はありません</p>}
+      {images.map((img) => {
+        const url = supabase.storage.from('gummy-images').getPublicUrl(img.storage_path).data.publicUrl
+        return (
+          <div key={img.id} className="border-2 border-pink-100 rounded-2xl p-4 space-y-3">
+            <div>
+              <p className="font-semibold text-sm text-gray-800">{img.gummy_name}</p>
+              <p className="text-xs text-gray-500">{img.nickname}さんより · {new Date(img.created_at).toLocaleDateString('ja-JP')}</p>
+            </div>
+            <div className="relative w-full aspect-square max-w-xs rounded-2xl overflow-hidden border border-pink-100">
+              <Image src={url} alt={img.gummy_name} fill className="object-contain" />
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleApprove(img)}
+                className="flex-1 text-xs bg-green-50 text-green-600 px-3 py-2 rounded-full hover:bg-green-100 transition-colors font-semibold"
+              >
+                承認して掲載
+              </button>
+              <button
+                onClick={() => handleReject(img)}
+                className="flex-1 text-xs bg-red-50 text-red-400 px-3 py-2 rounded-full hover:bg-red-100 transition-colors font-semibold"
+              >
+                却下
+              </button>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 // ---- 問い合わせタブ ----
 function ContactsTab() {
   const [contacts, setContacts] = useState<ContactRow[]>([])
@@ -349,6 +429,7 @@ const tabs: { key: Tab; label: string }[] = [
   { key: 'reviews', label: 'レビュー削除' },
   { key: 'requests', label: '新グミ申請' },
   { key: 'contacts', label: '問い合わせ' },
+  { key: 'images', label: '画像承認' },
 ]
 
 export default function AdminPage() {
@@ -373,6 +454,7 @@ export default function AdminPage() {
       {tab === 'reviews' && <ReviewsTab />}
       {tab === 'requests' && <RequestsTab />}
       {tab === 'contacts' && <ContactsTab />}
+      {tab === 'images' && <ImagesTab />}
     </main>
   )
 }

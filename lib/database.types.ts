@@ -48,6 +48,17 @@ export type GummyRequestRow = {
 
 export type GummyRequestInsert = Omit<GummyRequestRow, 'id' | 'created_at' | 'status'>
 
+export type GummyImageRow = {
+  id: number
+  gummy_id: number
+  nickname: string
+  storage_path: string
+  status: string
+  created_at: string
+}
+
+export type GummyImageInsert = Omit<GummyImageRow, 'id' | 'created_at' | 'status'>
+
 export type ContactRow = {
   id: number
   name: string
@@ -91,6 +102,12 @@ export type Database = {
         Row: GummyRequestRow
         Insert: GummyRequestInsert
         Update: Partial<GummyRequestRow>
+        Relationships: []
+      }
+      gummy_images: {
+        Row: GummyImageRow
+        Insert: GummyImageInsert
+        Update: Partial<GummyImageRow>
         Relationships: []
       }
       contacts: {

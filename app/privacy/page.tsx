@@ -25,7 +25,12 @@ export default function PrivacyPage() {
         </section>
 
         <section>
-          <h2 className="font-bold text-base text-gray-800 mb-2">5. お問い合わせ</h2>
+          <h2 className="font-bold text-base text-gray-800 mb-2">5. ユーザー提供画像について</h2>
+          <p>当サイトに掲載されている商品画像は、ユーザーの皆様からご提供いただいたものです。掲載画像の著作権は各投稿者に帰属します。当サイトは提供いただいた画像を商品紹介目的にのみ使用します。</p>
+        </section>
+
+        <section>
+          <h2 className="font-bold text-base text-gray-800 mb-2">6. お問い合わせ</h2>
           <p>プライバシーポリシーに関するご質問は、<a href="/contact" className="text-pink-500 underline">お問い合わせページ</a>よりご連絡ください。</p>
         </section>
 
