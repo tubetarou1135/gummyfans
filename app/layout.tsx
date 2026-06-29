@@ -51,12 +51,13 @@ export default function RootLayout({
               <span className="text-base sm:text-xl" style={{color:'#facc15'}}>n</span>
               <span className="text-base sm:text-xl" style={{color:'#4ade80'}}>s</span>
             </Link>
-            <nav className="flex gap-1 sm:gap-2 text-xs sm:text-sm ml-2">
+            <nav className="flex gap-1 sm:gap-2 text-xs sm:text-sm ml-2 shrink-0">
               <Link href="/ranking" className="bg-pink-50 text-pink-500 font-semibold px-3 sm:px-4 py-2 rounded-full hover:bg-pink-100 transition-colors whitespace-nowrap">
                 ランキング
               </Link>
               <Link href="/request" className="bg-pink-500 text-white font-semibold px-3 sm:px-4 py-2 rounded-full hover:bg-pink-600 transition-colors whitespace-nowrap">
-                ＋ 新グミ申請
+                <span className="sm:hidden">＋</span>
+                <span className="hidden sm:inline">＋ 新グミ申請</span>
               </Link>
             </nav>
           </div>
