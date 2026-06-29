@@ -5,14 +5,19 @@ import StarRating from '@/components/StarRating'
 
 export const revalidate = 60
 
-type TabKey = 'overall' | 'hardness' | 'sweetness' | 'sourness' | 'value'
+type TabKey = 'overall' | 'hardness' | 'sweetness' | 'sourness' | 'value' | 'first_bite' | 'second_bounding' | 'gelatin_toughness' | 'fruit_taste' | 'after_flavor'
 
 const tabs: { key: TabKey; label: string; field: keyof GummyWithAvg }[] = [
-  { key: 'overall',   label: '総合',     field: 'avg_overall' },
-  { key: 'hardness',  label: '硬さ',     field: 'avg_hardness' },
-  { key: 'sweetness', label: '甘さ',     field: 'avg_sweetness' },
-  { key: 'sourness',  label: '酸っぱさ', field: 'avg_sourness' },
-  { key: 'value',     label: 'コスパ',   field: 'avg_value' },
+  { key: 'overall',          label: '総合',           field: 'avg_overall' },
+  { key: 'hardness',         label: '硬さ',           field: 'avg_hardness' },
+  { key: 'sweetness',        label: '甘さ',           field: 'avg_sweetness' },
+  { key: 'sourness',         label: '酸っぱさ',       field: 'avg_sourness' },
+  { key: 'value',            label: 'コスパ',         field: 'avg_value' },
+  { key: 'first_bite',       label: '初噛み',         field: 'avg_first_bite' },
+  { key: 'second_bounding',  label: '二段バウンド',   field: 'avg_second_bounding' },
+  { key: 'gelatin_toughness',label: 'ゼラチン強度',   field: 'avg_gelatin_toughness' },
+  { key: 'fruit_taste',      label: '果実感',         field: 'avg_fruit_taste' },
+  { key: 'after_flavor',     label: '後味',           field: 'avg_after_flavor' },
 ]
 
 async function getRanking(field: keyof GummyWithAvg, ascending: boolean): Promise<GummyWithAvg[]> {
