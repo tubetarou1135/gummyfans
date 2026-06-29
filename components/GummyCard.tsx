@@ -41,6 +41,7 @@ export default function GummyCard({ gummy }: { gummy: GummyWithAvg }) {
           <div className="flex items-center gap-2">
             <span className="text-2xl font-bold text-pink-500">{gummy.avg_overall?.toFixed(1)}</span>
             <div>
+              <p className="text-[10px] text-gray-400 leading-none mb-0.5">総合評価</p>
               <StarRating value={Math.round(gummy.avg_overall ?? 0)} readonly size="sm" />
               <span className="text-[10px] text-gray-300">({gummy.review_count}件)</span>
             </div>
