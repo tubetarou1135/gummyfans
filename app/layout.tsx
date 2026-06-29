@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   title: "gummyfans",
   description: "グミの評価・レビューサイト",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/favicon.png",
   },
   openGraph: {
     title: "gummyfans",
@@ -40,7 +40,7 @@ export default function RootLayout({
         <header className="bg-white shadow-sm sticky top-0 z-10">
           <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
             <Link href="/" className="flex items-center gap-1 font-black tracking-tight shrink-0">
-              <Image src="/favicon.ico" alt="gummyfans" width={36} height={36} className="rounded-xl" />
+              <Image src="/favicon.png" alt="gummyfans" width={36} height={36} className="rounded-xl" />
               <span className="text-base sm:text-xl" style={{color:'#f472b6'}}>G</span>
               <span className="text-base sm:text-xl" style={{color:'#fb923c'}}>u</span>
               <span className="text-base sm:text-xl" style={{color:'#facc15'}}>m</span>
