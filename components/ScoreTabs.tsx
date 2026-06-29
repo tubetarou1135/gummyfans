@@ -8,7 +8,7 @@ const basicItems = [
   { key: 'avg_hardness', label: '硬さ' },
   { key: 'avg_sweetness', label: '甘さ' },
   { key: 'avg_sourness', label: '酸っぱさ' },
-  { key: 'avg_value', label: 'コスパ' },
+  { key: 'avg_value', label: '果汁感' },
 ] as const
 
 const expertItems = [

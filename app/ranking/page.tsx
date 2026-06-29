@@ -12,7 +12,7 @@ const tabs: { key: TabKey; label: string; field: keyof GummyWithAvg }[] = [
   { key: 'hardness',         label: '硬さ',           field: 'avg_hardness' },
   { key: 'sweetness',        label: '甘さ',           field: 'avg_sweetness' },
   { key: 'sourness',         label: '酸っぱさ',       field: 'avg_sourness' },
-  { key: 'value',            label: 'コスパ',         field: 'avg_value' },
+  { key: 'value',            label: '果汁感',         field: 'avg_value' },
   { key: 'first_bite',        label: 'ファーストバイト',       field: 'avg_first_bite' },
   { key: 'second_bounding',   label: 'セカンドバウンディング', field: 'avg_second_bounding' },
   { key: 'gelatin_toughness', label: 'ゼラチンタフネス',       field: 'avg_gelatin_toughness' },

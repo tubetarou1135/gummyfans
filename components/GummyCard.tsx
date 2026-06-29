@@ -42,7 +42,7 @@ export default function GummyCard({ gummy }: { gummy: GummyWithAvg }) {
               <ScoreItem label="硬さ" value={gummy.avg_hardness} />
               <ScoreItem label="甘さ" value={gummy.avg_sweetness} />
               <ScoreItem label="酸っぱさ" value={gummy.avg_sourness} />
-              <ScoreItem label="コスパ" value={gummy.avg_value} />
+              <ScoreItem label="果汁感" value={gummy.avg_value} />
             </div>
             <span className="text-[10px] text-gray-300">({gummy.review_count}件)</span>
           </div>

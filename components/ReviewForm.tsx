@@ -12,7 +12,7 @@ const basicFields: { key: BasicKey; label: string }[] = [
   { key: 'hardness', label: '硬さ' },
   { key: 'sweetness', label: '甘さ' },
   { key: 'sourness', label: '酸っぱさ' },
-  { key: 'value', label: 'コスパ' },
+  { key: 'value', label: '果汁感' },
   { key: 'overall', label: '総合評価' },
 ]
 

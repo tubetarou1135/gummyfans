@@ -58,7 +58,7 @@ export default async function HomePage({
           酸っぱさランキング
         </Link>
         <Link href="/ranking?tab=value" className="bg-pink-50 text-pink-500 text-sm font-bold px-5 py-2 rounded-full hover:bg-pink-100 transition-colors">
-          コスパランキング
+          果汁感ランキング
         </Link>
       </div>
       {gummies.length === 0 ? (
