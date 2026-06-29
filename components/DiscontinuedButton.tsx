@@ -58,11 +58,6 @@ export default function DiscontinuedButton({ gummyId, reportCount }: { gummyId: 
           }`}
         >
           <span>終売かも！</span>
-          {count > 0 && (
-            <span className={`ml-0.5 ${done ? 'text-gray-400' : 'text-orange-400'}`}>
-              {count}件
-            </span>
-          )}
         </button>
         {done && <p className="text-xs text-gray-400 text-right">ありがとうございます！</p>}
       </div>
