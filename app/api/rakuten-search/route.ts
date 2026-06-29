@@ -18,11 +18,12 @@ export async function GET(request: NextRequest) {
     hits: 20,
   }
 
-  const res = await fetch('https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401', {
+  const res = await fetch(`https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey ?? '')}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Referer: 'https://gummyfans.vercel.app/',
+      'Authorization': `Bearer ${accessKey}`,
     },
     body: JSON.stringify(body),
   })
