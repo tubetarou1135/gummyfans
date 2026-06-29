@@ -33,7 +33,7 @@ const defaultExpert: Record<ExpertKey, number> = {
 
 export default function ReviewForm({ gummyId }: { gummyId: number }) {
   const router = useRouter()
-  const [tab, setTab] = useState<'basic' | 'expert'>('basic')
+  const [open, setOpen] = useState(false)
   const [nickname, setNickname] = useState('')
   const [comment, setComment] = useState('')
   const [basic, setBasic] = useState(defaultBasic)
@@ -47,32 +47,22 @@ export default function ReviewForm({ gummyId }: { gummyId: number }) {
       setError('ニックネームを入力してください')
       return
     }
-    if (tab === 'basic') {
-      const unrated = basicFields.filter((f) => basic[f.key] === 0)
-      if (unrated.length > 0) {
-        setError(`${unrated.map((f) => f.label).join('・')}を評価してください`)
-        return
-      }
-    } else {
-      const unrated = expertFields.filter((f) => expert[f.key] === 0)
-      if (unrated.length > 0) {
-        setError(`${unrated.map((f) => f.label).join('・')}を評価してください`)
-        return
-      }
+    const unrated = basicFields.filter((f) => basic[f.key] === 0)
+    if (unrated.length > 0) {
+      setError(`${unrated.map((f) => f.label).join('・')}を評価してください`)
+      return
     }
     setSubmitting(true)
     setError(null)
 
-    const payload =
-      tab === 'basic'
-        ? { gummy_id: gummyId, nickname: nickname.trim(), comment: comment.trim() || null, ...basic }
-        : {
-            gummy_id: gummyId,
-            nickname: nickname.trim(),
-            comment: comment.trim() || null,
-            hardness: 0, sweetness: 0, sourness: 0, value: 0, overall: 0,
-            ...expert,
-          }
+    const hasExpert = expertFields.some((f) => expert[f.key] > 0)
+    const payload = {
+      gummy_id: gummyId,
+      nickname: nickname.trim(),
+      comment: comment.trim() || null,
+      ...basic,
+      ...(hasExpert ? expert : {}),
+    }
 
     const { error: err } = await supabase.from('reviews').insert(payload)
     if (err) {
@@ -85,85 +75,88 @@ export default function ReviewForm({ gummyId }: { gummyId: number }) {
     setComment('')
     setBasic(defaultBasic)
     setExpert(defaultExpert)
+    setOpen(false)
     setSubmitting(false)
   }
 
   return (
-    <form onSubmit={handleSubmit} className="border-2 border-pink-100 rounded-3xl p-5 space-y-4 bg-white">
-      <div className="flex rounded-full bg-pink-50 p-1 gap-1">
-        <button
-          type="button"
-          onClick={() => setTab('basic')}
-          className={`flex-1 py-2 rounded-full text-sm font-semibold transition-colors ${tab === 'basic' ? 'bg-pink-500 text-white' : 'text-gray-500 hover:text-pink-500'}`}
-        >
-          一般評価
-        </button>
-        <button
-          type="button"
-          onClick={() => setTab('expert')}
-          className={`flex-1 py-2 rounded-full text-sm font-semibold transition-colors ${tab === 'expert' ? 'bg-pink-500 text-white' : 'text-gray-500 hover:text-pink-500'}`}
-        >
-          日本グミ協会指標
-        </button>
-      </div>
-
-      {tab === 'expert' && (
-        <p className="text-xs text-gray-400 text-center">
-          この評価指標は日本グミ協会の許可を得て使用しています
-        </p>
-      )}
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">ニックネーム</label>
-        <input
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
-          placeholder="例：グミ好き太郎"
-          className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
-          maxLength={30}
-        />
-      </div>
-
-      <div className="space-y-2">
-        {tab === 'basic'
-          ? basicFields.map(({ key, label }) => (
-              <div key={key} className="flex items-center gap-3">
-                <span className="text-sm text-gray-600 w-20">{label}</span>
-                <StarRating value={basic[key]} onChange={(v) => setBasic((p) => ({ ...p, [key]: v }))} />
-              </div>
-            ))
-          : expertFields.map(({ key, label, desc }) => (
-              <div key={key} className="space-y-0.5">
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-gray-600 w-28 shrink-0">{label}</span>
-                  <StarRating value={expert[key]} onChange={(v) => setExpert((p) => ({ ...p, [key]: v }))} />
-                </div>
-                <p className="text-xs text-gray-400 ml-28 pl-3">{desc}</p>
-              </div>
-            ))}
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">コメント（任意）</label>
-        <textarea
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          placeholder="食感・味・おすすめポイントなど..."
-          rows={3}
-          className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50 resize-none"
-          maxLength={500}
-        />
-      </div>
-
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-
+    <div className="border-2 border-pink-100 rounded-3xl bg-white overflow-hidden">
       <button
-        type="submit"
-        disabled={submitting}
-        className="w-full bg-pink-500 text-white py-3 rounded-full text-sm font-bold hover:bg-pink-600 transition-colors disabled:opacity-50"
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between px-5 py-4 text-left"
       >
-        {submitting ? '送信中...' : 'レビューを投稿'}
+        <span className="font-semibold text-gray-700">レビューを投稿</span>
+        <span className="text-pink-400 text-lg">{open ? '▲' : '▼'}</span>
       </button>
-    </form>
+
+      {open && (
+        <form onSubmit={handleSubmit} className="px-5 pb-5 space-y-5 border-t-2 border-pink-50 pt-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">ニックネーム</label>
+            <input
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              placeholder="例：グミ好き太郎"
+              className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+              maxLength={30}
+            />
+          </div>
+
+          {/* 一般評価 */}
+          <div>
+            <p className="text-sm font-semibold text-gray-700 mb-2">一般評価</p>
+            <div className="space-y-2">
+              {basicFields.map(({ key, label }) => (
+                <div key={key} className="flex items-center gap-3">
+                  <span className="text-sm text-gray-600 w-20">{label}</span>
+                  <StarRating value={basic[key]} onChange={(v) => setBasic((p) => ({ ...p, [key]: v }))} />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 日本グミ協会指標（任意） */}
+          <div>
+            <p className="text-sm font-semibold text-gray-700 mb-0.5">日本グミ協会指標 <span className="text-gray-400 font-normal text-xs">（任意）</span></p>
+            <p className="text-xs text-gray-300 mb-2">この評価指標は日本グミ協会の許可を得て使用しています</p>
+            <div className="space-y-3">
+              {expertFields.map(({ key, label, desc }) => (
+                <div key={key}>
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-gray-600 w-28 shrink-0">{label}</span>
+                    <StarRating value={expert[key]} onChange={(v) => setExpert((p) => ({ ...p, [key]: v }))} />
+                  </div>
+                  <p className="text-xs text-gray-400 ml-28 pl-3">{desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* コメント（任意） */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">コメント <span className="text-gray-400 font-normal text-xs">（任意）</span></label>
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="食感・味・おすすめポイントなど..."
+              rows={3}
+              className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50 resize-none"
+              maxLength={500}
+            />
+          </div>
+
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="w-full bg-pink-500 text-white py-3 rounded-full text-sm font-bold hover:bg-pink-600 transition-colors disabled:opacity-50"
+          >
+            {submitting ? '送信中...' : 'レビューを投稿'}
+          </button>
+        </form>
+      )}
+    </div>
   )
 }
