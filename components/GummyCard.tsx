@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import type { GummyWithAvg } from '@/lib/database.types'
 import StarRating from './StarRating'
 
@@ -21,6 +22,13 @@ export default function GummyCard({ gummy }: { gummy: GummyWithAvg }) {
       href={`/gummy/${gummy.id}`}
       className="block border-2 border-pink-100 rounded-3xl p-4 hover:shadow-lg hover:border-pink-300 transition-all bg-white"
     >
+      {/* 商品画像 */}
+      {gummy.image_url && (
+        <div className="relative w-full aspect-[3/2] rounded-2xl overflow-hidden mb-3 bg-pink-50">
+          <Image src={gummy.image_url} alt={gummy.name} fill className="object-contain" />
+        </div>
+      )}
+
       <div className="flex gap-3 items-center">
         {/* 左：名前・メーカー */}
         <div className="flex-1 min-w-0">
