@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase'
 import type { GummyRow, ReviewRow, ContactRow, GummyImageRow } from '@/lib/database.types'
 import Image from 'next/image'
 
-type Tab = 'register' | 'gummies' | 'reviews' | 'requests' | 'contacts' | 'images'
+type Tab = 'register' | 'gummies' | 'reviews' | 'requests' | 'contacts' | 'images' | 'discontinued'
 
 type GummyRequest = {
   id: number
@@ -529,6 +529,45 @@ function ContactsTab() {
   )
 }
 
+// ---- 終売報告タブ ----
+function DiscontinuedTab() {
+  const [rows, setRows] = useState<{ name: string; maker: string; flavor: string | null; count: number; gummy_id: number }[]>([])
+
+  useEffect(() => {
+    supabase
+      .from('discontinued_reports')
+      .select('gummy_id, gummies(name, maker, flavor)')
+      .then(({ data }) => {
+        if (!data) return
+        const map = new Map<number, { name: string; maker: string; flavor: string | null; count: number; gummy_id: number }>()
+        for (const row of data as any[]) {
+          const id = row.gummy_id
+          if (!map.has(id)) {
+            map.set(id, { gummy_id: id, name: row.gummies.name, maker: row.gummies.maker, flavor: row.gummies.flavor, count: 0 })
+          }
+          map.get(id)!.count++
+        }
+        setRows([...map.values()].sort((a, b) => b.count - a.count))
+      })
+  }, [])
+
+  if (rows.length === 0) return <p className="text-sm text-gray-400">終売報告はまだありません</p>
+
+  return (
+    <div className="space-y-3">
+      {rows.map((r) => (
+        <div key={r.gummy_id} className="flex items-center justify-between border border-pink-100 rounded-2xl px-4 py-3">
+          <div>
+            <p className="font-semibold text-gray-800">{r.name}</p>
+            <p className="text-xs text-gray-400">{r.maker}{r.flavor && ` / ${r.flavor}`}</p>
+          </div>
+          <span className="text-orange-500 font-bold text-sm">{r.count}件</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 // ---- メイン ----
 const tabs: { key: Tab; label: string; icon: string }[] = [
   { key: 'register', label: 'グミ登録', icon: '➕' },
@@ -537,6 +576,7 @@ const tabs: { key: Tab; label: string; icon: string }[] = [
   { key: 'requests', label: '新グミ申請', icon: '📬' },
   { key: 'contacts', label: '問い合わせ', icon: '✉️' },
   { key: 'images', label: '画像承認', icon: '🖼️' },
+  { key: 'discontinued', label: '終売報告', icon: '🚫' },
 ]
 
 export default function AdminPage() {
@@ -580,6 +620,7 @@ export default function AdminPage() {
             {tab === 'requests' && <RequestsTab />}
             {tab === 'contacts' && <ContactsTab />}
             {tab === 'images' && <ImagesTab />}
+            {tab === 'discontinued' && <DiscontinuedTab />}
           </div>
         </main>
       </div>
