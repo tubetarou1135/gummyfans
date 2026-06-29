@@ -39,7 +39,7 @@ export default function ScoreTabs({ gummy }: { gummy: GummyWithAvg }) {
           onClick={() => setTab('expert')}
           className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-colors ${tab === 'expert' ? 'bg-pink-500 text-white' : 'text-gray-400 hover:text-pink-500'}`}
         >
-          グミ協会指標
+          日本グミ協会指標
         </button>
       </div>
 
@@ -69,7 +69,7 @@ export default function ScoreTabs({ gummy }: { gummy: GummyWithAvg }) {
               <p className="text-xs text-gray-300 mt-2">この評価指標は日本グミ協会の許可を得て使用しています</p>
             </>
           ) : (
-            <p className="text-sm text-gray-400">まだグミ協会指標のレビューがありません</p>
+            <p className="text-sm text-gray-400">まだ日本グミ協会指標のレビューがありません</p>
           )}
         </div>
       )}

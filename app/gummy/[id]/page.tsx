@@ -104,7 +104,7 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
                   </div>
                 ) : (
                   <>
-                    <p className="text-xs text-pink-400 font-semibold mb-1">グミ協会指標</p>
+                    <p className="text-xs text-pink-400 font-semibold mb-1">日本グミ協会指標</p>
                     <div className="space-y-1 mb-2">
                       {expertLabels.map(({ key, label }) => r[key] != null && (
                         <div key={key} className="flex items-center gap-2 text-xs">

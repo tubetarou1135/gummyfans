@@ -103,7 +103,7 @@ export default function ReviewForm({ gummyId }: { gummyId: number }) {
           onClick={() => setTab('expert')}
           className={`flex-1 py-2 rounded-full text-sm font-semibold transition-colors ${tab === 'expert' ? 'bg-pink-500 text-white' : 'text-gray-500 hover:text-pink-500'}`}
         >
-          グミ協会指標
+          日本グミ協会指標
         </button>
       </div>
 
