@@ -6,6 +6,7 @@ import Image from 'next/image'
 import StarRating from '@/components/StarRating'
 import ScoreTabs from '@/components/ScoreTabs'
 import PostTabs from '@/components/PostTabs'
+import DiscontinuedButton from '@/components/DiscontinuedButton'
 
 export const revalidate = 60
 
@@ -25,6 +26,14 @@ async function getReviews(gummyId: number): Promise<Review[]> {
     .eq('gummy_id', gummyId)
     .order('created_at', { ascending: false })
   return data ?? []
+}
+
+async function getDiscontinuedCount(gummyId: number): Promise<number> {
+  const { count } = await supabase
+    .from('discontinued_reports')
+    .select('*', { count: 'exact', head: true })
+    .eq('gummy_id', gummyId)
+  return count ?? 0
 }
 
 async function getApprovedImage(gummyId: number): Promise<GummyImageRow | null> {
@@ -59,9 +68,10 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
   const { id } = await params
   const gummy = await getGummy(Number(id))
   if (!gummy) notFound()
-  const [reviews, approvedImage] = await Promise.all([
+  const [reviews, approvedImage, discontinuedCount] = await Promise.all([
     getReviews(gummy.id),
     getApprovedImage(gummy.id),
+    getDiscontinuedCount(gummy.id),
   ])
 
   const imageUrl = approvedImage
@@ -102,10 +112,12 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
       </div>
 
       <h1 className="text-2xl font-bold text-gray-800 mb-1">{gummy.name}</h1>
-      <p className="text-sm text-gray-500 mb-4">
+      <p className="text-sm text-gray-500">
         {gummy.maker}
         {gummy.flavor && ` / ${gummy.flavor}`}
       </p>
+      <DiscontinuedButton gummyId={gummy.id} reportCount={discontinuedCount} />
+      <div className="mb-4" />
 
       {gummy.avg_overall != null && (
         <div className="bg-pink-50 rounded-2xl p-5 mb-6">

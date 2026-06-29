@@ -133,5 +133,11 @@ export type Database = {
   }
 }
 
+export type DiscontinuedReportRow = {
+  id: number
+  gummy_id: number
+  created_at: string
+}
+
 export type Gummy = GummyRow
 export type Review = ReviewRow
