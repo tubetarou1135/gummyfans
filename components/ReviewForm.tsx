@@ -40,8 +40,9 @@ export default function ReviewForm({ gummyId, inner }: { gummyId: number; inner?
   const [expert, setExpert] = useState(defaultExpert)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showConfirm, setShowConfirm] = useState(false)
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!nickname.trim()) {
       setError('ニックネームを入力してください')
@@ -52,8 +53,13 @@ export default function ReviewForm({ gummyId, inner }: { gummyId: number; inner?
       setError(`${unrated.map((f) => f.label).join('・')}を評価してください`)
       return
     }
-    setSubmitting(true)
     setError(null)
+    setShowConfirm(true)
+  }
+
+  async function submitReview() {
+    setSubmitting(true)
+    setShowConfirm(false)
 
     const hasExpert = expertFields.some((f) => expert[f.key] > 0)
     const payload = {
@@ -139,15 +145,76 @@ export default function ReviewForm({ gummyId, inner }: { gummyId: number; inner?
     </>
   )
 
+  const starText = (v: number) => '★'.repeat(v) + '☆'.repeat(5 - v)
+
+  const confirmModal = showConfirm && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+      <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl">
+        <h2 className="text-base font-bold text-gray-800 mb-4 text-center">この内容でよろしいですか？</h2>
+        <div className="space-y-2 text-sm mb-5">
+          <div className="flex justify-between">
+            <span className="text-gray-500">ニックネーム</span>
+            <span className="font-medium text-gray-800">{nickname}</span>
+          </div>
+          {basicFields.map(({ key, label }) => (
+            <div key={key} className="flex justify-between">
+              <span className="text-gray-500">{label}</span>
+              <span className="text-pink-400 tracking-wider">{starText(basic[key])}</span>
+            </div>
+          ))}
+          {expertFields.some((f) => expert[f.key] > 0) && (
+            <>
+              <p className="text-xs text-pink-400 font-semibold pt-1">日本グミ協会指標</p>
+              {expertFields.filter((f) => expert[f.key] > 0).map(({ key, label }) => (
+                <div key={key} className="flex justify-between">
+                  <span className="text-gray-500">{label}</span>
+                  <span className="text-pink-400 tracking-wider">{starText(expert[key])}</span>
+                </div>
+              ))}
+            </>
+          )}
+          {comment.trim() && (
+            <div>
+              <span className="text-gray-500 block mb-1">コメント</span>
+              <p className="text-gray-700 bg-pink-50 rounded-xl p-3 text-xs leading-relaxed">{comment.trim()}</p>
+            </div>
+          )}
+        </div>
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={() => setShowConfirm(false)}
+            className="flex-1 border-2 border-pink-200 text-pink-500 py-2.5 rounded-full text-sm font-bold hover:bg-pink-50 transition-colors"
+          >
+            修正する
+          </button>
+          <button
+            type="button"
+            onClick={submitReview}
+            disabled={submitting}
+            className="flex-1 bg-pink-500 text-white py-2.5 rounded-full text-sm font-bold hover:bg-pink-600 transition-colors disabled:opacity-50"
+          >
+            投稿する
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+
   if (inner) {
     return (
-      <form onSubmit={handleSubmit} className="space-y-5 pt-4">
-        {fields}
-      </form>
+      <>
+        {confirmModal}
+        <form onSubmit={handleSubmit} className="space-y-5 pt-4">
+          {fields}
+        </form>
+      </>
     )
   }
 
   return (
+    <>
+      {confirmModal}
     <div className="border-2 border-pink-100 rounded-3xl bg-white overflow-hidden">
       <button
         type="button"
@@ -164,5 +231,6 @@ export default function ReviewForm({ gummyId, inner }: { gummyId: number; inner?
         </form>
       )}
     </div>
+    </>
   )
 }
