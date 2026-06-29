@@ -53,8 +53,8 @@ export default function RequestPage() {
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           {[
-            { key: 'name', label: '商品名 *', placeholder: '' },
-            { key: 'maker', label: 'メーカー *', placeholder: '' },
+            { key: 'name', label: '商品名', placeholder: '' },
+            { key: 'maker', label: 'メーカー', placeholder: '' },
             { key: 'flavor', label: 'フレーバー / 味', placeholder: '' },
           ].map(({ key, label, placeholder }) => (
             <div key={key}>
