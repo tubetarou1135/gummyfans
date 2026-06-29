@@ -53,9 +53,28 @@ export default async function RankingPage({
       </Link>
       <h1 className="text-2xl font-bold mb-5">ランキング</h1>
 
-      {/* タブ */}
+      {/* タブ：一般 */}
+      <p className="text-xs text-gray-400 font-semibold mb-1.5">一般評価</p>
       <div className="flex gap-1.5 flex-wrap mb-4">
-        {tabs.map((t) => (
+        {tabs.filter(t => ['overall','hardness','sweetness','sourness','value'].includes(t.key)).map((t) => (
+          <Link
+            key={t.key}
+            href={tabHref(t.key)}
+            className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${
+              currentTab.key === t.key
+                ? 'bg-pink-500 text-white'
+                : 'bg-pink-50 text-pink-500 hover:bg-pink-100'
+            }`}
+          >
+            {t.label}
+          </Link>
+        ))}
+      </div>
+
+      {/* タブ：日本グミ協会 */}
+      <p className="text-xs text-gray-400 font-semibold mb-1.5">日本グミ協会指標</p>
+      <div className="flex gap-1.5 flex-wrap mb-5">
+        {tabs.filter(t => ['first_bite','second_bounding','gelatin_toughness','fruit_taste','after_flavor'].includes(t.key)).map((t) => (
           <Link
             key={t.key}
             href={tabHref(t.key)}
