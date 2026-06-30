@@ -114,14 +114,14 @@ function RegisterTab() {
 
       {mode === 'rakuten' && !selected && (
         <div className="space-y-4">
-          <form onSubmit={handleSearch} className="flex gap-2">
+          <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2">
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="グミ名で検索..."
               className="flex-1 border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
             />
-            <button type="submit" disabled={searching} className="bg-pink-500 text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-pink-600 disabled:opacity-50">
+            <button type="submit" disabled={searching} className="bg-pink-500 text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-pink-600 disabled:opacity-50">
               {searching ? '検索中...' : '検索'}
             </button>
           </form>
