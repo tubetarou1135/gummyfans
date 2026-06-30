@@ -630,10 +630,29 @@ export default function AdminPage() {
   const current = tabs.find(t => t.key === tab)
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--background)' }}>
-      <div className="max-w-6xl mx-auto px-4 py-8 flex gap-6">
-        {/* サイドバー */}
-        <aside className="w-48 shrink-0">
+    <div className="min-h-screen pb-20 md:pb-0" style={{ background: 'var(--background)' }}>
+      {/* スマホ: 上部タブスクロール */}
+      <div className="md:hidden sticky top-0 z-10 bg-white border-b border-pink-100 px-2 py-2">
+        <p className="text-xs font-bold text-gray-400 px-2 mb-1">管理画面</p>
+        <div className="flex gap-1 overflow-x-auto no-scrollbar">
+          {tabs.map(({ key, label, icon }) => (
+            <button
+              key={key}
+              onClick={() => setTab(key)}
+              className={`flex-none flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors whitespace-nowrap ${
+                tab === key ? 'bg-pink-500 text-white' : 'text-gray-500 bg-pink-50'
+              }`}
+            >
+              <span>{icon}</span>
+              <span>{label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 py-6 md:py-8 md:flex md:gap-6">
+        {/* PC: サイドバー */}
+        <aside className="hidden md:block w-48 shrink-0">
           <h1 className="text-lg font-bold text-gray-700 mb-4 px-2">管理画面</h1>
           <nav className="space-y-1">
             {tabs.map(({ key, label, icon }) => (
@@ -655,7 +674,7 @@ export default function AdminPage() {
 
         {/* コンテンツ */}
         <main className="flex-1 min-w-0">
-          <h2 className="text-xl font-bold text-gray-700 mb-6 flex items-center gap-2">
+          <h2 className="text-lg md:text-xl font-bold text-gray-700 mb-4 md:mb-6 flex items-center gap-2">
             <span>{current?.icon}</span>
             <span>{current?.label}</span>
           </h2>
