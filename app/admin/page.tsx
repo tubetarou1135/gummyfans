@@ -377,7 +377,7 @@ function GummiesTab() {
             <p className="text-xs text-gray-500">{g.maker}{g.flavor && ` / ${g.flavor}`}</p>
           </div>
           <div className="flex gap-2">
-            <button onClick={() => setEditing(g)} className="text-xs bg-pink-50 text-pink-500 px-3 py-1.5 rounded-full hover:bg-pink-100 transition-colors font-semibold">
+            <button onClick={() => { setEditing(g); setRakutenQuery(g.name + (g.flavor ? ' ' + g.flavor : '')) }} className="text-xs bg-pink-50 text-pink-500 px-3 py-1.5 rounded-full hover:bg-pink-100 transition-colors font-semibold">
               編集
             </button>
             <button onClick={() => handleDelete(g.id)} className="text-xs bg-red-50 text-red-400 px-3 py-1.5 rounded-full hover:bg-red-100 transition-colors font-semibold">
