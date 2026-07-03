@@ -195,16 +195,22 @@ function GummiesTab() {
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
   const [loading, setLoading] = useState(false)
   const [makerFilter, setMakerFilter] = useState('')
+  const [sortAsc, setSortAsc] = useState(true)
 
   async function load() {
-    const { data } = await supabase.from('gummies').select('*').order('created_at', { ascending: false })
+    const { data } = await supabase.from('gummies').select('*')
     setGummies(data ?? [])
   }
 
   useEffect(() => { load() }, [])
 
   const makers = Array.from(new Set(gummies.map(g => g.maker))).sort((a, b) => a.localeCompare(b, 'ja'))
-  const filtered = makerFilter ? gummies.filter(g => g.maker === makerFilter) : gummies
+  const filtered = (makerFilter ? gummies.filter(g => g.maker === makerFilter) : gummies)
+    .slice()
+    .sort((a, b) => {
+      const cmp = a.name.localeCompare(b.name, 'ja')
+      return sortAsc ? cmp : -cmp
+    })
 
   async function handleDelete(id: number) {
     if (!confirm('本当に削除しますか？')) return
@@ -272,16 +278,24 @@ function GummiesTab() {
 
   return (
     <div className="space-y-3">
-      <select
-        value={makerFilter}
-        onChange={(e) => setMakerFilter(e.target.value)}
-        className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
-      >
-        <option value="">すべてのメーカー ({gummies.length}件)</option>
-        {makers.map(m => (
-          <option key={m} value={m}>{m} ({gummies.filter(g => g.maker === m).length}件)</option>
-        ))}
-      </select>
+      <div className="flex gap-2">
+        <select
+          value={makerFilter}
+          onChange={(e) => setMakerFilter(e.target.value)}
+          className="flex-1 border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+        >
+          <option value="">すべてのメーカー ({gummies.length}件)</option>
+          {makers.map(m => (
+            <option key={m} value={m}>{m} ({gummies.filter(g => g.maker === m).length}件)</option>
+          ))}
+        </select>
+        <button
+          onClick={() => setSortAsc(v => !v)}
+          className="shrink-0 border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm font-semibold bg-pink-50 hover:bg-pink-100 transition-colors text-pink-500"
+        >
+          五十音 {sortAsc ? '▲' : '▼'}
+        </button>
+      </div>
       {filtered.length === 0 && <p className="text-gray-400 text-sm">グミが登録されていません</p>}
       {filtered.map((g) => (
         <div key={g.id} className="flex items-center justify-between border-2 border-pink-100 rounded-2xl px-4 py-3">
