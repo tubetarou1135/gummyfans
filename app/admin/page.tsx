@@ -218,6 +218,38 @@ function GummiesTab() {
     load()
   }
 
+  const [rakutenQuery, setRakutenQuery] = useState('')
+  const [rakutenResults, setRakutenResults] = useState<RakutenItem[]>([])
+  const [rakutenSearching, setRakutenSearching] = useState(false)
+
+  async function handleRakutenSearch(e: React.FormEvent) {
+    e.preventDefault()
+    if (!rakutenQuery.trim()) return
+    setRakutenSearching(true)
+    setRakutenResults([])
+    const appId = process.env.NEXT_PUBLIC_RAKUTEN_APP_ID
+    const accessKey = process.env.NEXT_PUBLIC_RAKUTEN_ACCESS_KEY
+    const affiliateId = process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID
+    const res = await fetch(`https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey ?? '')}&format=json`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ applicationId: appId, accessKey, affiliateId, keyword: rakutenQuery + ' グミ', hits: 20 }),
+    })
+    const data = await res.json()
+    setRakutenResults(data.Items?.map((i: { Item: RakutenItem }) => i.Item) ?? [])
+    setRakutenSearching(false)
+  }
+
+  function handleRakutenSelect(item: RakutenItem) {
+    setEditing(prev => prev ? {
+      ...prev,
+      image_url: item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0]?.imageUrl ?? prev.image_url,
+      rakuten_url: item.itemUrl,
+    } : prev)
+    setRakutenResults([])
+    setRakutenQuery('')
+  }
+
   async function handleUpdate(e: React.FormEvent) {
     e.preventDefault()
     if (!editing) return
@@ -227,6 +259,8 @@ function GummiesTab() {
       maker: editing.maker,
       flavor: editing.flavor,
       description: editing.description,
+      image_url: editing.image_url,
+      rakuten_url: editing.rakuten_url,
     }).eq('id', editing.id)
     setLoading(false)
     if (error) {
@@ -234,6 +268,7 @@ function GummiesTab() {
     } else {
       setMsg({ type: 'ok', text: '更新しました！' })
       setEditing(null)
+      setRakutenResults([])
       load()
     }
   }
@@ -264,9 +299,45 @@ function GummiesTab() {
           className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50 resize-none"
         />
       </div>
+
+      {/* 楽天検索 */}
+      <div className="border-2 border-pink-100 rounded-2xl p-4 space-y-3">
+        <p className="text-sm font-semibold text-gray-700">楽天から画像・URLを検索</p>
+        <div className="flex items-center gap-2">
+          {editing.image_url && (
+            <Image src={editing.image_url} alt="" width={48} height={48} className="rounded-xl object-contain shrink-0 border border-pink-100" />
+          )}
+          <span className="text-xs text-gray-400 truncate">{editing.rakuten_url ? '楽天URL設定済み' : 'URLなし'}</span>
+        </div>
+        <form onSubmit={handleRakutenSearch} className="flex gap-2">
+          <input
+            value={rakutenQuery}
+            onChange={(e) => setRakutenQuery(e.target.value)}
+            placeholder={`${editing.name}${editing.flavor ? ' ' + editing.flavor : ''}`}
+            className="flex-1 border-2 border-pink-100 rounded-2xl px-4 py-2 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+          />
+          <button type="submit" disabled={rakutenSearching} className="bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-pink-600 disabled:opacity-50">
+            {rakutenSearching ? '...' : '検索'}
+          </button>
+        </form>
+        {rakutenResults.length > 0 && (
+          <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto">
+            {rakutenResults.map((item, i) => (
+              <button key={i} type="button" onClick={() => handleRakutenSelect(item)}
+                className="flex items-center gap-2 border-2 border-pink-100 rounded-xl p-2 hover:border-pink-400 hover:bg-pink-50 transition-colors text-left">
+                {(item.largeImageUrls?.[0] || item.mediumImageUrls[0]) && (
+                  <Image src={item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0].imageUrl} alt="" width={40} height={40} className="rounded-lg object-contain shrink-0" />
+                )}
+                <p className="text-xs text-gray-700 line-clamp-2">{item.itemName}</p>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
       {msg && <p className={`text-sm ${msg.type === 'ok' ? 'text-green-600' : 'text-red-500'}`}>{msg.text}</p>}
       <div className="flex gap-2">
-        <button type="button" onClick={() => setEditing(null)} className="flex-1 border-2 border-pink-200 text-pink-500 py-3 rounded-full text-sm font-bold hover:bg-pink-50 transition-colors">
+        <button type="button" onClick={() => { setEditing(null); setRakutenResults([]) }} className="flex-1 border-2 border-pink-200 text-pink-500 py-3 rounded-full text-sm font-bold hover:bg-pink-50 transition-colors">
           キャンセル
         </button>
         <button type="submit" disabled={loading} className="flex-1 bg-pink-500 text-white py-3 rounded-full text-sm font-bold hover:bg-pink-600 transition-colors disabled:opacity-50">
