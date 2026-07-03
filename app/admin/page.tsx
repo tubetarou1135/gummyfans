@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import type { GummyRow, ReviewRow, ContactRow, GummyImageRow } from '@/lib/database.types'
 import { toMoshimoUrl } from '@/lib/moshimo'
@@ -197,6 +197,7 @@ function GummiesTab() {
   const [loading, setLoading] = useState(false)
   const [makerFilter, setMakerFilter] = useState('')
   const [sortAsc, setSortAsc] = useState(true)
+  const scrollRef = useRef(0)
 
   async function load() {
     const { data } = await supabase.from('gummies').select('*')
@@ -270,7 +271,7 @@ function GummiesTab() {
       setMsg({ type: 'ok', text: '更新しました！' })
       setEditing(null)
       setRakutenResults([])
-      load()
+      load().then(() => window.scrollTo({ top: scrollRef.current }))
     }
   }
 
@@ -339,7 +340,7 @@ function GummiesTab() {
 
       {msg && <p className={`text-sm ${msg.type === 'ok' ? 'text-green-600' : 'text-red-500'}`}>{msg.text}</p>}
       <div className="flex gap-2">
-        <button type="button" onClick={() => { setEditing(null); setRakutenResults([]) }} className="flex-1 border-2 border-pink-200 text-pink-500 py-3 rounded-full text-sm font-bold hover:bg-pink-50 transition-colors">
+        <button type="button" onClick={() => { setEditing(null); setRakutenResults([]); window.scrollTo({ top: scrollRef.current }) }} className="flex-1 border-2 border-pink-200 text-pink-500 py-3 rounded-full text-sm font-bold hover:bg-pink-50 transition-colors">
           キャンセル
         </button>
         <button type="submit" disabled={loading} className="flex-1 bg-pink-500 text-white py-3 rounded-full text-sm font-bold hover:bg-pink-600 transition-colors disabled:opacity-50">
@@ -377,7 +378,7 @@ function GummiesTab() {
             <p className="text-xs text-gray-500">{g.maker}{g.flavor && ` / ${g.flavor}`}</p>
           </div>
           <div className="flex gap-2">
-            <button onClick={() => { setEditing(g); setRakutenQuery(g.name + (g.flavor ? ' ' + g.flavor : '')) }} className="text-xs bg-pink-50 text-pink-500 px-3 py-1.5 rounded-full hover:bg-pink-100 transition-colors font-semibold">
+            <button onClick={() => { scrollRef.current = window.scrollY; setEditing(g); setRakutenQuery(g.name + (g.flavor ? ' ' + g.flavor : '')) }} className="text-xs bg-pink-50 text-pink-500 px-3 py-1.5 rounded-full hover:bg-pink-100 transition-colors font-semibold">
               編集
             </button>
             <button onClick={() => handleDelete(g.id)} className="text-xs bg-red-50 text-red-400 px-3 py-1.5 rounded-full hover:bg-red-100 transition-colors font-semibold">
