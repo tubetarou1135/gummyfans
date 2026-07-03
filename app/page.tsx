@@ -42,7 +42,7 @@ export default async function HomePage({
           priority
         />
       </div>
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-8">
       <SearchBar defaultValue={q} />
       <div className="flex gap-2 mt-4 flex-wrap">
         <Link href="/ranking" className="bg-pink-500 text-white text-sm font-bold px-5 py-2 rounded-full hover:bg-pink-600 transition-colors">
@@ -67,7 +67,7 @@ export default async function HomePage({
           <p className="text-gray-400">まだグミが登録されていません</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-6">
           {gummies.map((g) => (
             <GummyCard key={g.id} gummy={g} />
           ))}
