@@ -223,8 +223,8 @@ function GummiesTab() {
   const [rakutenResults, setRakutenResults] = useState<RakutenItem[]>([])
   const [rakutenSearching, setRakutenSearching] = useState(false)
 
-  async function handleRakutenSearch(e: React.FormEvent) {
-    e.preventDefault()
+  async function handleRakutenSearch(e?: React.FormEvent | React.MouseEvent) {
+    e?.preventDefault()
     if (!rakutenQuery.trim()) return
     setRakutenSearching(true)
     setRakutenResults([])
@@ -310,17 +310,18 @@ function GummiesTab() {
           )}
           <span className="text-xs text-gray-400 truncate">{editing.rakuten_url ? '楽天URL設定済み' : 'URLなし'}</span>
         </div>
-        <form onSubmit={handleRakutenSearch} className="flex gap-2">
+        <div className="flex gap-2">
           <input
             value={rakutenQuery}
             onChange={(e) => setRakutenQuery(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleRakutenSearch(e as unknown as React.FormEvent) } }}
             placeholder={`${editing.name}${editing.flavor ? ' ' + editing.flavor : ''}`}
             className="flex-1 border-2 border-pink-100 rounded-2xl px-4 py-2 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
           />
-          <button type="submit" disabled={rakutenSearching} className="bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-pink-600 disabled:opacity-50">
+          <button type="button" onClick={handleRakutenSearch} disabled={rakutenSearching} className="bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-pink-600 disabled:opacity-50">
             {rakutenSearching ? '...' : '検索'}
           </button>
-        </form>
+        </div>
         {rakutenResults.length > 0 && (
           <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto">
             {rakutenResults.map((item, i) => (
