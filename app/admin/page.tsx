@@ -194,6 +194,7 @@ function GummiesTab() {
   const [editing, setEditing] = useState<GummyRow | null>(null)
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
   const [loading, setLoading] = useState(false)
+  const [makerFilter, setMakerFilter] = useState('')
 
   async function load() {
     const { data } = await supabase.from('gummies').select('*').order('created_at', { ascending: false })
@@ -201,6 +202,9 @@ function GummiesTab() {
   }
 
   useEffect(() => { load() }, [])
+
+  const makers = Array.from(new Set(gummies.map(g => g.maker))).sort((a, b) => a.localeCompare(b, 'ja'))
+  const filtered = makerFilter ? gummies.filter(g => g.maker === makerFilter) : gummies
 
   async function handleDelete(id: number) {
     if (!confirm('本当に削除しますか？')) return
@@ -268,8 +272,18 @@ function GummiesTab() {
 
   return (
     <div className="space-y-3">
-      {gummies.length === 0 && <p className="text-gray-400 text-sm">グミが登録されていません</p>}
-      {gummies.map((g) => (
+      <select
+        value={makerFilter}
+        onChange={(e) => setMakerFilter(e.target.value)}
+        className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+      >
+        <option value="">すべてのメーカー ({gummies.length}件)</option>
+        {makers.map(m => (
+          <option key={m} value={m}>{m} ({gummies.filter(g => g.maker === m).length}件)</option>
+        ))}
+      </select>
+      {filtered.length === 0 && <p className="text-gray-400 text-sm">グミが登録されていません</p>}
+      {filtered.map((g) => (
         <div key={g.id} className="flex items-center justify-between border-2 border-pink-100 rounded-2xl px-4 py-3">
           <div>
             <p className="font-semibold text-sm text-gray-800">{g.name}</p>
