@@ -15,6 +15,11 @@ export default function ImageUploadForm({ gummyId }: { gummyId: number }) {
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0]
     if (!f) return
+    if (f.size > 10 * 1024 * 1024) {
+      setError('ファイルサイズが大きすぎます（最大10MB）')
+      return
+    }
+    setError(null)
     setFile(f)
     setPreview(URL.createObjectURL(f))
   }
@@ -44,6 +49,7 @@ export default function ImageUploadForm({ gummyId }: { gummyId: number }) {
       gummy_id: gummyId,
       nickname: nickname.trim(),
       storage_path: path,
+      status: 'pending',
     })
 
     setLoading(false)
@@ -97,7 +103,7 @@ export default function ImageUploadForm({ gummyId }: { gummyId: number }) {
         <input
           ref={inputRef}
           type="file"
-          accept="image/jpeg,image/png,image/webp,image/heic"
+          accept="image/*"
           onChange={handleFile}
           className="hidden"
         />

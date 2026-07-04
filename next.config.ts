@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'thumbnail.image.rakuten.co.jp' },
       { protocol: 'https', hostname: '*.image.rakuten.co.jp' },
+      { protocol: 'https', hostname: 'hupatepgpagxsukkajrp.supabase.co' },
     ],
   },
 };
