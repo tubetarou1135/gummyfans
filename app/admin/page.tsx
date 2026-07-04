@@ -305,12 +305,17 @@ function GummiesTab() {
       {/* 楽天検索 */}
       <div className="border-2 border-pink-100 rounded-2xl p-4 space-y-3">
         <p className="text-sm font-semibold text-gray-700">楽天から画像・URLを検索</p>
-        <div className="flex items-center gap-2">
-          {editing.image_url && (
-            <Image src={editing.image_url} alt="" width={48} height={48} className="rounded-xl object-contain shrink-0 border border-pink-100" />
-          )}
-          <span className="text-xs text-gray-400 truncate">{editing.rakuten_url ? '楽天URL設定済み' : 'URLなし'}</span>
-        </div>
+        {editing.image_url ? (
+          <div className="flex items-center gap-3">
+            <Image src={editing.image_url} alt="" width={80} height={80} className="rounded-xl object-contain shrink-0 border border-pink-100" />
+            <div className="space-y-1">
+              <p className="text-xs text-gray-400">{editing.rakuten_url ? '楽天URL設定済み' : 'URLなし'}</p>
+              <button type="button" onClick={() => setEditing(prev => prev ? { ...prev, image_url: null } : prev)} className="text-xs text-red-400 hover:text-red-600">画像を削除</button>
+            </div>
+          </div>
+        ) : (
+          <p className="text-xs text-gray-400">画像なし・{editing.rakuten_url ? '楽天URL設定済み' : 'URLなし'}</p>
+        )}
         <div className="flex gap-2">
           <input
             value={rakutenQuery}
