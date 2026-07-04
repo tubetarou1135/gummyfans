@@ -196,6 +196,7 @@ function GummiesTab() {
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
   const [loading, setLoading] = useState(false)
   const [makerFilter, setMakerFilter] = useState('')
+  const [imageFilter, setImageFilter] = useState<'all' | 'with' | 'without'>('all')
   const [sortAsc, setSortAsc] = useState(true)
   const scrollRef = useRef(0)
 
@@ -207,7 +208,9 @@ function GummiesTab() {
   useEffect(() => { load() }, [])
 
   const makers = Array.from(new Set(gummies.map(g => g.maker))).sort((a, b) => a.localeCompare(b, 'ja'))
-  const filtered = (makerFilter ? gummies.filter(g => g.maker === makerFilter) : gummies)
+  const filtered = gummies
+    .filter(g => makerFilter ? g.maker === makerFilter : true)
+    .filter(g => imageFilter === 'with' ? !!g.image_url : imageFilter === 'without' ? !g.image_url : true)
     .slice()
     .sort((a, b) => {
       const cmp = a.name.localeCompare(b.name, 'ja')
@@ -367,6 +370,15 @@ function GummiesTab() {
           {makers.map(m => (
             <option key={m} value={m}>{m} ({gummies.filter(g => g.maker === m).length}件)</option>
           ))}
+        </select>
+        <select
+          value={imageFilter}
+          onChange={(e) => setImageFilter(e.target.value as 'all' | 'with' | 'without')}
+          className="shrink-0 border-2 border-pink-100 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+        >
+          <option value="all">画像：全て</option>
+          <option value="with">画像あり</option>
+          <option value="without">画像なし</option>
         </select>
         <button
           onClick={() => setSortAsc(v => !v)}
