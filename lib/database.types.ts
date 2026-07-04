@@ -63,7 +63,7 @@ export type GummyImageRow = {
   created_at: string
 }
 
-export type GummyImageInsert = Omit<GummyImageRow, 'id' | 'created_at' | 'status'>
+export type GummyImageInsert = Omit<GummyImageRow, 'id' | 'created_at'>
 
 export type ContactRow = {
   id: number
