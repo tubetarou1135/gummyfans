@@ -376,9 +376,9 @@ function GummiesTab() {
           onChange={(e) => setImageFilter(e.target.value as 'all' | 'with' | 'without')}
           className="shrink-0 border-2 border-pink-100 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
         >
-          <option value="all">画像：全て</option>
-          <option value="with">画像あり</option>
-          <option value="without">画像なし</option>
+          <option value="all">画像：全て ({gummies.length}件)</option>
+          <option value="with">画像あり ({gummies.filter(g => !!g.image_url).length}件)</option>
+          <option value="without">画像なし ({gummies.filter(g => !g.image_url).length}件)</option>
         </select>
         <button
           onClick={() => setSortAsc(v => !v)}
@@ -387,6 +387,7 @@ function GummiesTab() {
           五十音 {sortAsc ? '▲' : '▼'}
         </button>
       </div>
+      <p className="text-xs text-gray-400">{filtered.length}件表示中</p>
       {filtered.length === 0 && <p className="text-gray-400 text-sm">グミが登録されていません</p>}
       {filtered.map((g) => (
         <div key={g.id} className="flex items-center justify-between border-2 border-pink-100 rounded-2xl px-4 py-3">
