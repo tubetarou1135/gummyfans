@@ -7,8 +7,22 @@ import StarRating from '@/components/StarRating'
 import ScoreTabs from '@/components/ScoreTabs'
 import PostTabs from '@/components/PostTabs'
 import DiscontinuedButton from '@/components/DiscontinuedButton'
+import type { Metadata } from 'next'
 
 export const revalidate = 60
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params
+  const { data } = await supabase.from('gummies_with_avg').select('*').eq('id', Number(id)).single()
+  if (!data) return {}
+  const title = data.flavor ? `${data.name} ${data.flavor}` : data.name
+  const description = `${data.maker}の「${title}」のレビュー・評価ページ。グミファンが実際に食べた感想を掲載中。`
+  return {
+    title: `${title} | GummyFans`,
+    description,
+    openGraph: { title: `${title} | GummyFans`, description, images: data.image_url ? [{ url: data.image_url }] : [] },
+  }
+}
 
 async function getGummy(id: number) {
   const { data } = await supabase
@@ -89,7 +103,7 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
         {(gummy.image_url || imageUrl) ? (
           <>
             <div className="relative w-full aspect-square max-w-sm mx-auto rounded-3xl overflow-hidden border-2 border-pink-100">
-              <Image src={gummy.image_url ?? imageUrl!} alt={gummy.name} fill className="object-contain" />
+              <Image src={gummy.image_url ?? imageUrl!} alt={gummy.name} fill sizes="(max-width: 640px) 100vw, 384px" quality={90} className="object-contain" />
             </div>
             {!gummy.image_url && approvedImage && (
               <p className="text-center text-xs text-gray-400 mt-2">
