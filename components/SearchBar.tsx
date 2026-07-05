@@ -21,7 +21,7 @@ export default function SearchBar({ defaultValue }: { defaultValue?: string }) {
         name="q"
         defaultValue={defaultValue}
         placeholder="🔍 商品名・メーカー・フレーバー..."
-        className="flex-1 min-w-0 border-2 border-pink-200 rounded-full px-4 py-2 text-xs sm:text-sm focus:outline-none focus:border-pink-400 bg-white"
+        className="flex-1 min-w-0 border-2 border-pink-200 rounded-full px-4 py-2 text-base focus:outline-none focus:border-pink-400 bg-white"
       />
       <button
         type="submit"
