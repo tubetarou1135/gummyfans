@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Nunito, Mochiy_Pop_One } from "next/font/google";
 import Link from "next/link";
 import Image from "next/image";
@@ -16,9 +16,16 @@ const mochiy = Mochiy_Pop_One({
   weight: "400",
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata: Metadata = {
   title: "gummyfans",
   description: "グミの評価・レビューサイト",
+  verification: { google: "skHlp7c6AijCO6b1CtbegCNzjTCdf03bd4nW6oICiI4" },
   icons: {
     icon: "/favicon.png",
   },
