@@ -11,7 +11,7 @@ export default function AboutPage() {
       <div className="space-y-6 text-sm text-gray-700 leading-relaxed">
         <div className="border-2 border-pink-100 rounded-2xl overflow-hidden">
           {[
-            { label: 'サイト名', value: 'GummyFans' },
+            { label: 'サイト名', value: 'グミファンズ-GummyFans-' },
             { label: '運営者', value: 'GummyFans管理人' },
             { label: '運営目的', value: 'グミの魅力を広めるための情報・レビューサイト' },
             { label: 'お問い合わせ', value: 'お問い合わせページよりご連絡ください' },
