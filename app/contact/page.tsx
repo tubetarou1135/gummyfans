@@ -47,7 +47,8 @@ export default function ContactPage() {
   return (
     <main className="max-w-lg mx-auto px-4 py-10">
       <h1 className="text-2xl font-bold mb-2">お問い合わせ</h1>
-      <p className="text-sm text-gray-500 mb-8">ご質問・ご要望はこちらからどうぞ。</p>
+      <p className="text-sm text-gray-500 mb-1">ご質問・ご要望はこちらからどうぞ。</p>
+      <p className="text-sm text-gray-500 mb-8">XまたはInstagramのDMでも受け付けております。</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
