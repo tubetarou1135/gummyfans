@@ -7,6 +7,7 @@ export type GummyRow = {
   image_url: string | null
   rakuten_url: string | null
   discontinued: boolean
+  new_until: string | null
   created_at: string
 }
 

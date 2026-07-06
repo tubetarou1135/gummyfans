@@ -266,6 +266,7 @@ function GummiesTab() {
       description: editing.description,
       image_url: editing.image_url,
       rakuten_url: editing.rakuten_url,
+      new_until: editing.new_until,
     }).eq('id', editing.id)
     setLoading(false)
     if (error) {
@@ -343,6 +344,27 @@ function GummiesTab() {
               </button>
             ))}
           </div>
+        )}
+      </div>
+
+      {/* 新グミ設定 */}
+      <div className="border-2 border-pink-100 rounded-2xl p-4">
+        <p className="text-sm font-semibold text-gray-700 mb-2">新グミタグ</p>
+        {editing.new_until && new Date(editing.new_until) > new Date() ? (
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-green-600 font-semibold">🆕 設定中 〜 {new Date(editing.new_until).toLocaleDateString('ja-JP')}</p>
+            <button type="button" onClick={() => setEditing(prev => prev ? { ...prev, new_until: null } : prev)}
+              className="text-xs text-red-400 hover:text-red-600">解除</button>
+          </div>
+        ) : (
+          <button type="button"
+            onClick={() => {
+              const d = new Date(); d.setMonth(d.getMonth() + 1)
+              setEditing(prev => prev ? { ...prev, new_until: d.toISOString() } : prev)
+            }}
+            className="text-xs bg-pink-50 text-pink-500 px-4 py-2 rounded-full hover:bg-pink-100 transition-colors font-semibold">
+            新グミに設定（1ヶ月間）
+          </button>
         )}
       </div>
 

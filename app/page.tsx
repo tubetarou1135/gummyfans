@@ -9,6 +9,16 @@ export const revalidate = 60
 
 const PER_PAGE = 10
 
+async function getNewGummies(): Promise<GummyWithAvg[]> {
+  const now = new Date().toISOString()
+  const { data } = await supabase
+    .from('gummies_with_avg')
+    .select('*')
+    .gt('new_until', now)
+    .order('new_until', { ascending: false })
+  return (data ?? []) as GummyWithAvg[]
+}
+
 async function getGummies(q?: string): Promise<GummyWithAvg[]> {
   let query = supabase
     .from('gummies_with_avg')
@@ -30,7 +40,7 @@ export default async function HomePage({
   searchParams: Promise<{ q?: string; page?: string }>
 }) {
   const { q, page: pageParam } = await searchParams
-  const gummies = await getGummies(q)
+  const [gummies, newGummies] = await Promise.all([getGummies(q), getNewGummies()])
   const page = Math.max(1, Number(pageParam) || 1)
   const totalPages = Math.ceil(gummies.length / PER_PAGE)
   const paged = gummies.slice((page - 1) * PER_PAGE, page * PER_PAGE)
@@ -73,6 +83,18 @@ export default async function HomePage({
             果汁感ランキング
           </Link>
         </div>
+
+        {/* 新グミセクション */}
+        {newGummies.length > 0 && (
+          <div className="mt-6">
+            <h2 className="text-base font-bold text-gray-700 mb-3">🆕 新グミ</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {newGummies.map((g) => (
+                <GummyCard key={g.id} gummy={g} />
+              ))}
+            </div>
+          </div>
+        )}
 
         {gummies.length === 0 ? (
           <div className="text-center mt-16">
