@@ -11,10 +11,11 @@ export type GummyRow = {
   created_at: string
 }
 
-export type GummyInsert = Omit<GummyRow, 'id' | 'created_at' | 'image_url' | 'rakuten_url' | 'discontinued'> & {
+export type GummyInsert = Omit<GummyRow, 'id' | 'created_at' | 'image_url' | 'rakuten_url' | 'discontinued' | 'new_until'> & {
   image_url?: string | null
   rakuten_url?: string | null
   discontinued?: boolean
+  new_until?: string | null
 }
 
 export type ReviewRow = {
