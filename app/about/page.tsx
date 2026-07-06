@@ -19,6 +19,15 @@ export default function AboutPage() {
               <span className="text-gray-700">{value}</span>
             </div>
           ))}
+          <div className="flex gap-4 px-5 py-4 border-t border-pink-50">
+            <span className="text-gray-400 w-28 shrink-0">公式SNS</span>
+            <div className="flex gap-3">
+              <a href="https://x.com/GummyFans9393" target="_blank" rel="noopener noreferrer"
+                className="text-pink-500 hover:underline font-semibold">𝕏 @GummyFans9393</a>
+              <a href="https://www.instagram.com/gummyfans9393/" target="_blank" rel="noopener noreferrer"
+                className="text-pink-500 hover:underline font-semibold">📸 @gummyfans9393</a>
+            </div>
+          </div>
         </div>
 
         <p className="text-xs text-gray-400">
