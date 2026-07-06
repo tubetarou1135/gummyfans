@@ -85,8 +85,12 @@ export default function PreviewPage() {
                 <p className="text-xs font-semibold text-pink-400 mb-1">{m.title}</p>
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-lg font-bold text-gray-800 mb-0.5">{m.name}</h3>
-                <p className="text-xs text-gray-400 mb-2">{m.twitter}</p>
+                <h3 className="text-lg font-bold text-gray-800 mb-1">{m.name}</h3>
+                <div className="flex flex-wrap gap-1.5 mb-2">
+                  {m.sns.map((s) => (
+                    <span key={s.label} className="text-xs bg-pink-50 text-pink-400 px-2 py-0.5 rounded-full">{s.icon} {s.label}</span>
+                  ))}
+                </div>
                 <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{m.description}</p>
               </div>
               <p className="text-xs text-pink-400 font-semibold shrink-0">詳しく見る →</p>

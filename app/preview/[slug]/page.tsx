@@ -17,29 +17,26 @@ export default async function MemberPage({ params }: { params: Promise<{ slug: s
 
       <div className="bg-white border-2 border-pink-100 rounded-3xl p-8">
         <p className="text-xs font-semibold text-pink-400 tracking-widest mb-2">{member.title}</p>
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">{member.name}</h1>
-        <a
-          href={member.twitterUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-pink-400 hover:underline mb-6 inline-block"
-        >
-          {member.twitter}
-        </a>
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">{member.name}</h1>
 
-        <div className="border-t border-pink-50 pt-6 mt-2">
+        <div className="border-t border-pink-50 pt-6 mb-6">
           <p className="text-sm text-gray-600 leading-relaxed">{member.description}</p>
         </div>
 
-        <div className="mt-8 text-center">
-          <a
-            href={member.twitterUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 border-2 border-pink-200 text-pink-500 px-6 py-3 rounded-full text-sm font-bold hover:bg-pink-50 transition-colors"
-          >
-            SNSをフォローする →
-          </a>
+        <div className="space-y-2">
+          {member.sns.map((s) => (
+            <a
+              key={s.label}
+              href={s.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 border-2 border-pink-100 rounded-2xl px-5 py-3 hover:border-pink-300 hover:bg-pink-50 transition-colors"
+            >
+              <span className="text-lg">{s.icon}</span>
+              <span className="text-sm font-semibold text-gray-700">{s.label}</span>
+              <span className="text-xs text-gray-400 ml-auto truncate">{s.url}</span>
+            </a>
+          ))}
         </div>
       </div>
     </main>
