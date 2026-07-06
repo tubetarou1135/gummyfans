@@ -46,18 +46,22 @@ export default function PreviewPage() {
       <section className="mb-10">
         <p className="text-center text-gray-700 font-bold text-lg mb-6">そんな日本グミ協会の著名な会長・会員様をまとめました！</p>
         <h2 className="text-xl font-bold text-gray-800 mb-6">著名会員紹介</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="flex flex-col gap-4">
           {members.map((m) => (
             <Link
               key={m.slug}
               href={`/preview/${m.slug}`}
-              className="block border-2 border-pink-100 rounded-3xl p-6 hover:border-pink-300 hover:shadow-md transition-all bg-white"
+              className="flex items-center gap-6 border-2 border-pink-100 rounded-3xl p-6 hover:border-pink-300 hover:shadow-md transition-all bg-white"
             >
-              <p className="text-xs font-semibold text-pink-400 mb-1">{m.title}</p>
-              <h3 className="text-lg font-bold text-gray-800 mb-1">{m.name}</h3>
-              <p className="text-xs text-gray-400 mb-3">{m.twitter}</p>
-              <p className="text-xs text-gray-500 leading-relaxed line-clamp-3">{m.description}</p>
-              <p className="text-xs text-pink-400 mt-3 font-semibold">詳しく見る →</p>
+              <div className="shrink-0 w-20 text-center">
+                <p className="text-xs font-semibold text-pink-400 mb-1">{m.title}</p>
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg font-bold text-gray-800 mb-0.5">{m.name}</h3>
+                <p className="text-xs text-gray-400 mb-2">{m.twitter}</p>
+                <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{m.description}</p>
+              </div>
+              <p className="text-xs text-pink-400 font-semibold shrink-0">詳しく見る →</p>
             </Link>
           ))}
         </div>
