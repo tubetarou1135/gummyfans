@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return {
     title,
     description,
-    openGraph: { title: `${title} | GummyFans-グミファンズ-`, description, images: data.image_url ? [{ url: data.image_url }] : [] },
+    openGraph: { title: `${title} | グミファンズ-GummyFans-`, description, images: data.image_url ? [{ url: data.image_url }] : [] },
   }
 }
 
