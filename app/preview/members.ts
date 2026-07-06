@@ -18,6 +18,7 @@ export const members: Member[] = [
     slug: 'mushatter',
     name: '武者慶佑',
     title: '名誉会長',
+    image: 'https://pbs.twimg.com/profile_images/1816067405334077441/-PoQA-hG_400x400.jpg',
     description: 'フリーランス。日本グミ協会の創設メンバーとして長年グミ文化の普及に貢献。テレビ番組「マツコの知らない世界」への出演でグミの魅力を全国に発信した。',
     sns: [
       { label: 'X', url: 'https://x.com/mushatter', icon: '𝕏' },
@@ -27,6 +28,7 @@ export const members: Member[] = [
     slug: 'aiueoka5',
     name: 'あいうえお',
     title: '会長',
+    image: 'https://pbs.twimg.com/profile_images/1709567740087074817/NifYJZ21_400x400.jpg',
     description: 'SNSでグミ情報を発信し続けるグミのプロフェッショナル。フォロワー24,000人超のグミ専門アカウント「A I U E O グミチャンネル」を運営。',
     sns: [
       { label: 'X', url: 'https://twitter.com/aiueoka5', icon: '𝕏' },
@@ -39,6 +41,7 @@ export const members: Member[] = [
     slug: 'kotobukiyume',
     name: '琴吹ゆめ',
     title: 'バーチャル副会長',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROXB5DOhw2mmAK_AuEOIUdoEIQ8e0W1FGiCs0OPBfGcg&s=10',
     description: 'グミ・コスメ・アイドルをこよなく愛するバーチャル副会長。SNSやYouTubeでグミの魅力を発信中。',
     sns: [
       { label: 'X', url: 'https://twitter.com/KotobukiYume', icon: '𝕏' },
