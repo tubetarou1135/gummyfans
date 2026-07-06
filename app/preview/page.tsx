@@ -63,9 +63,9 @@ export default function PreviewPage() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="https://93gummy.jp/wp-content/uploads/2024/09/PC@japan_gummy.png" alt="@japan_gummy" className="w-full rounded-2xl hover:opacity-90 transition-opacity" />
           </a>
-          <a href="https://twitter.com/mushatter" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.instagram.com/gummy_japan/" target="_blank" rel="noopener noreferrer">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="https://93gummy.jp/wp-content/uploads/2024/09/PC@mushatter.png" alt="@mushatter" className="w-full rounded-2xl hover:opacity-90 transition-opacity" />
+            <img src="https://93gummy.jp/_assets/images/sns_bnr_002_pc.png" alt="@gummy_japan" className="w-full rounded-2xl hover:opacity-90 transition-opacity" />
           </a>
         </div>
       </section>
