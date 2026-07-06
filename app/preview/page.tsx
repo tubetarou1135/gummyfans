@@ -81,8 +81,14 @@ export default function PreviewPage() {
               href={`/preview/${m.slug}`}
               className="flex items-center gap-6 border-2 border-pink-100 rounded-3xl p-6 hover:border-pink-300 hover:shadow-md transition-all bg-white"
             >
-              <div className="shrink-0 w-20 text-center">
-                <p className="text-xs font-semibold text-pink-400 mb-1">{m.title}</p>
+              <div className="shrink-0 w-16 text-center">
+                {m.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={m.image} alt={m.name} className="w-14 h-14 rounded-full object-cover mx-auto mb-1 border-2 border-pink-100" />
+                ) : (
+                  <div className="w-14 h-14 rounded-full bg-pink-50 mx-auto mb-1 flex items-center justify-center text-2xl">🍬</div>
+                )}
+                <p className="text-xs font-semibold text-pink-400">{m.title}</p>
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="text-lg font-bold text-gray-800 mb-1">{m.name}</h3>

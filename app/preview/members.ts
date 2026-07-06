@@ -8,6 +8,7 @@ export type Member = {
   slug: string
   name: string
   title: string
+  image?: string
   description: string
   sns: SnsLink[]
 }
@@ -50,6 +51,7 @@ export const members: Member[] = [
     slug: 'yumemaru',
     name: 'ゆめまる（東海オンエア）',
     title: '名誉会員',
+    image: 'https://pbs.twimg.com/media/GlreJUQbcAAey7s.jpg',
     description: 'チャンネル登録者数1,000万人超の人気YouTubeグループ「東海オンエア」のメンバー。日本グミ協会の名誉会員として認定され、グミ文化の普及に貢献。',
     sns: [
       { label: 'X', url: 'https://x.com/TO_yumemarucas', icon: '𝕏' },

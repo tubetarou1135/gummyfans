@@ -16,6 +16,10 @@ export default async function MemberPage({ params }: { params: Promise<{ slug: s
       </Link>
 
       <div className="bg-white border-2 border-pink-100 rounded-3xl p-8">
+        {member.image && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={member.image} alt={member.name} className="w-32 h-32 rounded-full object-cover mb-4 mx-auto border-4 border-pink-100" />
+        )}
         <p className="text-xs font-semibold text-pink-400 tracking-widest mb-2">{member.title}</p>
         <h1 className="text-3xl font-bold text-gray-800 mb-6">{member.name}</h1>
 
