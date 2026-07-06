@@ -25,7 +25,7 @@ export default function GummyCard({ gummy }: { gummy: GummyWithAvg }) {
       {/* 商品画像 */}
       {gummy.image_url ? (
         <div className="relative w-full aspect-[3/2] rounded-2xl overflow-hidden mb-3 bg-pink-50">
-          <Image src={gummy.image_url} alt={gummy.name} fill className="object-contain" />
+          <Image src={gummy.image_url} alt={gummy.name} fill sizes="(max-width: 640px) 50vw, 33vw" quality={90} className="object-contain" />
         </div>
       ) : (
         <div className="w-full aspect-[3/2] rounded-2xl mb-3 bg-pink-50 flex flex-col items-center justify-center gap-1 border-2 border-dashed border-pink-200">

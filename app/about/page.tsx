@@ -1,7 +1,12 @@
+import Image from 'next/image'
+
 export default function AboutPage() {
   return (
     <main className="max-w-2xl mx-auto px-4 py-10">
       <h1 className="text-2xl font-bold mb-8">運営者情報</h1>
+      <div className="mb-6">
+        <Image src="/グミ会員.png" alt="グミ会員" width={400} height={400} className="mx-auto rounded-2xl" />
+      </div>
 
       <div className="space-y-6 text-sm text-gray-700 leading-relaxed">
         <div className="border-2 border-pink-100 rounded-2xl overflow-hidden">
