@@ -36,9 +36,10 @@ export default function PreviewPage() {
           href="https://93gummy.jp/"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 text-sm font-semibold text-pink-500 hover:underline"
+          className="inline-block hover:opacity-80 transition-opacity"
         >
-          詳しくはこちら →
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="https://93gummy.jp/_assets/images/logo.svg" alt="日本グミ協会" className="h-12" />
         </a>
 
         {/* SNSリンク */}
