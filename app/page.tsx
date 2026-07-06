@@ -67,7 +67,7 @@ export default async function HomePage({
           <p className="text-gray-400">まだグミが登録されていません</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
           {gummies.map((g) => (
             <GummyCard key={g.id} gummy={g} />
           ))}
