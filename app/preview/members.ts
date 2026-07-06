@@ -21,7 +21,7 @@ export const members: Member[] = [
     name: 'あいうえお',
     title: '会長',
     twitter: '@aiueoka5',
-    twitterUrl: 'https://x.com/aiueoka5',
+    twitterUrl: 'https://lit.link/aiueoka5',
     description: 'SNSでグミ情報を発信し続けるグミのプロフェッショナル。フォロワー24,000人超のグミ専門アカウント「A I U E O グミチャンネル」を運営。',
   },
   {
