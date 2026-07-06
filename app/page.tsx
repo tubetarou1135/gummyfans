@@ -75,8 +75,8 @@ export default async function HomePage({
 
         {/* 新グミセクション */}
         {newGummies.length > 0 && (
-          <div className="mt-6">
-            <h2 className="text-base font-bold text-gray-700 mb-3">🆕 新グミ</h2>
+          <div className="mt-6 border-2 border-pink-300 rounded-2xl p-4 bg-pink-50">
+            <h2 className="text-base font-bold text-pink-500 mb-3">🆕 新発売グミ</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {newGummies.map((g) => (
                 <GummyCard key={g.id} gummy={g} />
