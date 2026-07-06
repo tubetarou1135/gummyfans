@@ -8,13 +8,7 @@ export default function PreviewPage() {
     <main className="max-w-3xl mx-auto px-4 py-12">
       {/* ヘッダー */}
       <div className="text-center mb-12">
-        <p className="text-xs font-semibold text-pink-400 tracking-widest mb-2">SPECIAL PREVIEW</p>
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">日本グミ協会 × GummyFans</h1>
-        <p className="text-sm text-gray-500 leading-relaxed">
-          グミファンズは、日本最大級のグミレビューサイトです。<br />
-          この度、<a href="https://93gummy.jp/" target="_blank" rel="noopener noreferrer" className="text-pink-500 hover:underline font-semibold">日本グミ協会</a>との連携に向けて、<br />
-          特別プレビューページをご用意いたしました。
-        </p>
+        <h1 className="text-4xl font-bold text-gray-800">日本グミ協会って何！？</h1>
       </div>
 
       {/* 日本グミ協会とは */}
