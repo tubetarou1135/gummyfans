@@ -8,20 +8,29 @@ export default function PreviewPage() {
     <main className="max-w-3xl mx-auto px-4 py-12">
       {/* ヘッダー */}
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-800">日本グミ協会って何！？</h1>
+        <h1 className="text-5xl font-black text-gray-800 leading-tight">
+          <span className="text-pink-500">日本グミ協会</span>って何！？
+        </h1>
       </div>
 
       {/* 日本グミ協会とは */}
       <section className="bg-pink-50 rounded-3xl p-8 mb-10">
         <h2 className="text-xl font-bold text-gray-800 mb-4">日本グミ協会とは</h2>
         <p className="text-sm text-gray-600 leading-relaxed mb-4">
-          2013年にSNS上の同人活動としてスタートした、グミ愛好家たちによる非営利団体。
-          「コンビニに売っている100円グミのボトムアップ」を目的に設立され、
-          2016年にはテレビ番組「マツコの知らない世界」に出演し、一気に全国的な注目を集めました。
+          「グミが好きなら、あなたも今日から会員！」——そんな自由な精神のもと、2013年にSNS上の同人活動として誕生した非営利のグミ愛好家集団。
+          手続きも審査も不要。グミが好きという気持ちだけで誰でも会員になれるのが最大の特徴で、
+          2020年時点ですでに5,400名以上に会員証が発行されています。
         </p>
         <p className="text-sm text-gray-600 leading-relaxed mb-4">
-          9月3日を「グミの日」として制定し、UHA味覚糖・カバヤ・カンロなどメーカー各社が参加する連合体
-          「GUMMIT（グミット）」を結成。メーカーの垣根を超えた共同キャンペーンやイベントを展開しています。
+          2016年には「マツコの知らない世界」への出演で一躍全国区に。
+          その後、UHA味覚糖・カバヤ・カンロなど国内主要グミメーカーと連携し、
+          業界横断の連合体「GUMMIT（グミット）」を結成。
+          毎年9月3日「グミの日」を中心に、メーカーの垣根を越えた合同キャンペーンや
+          公開イベント「グミパーティー」を展開しています。
+        </p>
+        <p className="text-sm text-gray-600 leading-relaxed mb-4">
+          SNSでの新作グミ紹介、プレゼントキャンペーン、リアルイベントまで——
+          グミ文化をボトムアップで広げ続けるユニークな存在です。
         </p>
         <a
           href="https://93gummy.jp/"
