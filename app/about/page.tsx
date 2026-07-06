@@ -14,7 +14,7 @@ export default function AboutPage() {
             { label: 'サイト名', value: 'グミファンズ-GummyFans-' },
             { label: '運営者', value: 'GummyFans管理人' },
             { label: '運営目的', value: 'グミの魅力を広めるための情報・レビューサイト' },
-            { label: 'お問い合わせ', value: 'お問い合わせページよりご連絡ください' },
+            { label: 'お問い合わせ', value: 'お問い合わせページよりご連絡ください。XまたはInstagramのDMでも受け付けております。' },
           ].map(({ label, value }, i, arr) => (
             <div
               key={label}
