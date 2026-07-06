@@ -36,6 +36,7 @@ export const members: Member[] = [
       { label: 'YouTube', url: 'https://youtube.com/@aiueo93ch', icon: '▶' },
       { label: 'Instagram', url: 'https://www.instagram.com/Aiueoka_93/', icon: '📸' },
       { label: 'TikTok', url: 'https://www.tiktok.com/@aip.p.p', icon: '🎵' },
+      { label: 'お仕事フォーム', url: 'https://fanme.link/@aiueoka5', icon: '📋' },
     ],
   },
   {
