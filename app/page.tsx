@@ -1,13 +1,12 @@
 import { supabase } from '@/lib/supabase'
 import type { GummyWithAvg } from '@/lib/database.types'
 import GummyCard from '@/components/GummyCard'
+import GummyList from '@/components/GummyList'
 import SearchBar from '@/components/SearchBar'
 import Image from 'next/image'
 import Link from 'next/link'
 
 export const revalidate = 60
-
-const PER_PAGE = 10
 
 async function getNewGummies(): Promise<GummyWithAvg[]> {
   const now = new Date().toISOString()
@@ -37,20 +36,10 @@ async function getGummies(q?: string): Promise<GummyWithAvg[]> {
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; page?: string }>
+  searchParams: Promise<{ q?: string }>
 }) {
-  const { q, page: pageParam } = await searchParams
+  const { q } = await searchParams
   const [gummies, newGummies] = await Promise.all([getGummies(q), getNewGummies()])
-  const page = Math.max(1, Number(pageParam) || 1)
-  const totalPages = Math.ceil(gummies.length / PER_PAGE)
-  const paged = gummies.slice((page - 1) * PER_PAGE, page * PER_PAGE)
-
-  const pageHref = (p: number) => {
-    const params = new URLSearchParams()
-    if (q) params.set('q', q)
-    params.set('page', String(p))
-    return `/?${params.toString()}`
-  }
 
   return (
     <main>
@@ -102,42 +91,7 @@ export default async function HomePage({
             <p className="text-gray-400">まだグミが登録されていません</p>
           </div>
         ) : (
-          <>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-              {paged.map((g) => (
-                <GummyCard key={g.id} gummy={g} />
-              ))}
-            </div>
-
-            {/* ページネーション */}
-            {totalPages > 1 && (
-              <div className="flex justify-center gap-1.5 mt-8 flex-wrap">
-                {page > 1 && (
-                  <Link href={pageHref(page - 1)} className="px-3 py-2 rounded-full text-sm font-semibold border-2 border-pink-100 text-pink-500 hover:bg-pink-50 transition-colors">
-                    ←
-                  </Link>
-                )}
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                  <Link
-                    key={p}
-                    href={pageHref(p)}
-                    className={`px-3 py-2 rounded-full text-sm font-semibold border-2 transition-colors ${
-                      p === page
-                        ? 'bg-pink-500 text-white border-pink-500'
-                        : 'border-pink-100 text-pink-500 hover:bg-pink-50'
-                    }`}
-                  >
-                    {p}
-                  </Link>
-                ))}
-                {page < totalPages && (
-                  <Link href={pageHref(page + 1)} className="px-3 py-2 rounded-full text-sm font-semibold border-2 border-pink-100 text-pink-500 hover:bg-pink-50 transition-colors">
-                    →
-                  </Link>
-                )}
-              </div>
-            )}
-          </>
+          <GummyList gummies={gummies} />
         )}
       </div>
     </main>
