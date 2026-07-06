@@ -44,6 +44,7 @@ export default function PreviewPage() {
 
       {/* 会員紹介 */}
       <section className="mb-10">
+        <p className="text-center text-gray-700 font-bold text-lg mb-6">そんな日本グミ協会の著名な会長・会員様をまとめました！</p>
         <h2 className="text-xl font-bold text-gray-800 mb-6">著名会員紹介</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {members.map((m) => (
