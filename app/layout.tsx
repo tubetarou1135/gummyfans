@@ -23,15 +23,15 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "gummyfans",
-  description: "グミの評価・レビューサイト",
+  title: { default: "GummyFans-グミファンズ-", template: "%s | GummyFans-グミファンズ-" },
+  description: "グミの評価・レビューサイト。880種類以上のグミを掲載。硬さ・甘さ・酸っぱさ・果汁感などをレビュー。",
   verification: { google: "skHlp7c6AijCO6b1CtbegCNzjTCdf03bd4nW6oICiI4" },
   icons: {
     icon: "/favicon.png",
   },
   openGraph: {
-    title: "gummyfans",
-    description: "グミの評価・レビューサイト",
+    title: "GummyFans-グミファンズ-",
+    description: "グミの評価・レビューサイト。880種類以上のグミを掲載。",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
 };

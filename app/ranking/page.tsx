@@ -5,7 +5,7 @@ import StarRating from '@/components/StarRating'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'グミランキング | GummyFans',
+  title: 'グミランキング',
   description: 'グミファンが選ぶ人気グミランキング。総合評価・硬さ・甘さ・酸っぱさ・果汁感などの項目別に集計したリアルなランキングを掲載。',
 }
 

@@ -18,9 +18,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const title = data.flavor ? `${data.name} ${data.flavor}` : data.name
   const description = `${data.maker}の「${title}」のレビュー・評価ページ。グミファンが実際に食べた感想を掲載中。`
   return {
-    title: `${title} | GummyFans`,
+    title,
     description,
-    openGraph: { title: `${title} | GummyFans`, description, images: data.image_url ? [{ url: data.image_url }] : [] },
+    openGraph: { title: `${title} | GummyFans-グミファンズ-`, description, images: data.image_url ? [{ url: data.image_url }] : [] },
   }
 }
 
