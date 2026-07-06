@@ -14,14 +14,14 @@ export default function AboutPage() {
             { label: 'サイト名', value: 'グミファンズ-GummyFans-' },
             { label: '運営者', value: 'GummyFans管理人' },
             { label: '運営目的', value: 'グミの魅力を広めるための情報・レビューサイト' },
-            { label: 'お問い合わせ', value: 'お問い合わせページよりご連絡ください。XまたはInstagramのDMでも受け付けております。' },
+            { label: 'お問い合わせ', value: 'お問い合わせページよりご連絡ください。\nXまたはInstagramのDMでも受け付けております。' },
           ].map(({ label, value }, i, arr) => (
             <div
               key={label}
               className={`flex gap-4 px-5 py-4 ${i !== arr.length - 1 ? 'border-b border-pink-50' : ''}`}
             >
               <span className="text-gray-400 w-28 shrink-0">{label}</span>
-              <span className="text-gray-700">{value}</span>
+              <span className="text-gray-700 whitespace-pre-line">{value}</span>
             </div>
           ))}
           <div className="flex gap-4 px-5 py-4 border-t border-pink-50">
