@@ -42,21 +42,6 @@ export default function PreviewPage() {
           <img src="https://93gummy.jp/_assets/images/logo.svg" alt="日本グミ協会" className="h-12" />
         </a>
 
-        {/* SNSリンク */}
-        <div className="mt-6 pt-6 border-t border-pink-200">
-          <p className="text-xs font-semibold text-gray-500 mb-3">公式SNS</p>
-          <div className="flex flex-wrap gap-3">
-            <a href="https://twitter.com/japan_gummy" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-white border-2 border-pink-100 rounded-full px-4 py-2 text-sm font-semibold text-gray-700 hover:border-pink-300 transition-colors">
-              𝕏 @japan_gummy
-            </a>
-            <a href="https://www.instagram.com/gummy_japan/" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-white border-2 border-pink-100 rounded-full px-4 py-2 text-sm font-semibold text-gray-700 hover:border-pink-300 transition-colors">
-              📸 @gummy_japan
-            </a>
-          </div>
-        </div>
-
         {/* 公式SNSバナー画像 */}
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
           <a href="https://twitter.com/japan_gummy" target="_blank" rel="noopener noreferrer">
