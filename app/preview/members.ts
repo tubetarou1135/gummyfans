@@ -40,12 +40,4 @@ export const members: Member[] = [
     twitterUrl: 'https://www.youtube.com/@tokaioncue',
     description: 'チャンネル登録者数1,000万人超の人気YouTubeグループ「東海オンエア」のメンバー。日本グミ協会の名誉会員として認定され、グミ文化の普及に貢献。',
   },
-  {
-    slug: 'yoshioka-riho',
-    name: '吉岡里帆',
-    title: '名誉会員',
-    twitter: '@riho_yoshioka',
-    twitterUrl: 'https://x.com/riho_yoshioka',
-    description: '人気女優。日本グミ協会の名誉会員として認定されている。',
-  },
 ]
