@@ -34,7 +34,7 @@ function RegisterTab() {
   const [searching, setSearching] = useState(false)
   const [results, setResults] = useState<RakutenItem[]>([])
   const [selected, setSelected] = useState<RakutenItem | null>(null)
-  const [form, setForm] = useState({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '' })
+  const [form, setForm] = useState({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '' })
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -75,6 +75,7 @@ function RegisterTab() {
       description: '',
       image_url: item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0]?.imageUrl ?? '',
       rakuten_url: toMoshimoUrl(item.itemUrl),
+      source_url: '',
     })
   }
 
@@ -92,13 +93,14 @@ function RegisterTab() {
       description: form.description.trim() || null,
       image_url: form.image_url.trim() || null,
       rakuten_url: form.rakuten_url.trim() || null,
+      source_url: form.source_url.trim() || null,
     })
     setLoading(false)
     if (error) {
       setMsg({ type: 'err', text: '登録に失敗しました: ' + error.message })
     } else {
       setMsg({ type: 'ok', text: '登録しました！' })
-      setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '' })
+      setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '' })
       setSelected(null)
       setResults([])
       setQuery('')
@@ -152,7 +154,7 @@ function RegisterTab() {
                 <p className="text-xs font-semibold text-gray-700 line-clamp-1">{selected.itemName}</p>
                 <p className="text-xs text-gray-400">選択中</p>
               </div>
-              <button type="button" onClick={() => { setSelected(null); setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '' }) }} className="text-xs text-gray-400 hover:text-red-400">変更</button>
+              <button type="button" onClick={() => { setSelected(null); setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '' }) }} className="text-xs text-gray-400 hover:text-red-400">変更</button>
             </div>
           )}
           {[
@@ -177,6 +179,29 @@ function RegisterTab() {
               onChange={(e) => set('description', e.target.value)}
               rows={3}
               className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50 resize-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">画像URL</label>
+            <input
+              value={form.image_url}
+              onChange={(e) => set('image_url', e.target.value)}
+              placeholder="https://..."
+              className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+            />
+            {form.image_url && (
+              <div className="mt-2">
+                <Image src={form.image_url} alt="プレビュー" width={80} height={80} className="rounded-xl object-contain border border-pink-100" />
+              </div>
+            )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">引用元URL（X投稿など）</label>
+            <input
+              value={form.source_url}
+              onChange={(e) => set('source_url', e.target.value)}
+              placeholder="https://x.com/..."
+              className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
             />
           </div>
           {msg && <p className={`text-sm ${msg.type === 'ok' ? 'text-green-600' : 'text-red-500'}`}>{msg.text}</p>}
