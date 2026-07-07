@@ -223,6 +223,7 @@ function GummiesTab() {
   const [makerFilter, setMakerFilter] = useState('')
   const [imageFilter, setImageFilter] = useState<'all' | 'with' | 'without'>('all')
   const [sortAsc, setSortAsc] = useState(true)
+  const [keyword, setKeyword] = useState('')
   const scrollRef = useRef(0)
 
   async function load() {
@@ -236,6 +237,7 @@ function GummiesTab() {
   const filtered = gummies
     .filter(g => makerFilter ? g.maker === makerFilter : true)
     .filter(g => imageFilter === 'with' ? !!g.image_url : imageFilter === 'without' ? !g.image_url : true)
+    .filter(g => keyword ? g.name.includes(keyword) || g.maker.includes(keyword) || (g.flavor ?? '').includes(keyword) : true)
     .slice()
     .sort((a, b) => {
       const cmp = a.name.localeCompare(b.name, 'ja')
@@ -419,6 +421,12 @@ function GummiesTab() {
 
   return (
     <div className="space-y-3">
+      <input
+        value={keyword}
+        onChange={(e) => setKeyword(e.target.value)}
+        placeholder="商品名・メーカー・フレーバーで検索..."
+        className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+      />
       <div className="flex gap-2">
         <select
           value={makerFilter}
