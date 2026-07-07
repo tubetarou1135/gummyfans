@@ -6,7 +6,7 @@ import type { GummyRow, ReviewRow, ContactRow, GummyImageRow } from '@/lib/datab
 import { toMoshimoUrl } from '@/lib/moshimo'
 import Image from 'next/image'
 
-type Tab = 'register' | 'gummies' | 'reviews' | 'requests' | 'contacts' | 'images' | 'discontinued'
+type Tab = 'register' | 'gummies' | 'reviews' | 'requests' | 'contacts' | 'images'
 
 type GummyRequest = {
   id: number
@@ -683,91 +683,6 @@ function ContactsTab() {
   )
 }
 
-// ---- 終売報告タブ ----
-function DiscontinuedTab() {
-  const [rows, setRows] = useState<{ name: string; maker: string; flavor: string | null; count: number; gummy_id: number; discontinued: boolean }[]>([])
-
-  async function load() {
-    const { data } = await supabase
-      .from('discontinued_reports')
-      .select('gummy_id, gummies(name, maker, flavor, discontinued)')
-    if (!data) return
-    const map = new Map<number, { name: string; maker: string; flavor: string | null; count: number; gummy_id: number; discontinued: boolean }>()
-    for (const row of data as any[]) {
-      const id = row.gummy_id
-      if (!map.has(id)) {
-        map.set(id, { gummy_id: id, name: row.gummies.name, maker: row.gummies.maker, flavor: row.gummies.flavor, discontinued: row.gummies.discontinued, count: 0 })
-      }
-      map.get(id)!.count++
-    }
-    setRows([...map.values()].sort((a, b) => b.count - a.count))
-  }
-
-  useEffect(() => { load() }, [])
-
-  async function confirmDiscontinued(gummy_id: number) {
-    await supabase.from('gummies').update({ discontinued: true }).eq('id', gummy_id)
-    setRows((prev) => prev.map((r) => r.gummy_id === gummy_id ? { ...r, discontinued: true } : r))
-  }
-
-  async function cancelDiscontinued(gummy_id: number) {
-    await supabase.from('gummies').update({ discontinued: false }).eq('id', gummy_id)
-    setRows((prev) => prev.map((r) => r.gummy_id === gummy_id ? { ...r, discontinued: false } : r))
-  }
-
-  async function deleteReports(gummy_id: number) {
-    await supabase.from('discontinued_reports').delete().eq('gummy_id', gummy_id)
-    setRows((prev) => prev.filter((r) => r.gummy_id !== gummy_id))
-  }
-
-  if (rows.length === 0) return <p className="text-sm text-gray-400">終売報告はまだありません</p>
-
-  return (
-    <div className="space-y-3">
-      {rows.map((r) => (
-        <div key={r.gummy_id} className="flex items-center justify-between border border-pink-100 rounded-2xl px-4 py-3">
-          <div>
-            <div className="flex items-center gap-2">
-              <p className="font-semibold text-gray-800">{r.name}</p>
-              {r.discontinued && (
-                <span className="text-xs bg-gray-200 text-gray-500 px-2 py-0.5 rounded-full font-bold">終売確定済</span>
-              )}
-            </div>
-            <p className="text-xs text-gray-400">{r.maker}{r.flavor && ` / ${r.flavor}`}</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-orange-500 font-bold text-sm">{r.count}件</span>
-            <button
-              type="button"
-              onClick={() => deleteReports(r.gummy_id)}
-              className="text-xs bg-red-50 text-red-400 px-3 py-1.5 rounded-full font-bold hover:bg-red-100 transition-colors"
-            >
-              報告削除
-            </button>
-            {r.discontinued ? (
-              <button
-                type="button"
-                onClick={() => cancelDiscontinued(r.gummy_id)}
-                className="text-xs bg-gray-200 text-gray-600 px-3 py-1.5 rounded-full font-bold hover:bg-gray-300 transition-colors"
-              >
-                取り消し
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => confirmDiscontinued(r.gummy_id)}
-                className="text-xs bg-red-500 text-white px-3 py-1.5 rounded-full font-bold hover:bg-red-600 transition-colors"
-              >
-                終売確定
-              </button>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
 // ---- メイン ----
 const tabs: { key: Tab; label: string; icon: string }[] = [
   { key: 'register', label: 'グミ登録', icon: '➕' },
@@ -776,7 +691,6 @@ const tabs: { key: Tab; label: string; icon: string }[] = [
   { key: 'requests', label: '新グミ申請', icon: '📬' },
   { key: 'contacts', label: '問い合わせ', icon: '✉️' },
   { key: 'images', label: '画像承認', icon: '🖼️' },
-  { key: 'discontinued', label: '終売報告', icon: '🚫' },
 ]
 
 export default function AdminPage() {
@@ -839,7 +753,6 @@ export default function AdminPage() {
             {tab === 'requests' && <RequestsTab />}
             {tab === 'contacts' && <ContactsTab />}
             {tab === 'images' && <ImagesTab />}
-            {tab === 'discontinued' && <DiscontinuedTab />}
           </div>
         </main>
       </div>

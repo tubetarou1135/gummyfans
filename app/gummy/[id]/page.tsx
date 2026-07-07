@@ -6,7 +6,6 @@ import Image from 'next/image'
 import StarRating from '@/components/StarRating'
 import ScoreTabs from '@/components/ScoreTabs'
 import PostTabs from '@/components/PostTabs'
-import DiscontinuedButton from '@/components/DiscontinuedButton'
 import type { Metadata } from 'next'
 
 export const revalidate = 60
@@ -42,13 +41,6 @@ async function getReviews(gummyId: number): Promise<Review[]> {
   return data ?? []
 }
 
-async function getDiscontinuedCount(gummyId: number): Promise<number> {
-  const { count } = await supabase
-    .from('discontinued_reports')
-    .select('*', { count: 'exact', head: true })
-    .eq('gummy_id', gummyId)
-  return count ?? 0
-}
 
 async function getApprovedImage(gummyId: number): Promise<GummyImageRow | null> {
   const { data } = await supabase
@@ -82,10 +74,9 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
   const { id } = await params
   const gummy = await getGummy(Number(id))
   if (!gummy) notFound()
-  const [reviews, approvedImage, discontinuedCount] = await Promise.all([
+  const [reviews, approvedImage] = await Promise.all([
     getReviews(gummy.id),
     getApprovedImage(gummy.id),
-    getDiscontinuedCount(gummy.id),
   ])
 
   const imageUrl = approvedImage
@@ -125,22 +116,12 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
         )}
       </div>
 
-      <div className="flex items-start justify-between gap-2 mb-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-2xl font-bold text-gray-800">{gummy.name}</h1>
-            {gummy.discontinued && (
-              <span className="text-xs bg-gray-700 text-white px-2 py-0.5 rounded-full font-bold shrink-0">終売</span>
-            )}
-          </div>
-          <p className="text-sm text-gray-500">
-            {gummy.maker}
-            {gummy.flavor && ` / ${gummy.flavor}`}
-          </p>
-        </div>
-        <div className="shrink-0 mt-1">
-          <DiscontinuedButton gummyId={gummy.id} reportCount={discontinuedCount} />
-        </div>
+      <div className="mb-4">
+        <h1 className="text-2xl font-bold text-gray-800 mb-1">{gummy.name}</h1>
+        <p className="text-sm text-gray-500">
+          {gummy.maker}
+          {gummy.flavor && ` / ${gummy.flavor}`}
+        </p>
       </div>
 
       {gummy.avg_overall != null && (
