@@ -114,7 +114,22 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
             </p>
           </div>
         )}
-        {gummy.source_url && (
+        {gummy.show_citation_card && gummy.source_url ? (
+          <div className="mt-3 border-2 border-purple-200 rounded-2xl p-4 bg-purple-50">
+            <p className="text-xs font-bold text-purple-400 mb-2">📸 画像について</p>
+            {gummy.source_label && (
+              <p className="text-sm text-gray-700 mb-3 leading-relaxed">{gummy.source_label}</p>
+            )}
+            <a
+              href={gummy.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-purple-500 text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-purple-600 transition-colors"
+            >
+              引用元の投稿はこちらから →
+            </a>
+          </div>
+        ) : gummy.source_url ? (
           <div className="mt-3 text-center">
             <a
               href={gummy.source_url}
@@ -125,7 +140,7 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
               {gummy.source_label || '𝕏 投稿を見る'}
             </a>
           </div>
-        )}
+        ) : null}
       </div>
 
       <div className="mb-4">

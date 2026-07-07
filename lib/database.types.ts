@@ -10,16 +10,18 @@ export type GummyRow = {
   new_until: string | null
   source_url: string | null
   source_label: string | null
+  show_citation_card: boolean
   created_at: string
 }
 
-export type GummyInsert = Omit<GummyRow, 'id' | 'created_at' | 'image_url' | 'rakuten_url' | 'discontinued' | 'new_until' | 'source_url' | 'source_label'> & {
+export type GummyInsert = Omit<GummyRow, 'id' | 'created_at' | 'image_url' | 'rakuten_url' | 'discontinued' | 'new_until' | 'source_url' | 'source_label' | 'show_citation_card'> & {
   image_url?: string | null
   rakuten_url?: string | null
   discontinued?: boolean
   new_until?: string | null
   source_url?: string | null
   source_label?: string | null
+  show_citation_card?: boolean
 }
 
 export type ReviewRow = {
