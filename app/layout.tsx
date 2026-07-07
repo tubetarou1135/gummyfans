@@ -75,6 +75,7 @@ export default function RootLayout({
           <Link href="/contact" className="hover:text-pink-400 transition-colors">お問い合わせ</Link>
           <Link href="/privacy" className="hover:text-pink-400 transition-colors">プライバシーポリシー</Link>
           <Link href="/terms" className="hover:text-pink-400 transition-colors">利用規約</Link>
+          <p className="mt-3 text-gray-300">当サイトの情報はすべて独自調査によるものです</p>
         </footer>
       </body>
     </html>
