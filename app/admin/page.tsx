@@ -8,6 +8,37 @@ import Image from 'next/image'
 
 type Tab = 'register' | 'gummies' | 'reviews' | 'requests' | 'contacts' | 'images'
 
+async function uploadClipboardImage(file: File): Promise<string | null> {
+  const ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg'
+  const path = `admin/${Date.now()}.${ext}`
+  const { error } = await supabase.storage.from('gummy-images').upload(path, file, { contentType: file.type })
+  if (error) return null
+  return supabase.storage.from('gummy-images').getPublicUrl(path).data.publicUrl
+}
+
+function PasteImageArea({ onUploaded }: { onUploaded: (url: string) => void }) {
+  const [uploading, setUploading] = useState(false)
+
+  async function handlePaste(e: React.ClipboardEvent) {
+    const file = Array.from(e.clipboardData.items).find(i => i.type.startsWith('image/'))?.getAsFile()
+    if (!file) return
+    setUploading(true)
+    const url = await uploadClipboardImage(file)
+    setUploading(false)
+    if (url) onUploaded(url)
+  }
+
+  return (
+    <div
+      onPaste={handlePaste}
+      tabIndex={0}
+      className="w-full border-2 border-dashed border-pink-200 rounded-2xl px-4 py-4 text-sm text-center text-gray-400 bg-pink-50 cursor-pointer focus:outline-none focus:border-pink-400"
+    >
+      {uploading ? 'アップロード中...' : '📋 ここにCtrl+Vで画像を貼り付け'}
+    </div>
+  )
+}
+
 type GummyRequest = {
   id: number
   name: string
@@ -182,13 +213,14 @@ function RegisterTab() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">画像URL</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">画像</label>
             <input
               value={form.image_url}
               onChange={(e) => set('image_url', e.target.value)}
               placeholder="https://..."
-              className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+              className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50 mb-2"
             />
+            <PasteImageArea onUploaded={(url) => set('image_url', url)} />
             {form.image_url && (
               <div className="mt-2">
                 <Image src={form.image_url} alt="プレビュー" width={80} height={80} className="rounded-xl object-contain border border-pink-100" />
@@ -346,9 +378,10 @@ function GummiesTab() {
             </div>
           </div>
         ) : (
-          <p className="text-xs text-gray-400">画像なし・{editing.rakuten_url ? '楽天URL設定済み' : 'URLなし'}</p>
+          <p className="text-xs text-gray-400 mb-2">画像なし・{editing.rakuten_url ? '楽天URL設定済み' : 'URLなし'}</p>
         )}
-        <div className="flex gap-2">
+        <PasteImageArea onUploaded={(url) => setEditing(prev => prev ? { ...prev, image_url: url } : prev)} />
+        <div className="flex gap-2 mt-2">
           <input
             value={rakutenQuery}
             onChange={(e) => setRakutenQuery(e.target.value)}
