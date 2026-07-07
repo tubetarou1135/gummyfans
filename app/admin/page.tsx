@@ -133,7 +133,7 @@ function RegisterTab() {
       setMsg({ type: 'err', text: '登録に失敗しました: ' + error.message })
     } else {
       setMsg({ type: 'ok', text: '登録しました！' })
-      setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '' })
+      setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '' })
       setSelected(null)
       setResults([])
       setQuery('')
@@ -187,7 +187,7 @@ function RegisterTab() {
                 <p className="text-xs font-semibold text-gray-700 line-clamp-1">{selected.itemName}</p>
                 <p className="text-xs text-gray-400">選択中</p>
               </div>
-              <button type="button" onClick={() => { setSelected(null); setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '' }) }} className="text-xs text-gray-400 hover:text-red-400">変更</button>
+              <button type="button" onClick={() => { setSelected(null); setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '' }) }} className="text-xs text-gray-400 hover:text-red-400">変更</button>
             </div>
           )}
           {[
