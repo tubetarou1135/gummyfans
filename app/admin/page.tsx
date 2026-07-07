@@ -65,7 +65,7 @@ function RegisterTab() {
   const [searching, setSearching] = useState(false)
   const [results, setResults] = useState<RakutenItem[]>([])
   const [selected, setSelected] = useState<RakutenItem | null>(null)
-  const [form, setForm] = useState({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '' })
+  const [form, setForm] = useState({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '' })
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -107,6 +107,7 @@ function RegisterTab() {
       image_url: item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0]?.imageUrl ?? '',
       rakuten_url: toMoshimoUrl(item.itemUrl),
       source_url: '',
+      source_label: '',
     })
   }
 
@@ -125,6 +126,7 @@ function RegisterTab() {
       image_url: form.image_url.trim() || null,
       rakuten_url: form.rakuten_url.trim() || null,
       source_url: form.source_url.trim() || null,
+      source_label: form.source_label.trim() || null,
     })
     setLoading(false)
     if (error) {
@@ -236,6 +238,15 @@ function RegisterTab() {
               className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
             />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">引用ボタンのテキスト</label>
+            <input
+              value={form.source_label}
+              onChange={(e) => set('source_label', e.target.value)}
+              placeholder="例：𝕏 投稿を見る、公式発表はこちら"
+              className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+            />
+          </div>
           {msg && <p className={`text-sm ${msg.type === 'ok' ? 'text-green-600' : 'text-red-500'}`}>{msg.text}</p>}
           <button type="submit" disabled={loading} className="w-full bg-pink-500 text-white py-3 rounded-full text-sm font-bold hover:bg-pink-600 transition-colors disabled:opacity-50">
             {loading ? '登録中...' : '登録する'}
@@ -327,6 +338,7 @@ function GummiesTab() {
       rakuten_url: editing.rakuten_url,
       new_until: editing.new_until,
       source_url: editing.source_url,
+      source_label: editing.source_label,
     }).eq('id', editing.id)
     setLoading(false)
     if (error) {
@@ -415,6 +427,15 @@ function GummiesTab() {
           value={editing.source_url ?? ''}
           onChange={(e) => setEditing((prev) => prev ? { ...prev, source_url: e.target.value || null } : prev)}
           placeholder="https://x.com/..."
+          className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">引用ボタンのテキスト</label>
+        <input
+          value={editing.source_label ?? ''}
+          onChange={(e) => setEditing((prev) => prev ? { ...prev, source_label: e.target.value || null } : prev)}
+          placeholder="例：𝕏 投稿を見る、公式発表はこちら"
           className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
         />
       </div>
