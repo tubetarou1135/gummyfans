@@ -161,16 +161,28 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
         <p className="text-sm text-gray-600 mb-4">{gummy.description}</p>
       )}
 
-      {gummy.rakuten_url && (
-        <a
-          href={gummy.rakuten_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 bg-red-500 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-red-600 transition-colors mb-6"
-        >
-          🛒 楽天市場で買う
-        </a>
-      )}
+      <div className="flex flex-wrap gap-3 mb-6">
+        {gummy.rakuten_url && (
+          <a
+            href={gummy.rakuten_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-red-500 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-red-600 transition-colors"
+          >
+            🛒 楽天市場で買う
+          </a>
+        )}
+        {gummy.source_url && (
+          <a
+            href={gummy.source_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-gray-800 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-gray-700 transition-colors"
+          >
+            𝕏 投稿を見る
+          </a>
+        )}
+      </div>
 
       {/* レビュー投稿 / 画像提供 タブ */}
       <PostTabs gummyId={gummy.id} />

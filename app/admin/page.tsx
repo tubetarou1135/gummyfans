@@ -267,6 +267,7 @@ function GummiesTab() {
       image_url: editing.image_url,
       rakuten_url: editing.rakuten_url,
       new_until: editing.new_until,
+      source_url: editing.source_url,
     }).eq('id', editing.id)
     setLoading(false)
     if (error) {
@@ -345,6 +346,17 @@ function GummiesTab() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* 引用元URL */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">引用元URL（X投稿など）</label>
+        <input
+          value={editing.source_url ?? ''}
+          onChange={(e) => setEditing((prev) => prev ? { ...prev, source_url: e.target.value || null } : prev)}
+          placeholder="https://x.com/..."
+          className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+        />
       </div>
 
       {/* 新グミ設定 */}
