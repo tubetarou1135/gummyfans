@@ -126,7 +126,7 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-purple-500 text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-purple-600 transition-colors"
             >
-              引用元の投稿はこちらから →
+              引用元の投稿はコチラから
             </a>
           </div>
         ) : gummy.source_url ? (
