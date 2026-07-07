@@ -117,9 +117,9 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
         {gummy.show_citation_card && gummy.source_url ? (
           <div className="mt-3 border-2 border-purple-200 rounded-2xl p-4 bg-purple-50">
             <p className="text-xs font-bold text-purple-400 mb-2">📸 画像について</p>
-            {gummy.source_label && (
-              <p className="text-sm text-gray-700 mb-3 leading-relaxed">{gummy.source_label}</p>
-            )}
+            <p className="text-sm text-gray-700 mb-3 leading-relaxed">
+              {gummy.source_label || 'あいうえお🌈🍇💖日本グミ協会会長@aiueoka5様より許可を得て引用しております！'}
+            </p>
             <a
               href={gummy.source_url}
               target="_blank"
