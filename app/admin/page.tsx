@@ -480,7 +480,9 @@ function GummiesTab() {
       setEditingImages((data ?? []).map((img: GummyImageRow) => ({
         id: img.id,
         nickname: img.nickname,
-        url: supabase.storage.from('gummy-images').getPublicUrl(img.storage_path).data.publicUrl,
+        url: img.storage_path.startsWith('http')
+          ? img.storage_path
+          : supabase.storage.from('gummy-images').getPublicUrl(img.storage_path).data.publicUrl,
       })))
     })
   }, [editing?.id])

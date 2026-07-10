@@ -81,8 +81,10 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
   const galleryImages = [
     ...(gummy.image_url ? [{ url: gummy.image_url, label: hasCitationCard ? '' : '楽天市場' }] : []),
     ...approvedImages.map((img) => ({
-      url: supabase.storage.from('gummy-images').getPublicUrl(img.storage_path).data.publicUrl,
-      label: `${img.nickname}さんからの画像提供`,
+      url: img.storage_path.startsWith('http')
+        ? img.storage_path
+        : supabase.storage.from('gummy-images').getPublicUrl(img.storage_path).data.publicUrl,
+      label: img.nickname === '管理者' ? '' : `${img.nickname}さんからの画像提供`,
     })),
   ]
 
