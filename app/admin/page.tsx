@@ -421,6 +421,11 @@ function AdminImageManager({
     }
   }
 
+  async function updateNickname(id: number, nickname: string) {
+    await supabase.from('gummy_images').update({ nickname }).eq('id', id)
+    onImagesChange(approvedImages.map(i => i.id === id ? { ...i, nickname } : i))
+  }
+
   return (
     <div className="border-2 border-pink-100 rounded-2xl p-4 space-y-3">
       <p className="text-sm font-semibold text-gray-700">画像（{count}/3枚）</p>
@@ -436,6 +441,14 @@ function AdminImageManager({
               <p className={`text-[10px] mt-0.5 font-semibold ${img.key === 'main' ? 'text-pink-500' : 'text-gray-400'}`}>
                 {img.key === 'main' ? '⭐ メイン' : img.label}
               </p>
+              {/* ユーザー提供画像のみニックネーム編集 */}
+              {img.key !== 'main' && img.label !== 'サブ画像' && (
+                <input
+                  defaultValue={img.label}
+                  onBlur={(e) => updateNickname(img.key as number, e.target.value)}
+                  className="text-[10px] border border-pink-200 rounded px-1 py-0.5 w-20 mt-0.5 text-center bg-pink-50"
+                />
+              )}
               <div className="flex flex-col gap-0.5 mt-0.5">
                 {img.key !== 'main' && (
                   <button type="button" onClick={() => setAsMain(img.key)} className="text-[10px] text-pink-400 hover:text-pink-600">メインに設定</button>
