@@ -466,13 +466,14 @@ function AdminImageManager({
               </div>
             </div>
           ))}
-          {approvedImages.length >= 2 && (
-            <button type="button" onClick={swapSubImages}
-              className="self-center text-xs bg-pink-50 text-pink-500 px-3 py-2 rounded-full hover:bg-pink-100 font-semibold border border-pink-200">
-              ⇄ 2・3枚目<br />入れ替え
-            </button>
-          )}
         </div>
+      )}
+
+      {approvedImages.length >= 2 && (
+        <button type="button" onClick={swapSubImages}
+          className="w-full text-xs bg-pink-50 text-pink-500 py-2 rounded-full hover:bg-pink-100 font-semibold border border-pink-200">
+          ⇄ 2枚目・3枚目を入れ替え
+        </button>
       )}
 
       {/* 追加 */}
