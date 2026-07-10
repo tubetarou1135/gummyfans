@@ -784,32 +784,34 @@ function GummiesTab() {
         placeholder="商品名・メーカー・フレーバーで検索..."
         className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
       />
-      <div className="flex gap-2">
+      <div className="space-y-2">
         <select
           value={makerFilter}
           onChange={(e) => setMakerFilter(e.target.value)}
-          className="flex-1 border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+          className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
         >
           <option value="">すべてのメーカー ({gummies.length}件)</option>
           {makers.map(m => (
             <option key={m} value={m}>{m} ({gummies.filter(g => g.maker === m).length}件)</option>
           ))}
         </select>
-        <select
-          value={imageFilter}
-          onChange={(e) => setImageFilter(e.target.value as 'all' | 'with' | 'without')}
-          className="shrink-0 border-2 border-pink-100 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
-        >
-          <option value="all">画像：全て ({gummies.length}件)</option>
-          <option value="with">画像あり ({gummies.filter(g => !!g.image_url).length}件)</option>
-          <option value="without">画像なし ({gummies.filter(g => !g.image_url).length}件)</option>
-        </select>
-        <button
-          onClick={() => setSortAsc(v => !v)}
-          className="shrink-0 border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm font-semibold bg-pink-50 hover:bg-pink-100 transition-colors text-pink-500"
-        >
-          五十音 {sortAsc ? '▲' : '▼'}
-        </button>
+        <div className="flex gap-2">
+          <select
+            value={imageFilter}
+            onChange={(e) => setImageFilter(e.target.value as 'all' | 'with' | 'without')}
+            className="flex-1 border-2 border-pink-100 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+          >
+            <option value="all">画像：全て ({gummies.length}件)</option>
+            <option value="with">画像あり ({gummies.filter(g => !!g.image_url).length}件)</option>
+            <option value="without">画像なし ({gummies.filter(g => !g.image_url).length}件)</option>
+          </select>
+          <button
+            onClick={() => setSortAsc(v => !v)}
+            className="shrink-0 border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm font-semibold bg-pink-50 hover:bg-pink-100 transition-colors text-pink-500"
+          >
+            五十音 {sortAsc ? '▲' : '▼'}
+          </button>
+        </div>
       </div>
       <p className="text-xs text-gray-400">{filtered.length}件表示中</p>
       {filtered.length === 0 && <p className="text-gray-400 text-sm">グミが登録されていません</p>}
