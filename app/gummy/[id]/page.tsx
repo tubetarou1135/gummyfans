@@ -84,7 +84,7 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
       url: img.storage_path.startsWith('http')
         ? img.storage_path
         : supabase.storage.from('gummy-images').getPublicUrl(img.storage_path).data.publicUrl,
-      label: img.nickname === '管理者' ? '' : `${img.nickname}さんからの画像提供`,
+      label: img.nickname === 'サブ画像' ? '' : `${img.nickname}さんからの画像提供`,
     })),
   ]
 
