@@ -133,7 +133,7 @@ function RegisterTab() {
       return
     }
     setLoading(true)
-    const mainImage = pendingImages[0] ?? form.image_url.trim() || null
+    const mainImage = pendingImages[0] ?? (form.image_url.trim() || null)
     const { data: inserted, error } = await supabase.from('gummies').insert({
       name: form.name.trim(),
       maker: form.maker.trim(),
