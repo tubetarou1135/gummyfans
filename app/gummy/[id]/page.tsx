@@ -48,7 +48,8 @@ async function getApprovedImages(gummyId: number): Promise<GummyImageRow[]> {
     .select('*')
     .eq('gummy_id', gummyId)
     .eq('status', 'approved')
-    .order('created_at', { ascending: false })
+    .order('sort_order', { ascending: true })
+    .order('created_at', { ascending: true })
   return data ?? []
 }
 

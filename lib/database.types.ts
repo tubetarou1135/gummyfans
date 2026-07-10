@@ -78,6 +78,7 @@ export type GummyImageRow = {
   nickname: string
   storage_path: string
   status: string
+  sort_order?: number
   created_at: string
 }
 

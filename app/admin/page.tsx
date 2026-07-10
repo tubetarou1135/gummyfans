@@ -356,6 +356,7 @@ function AdminImageManager({
 }) {
   const [pendingUrl, setPendingUrl] = useState('')
   const [deleteTarget, setDeleteTarget] = useState<'main' | number | null>(null)
+  const dragIndex = useRef<number | null>(null)
 
   const allImages: { key: 'main' | number; url: string; label: string }[] = [
     ...(mainImageUrl ? [{ key: 'main' as const, url: mainImageUrl, label: 'メイン画像' }] : []),
@@ -377,8 +378,22 @@ function AdminImageManager({
   async function saveImage(url: string) {
     const { data } = await supabase.from('gummy_images').insert({
       gummy_id: gummyId, nickname: 'サブ画像', storage_path: url, status: 'approved',
+      sort_order: approvedImages.length,
     }).select().single()
     if (data) onImagesChange([...approvedImages, { id: data.id, url, nickname: 'サブ画像' }])
+  }
+
+  async function handleDrop(toIndex: number) {
+    const from = dragIndex.current
+    if (from === null || from === toIndex) return
+    const reordered = [...approvedImages]
+    const [moved] = reordered.splice(from, 1)
+    reordered.splice(toIndex, 0, moved)
+    onImagesChange(reordered)
+    await Promise.all(reordered.map((img, i) =>
+      supabase.from('gummy_images').update({ sort_order: i }).eq('id', img.id)
+    ))
+    dragIndex.current = null
   }
 
   async function setAsMain(key: 'main' | number) {
@@ -433,8 +448,16 @@ function AdminImageManager({
       {/* 現在の画像一覧 */}
       {allImages.length > 0 && (
         <div className="flex flex-wrap gap-3">
-          {allImages.map((img) => (
-            <div key={img.key} className="text-center">
+          {allImages.map((img, i) => {
+            const subIndex = i - (mainImageUrl ? 1 : 0) // approvedImages内のインデックス
+            return (
+            <div key={img.key} className="text-center"
+              draggable={img.key !== 'main'}
+              onDragStart={() => { dragIndex.current = subIndex }}
+              onDragOver={(e) => { if (img.key !== 'main') e.preventDefault() }}
+              onDrop={() => { if (img.key !== 'main') handleDrop(subIndex) }}
+              style={{ opacity: img.key !== 'main' ? 1 : 1, cursor: img.key !== 'main' ? 'grab' : 'default' }}
+            >
               <div className={`rounded-xl overflow-hidden border-2 ${img.key === 'main' ? 'border-pink-400' : 'border-pink-100'}`}>
                 <Image src={img.url} alt="" width={80} height={80} className="object-contain" />
               </div>
@@ -456,7 +479,8 @@ function AdminImageManager({
                 <button type="button" onClick={() => removeImage(img.key)} className="text-[10px] text-red-400 hover:text-red-600">削除</button>
               </div>
             </div>
-          ))}
+            )
+          })}
         </div>
       )}
 
@@ -517,7 +541,7 @@ function GummiesTab() {
 
   useEffect(() => {
     if (!editing) { setEditingImages([]); return }
-    supabase.from('gummy_images').select('*').eq('gummy_id', editing.id).eq('status', 'approved').order('created_at', { ascending: false }).then(({ data }) => {
+    supabase.from('gummy_images').select('*').eq('gummy_id', editing.id).eq('status', 'approved').order('sort_order', { ascending: true }).order('created_at', { ascending: true }).then(({ data }) => {
       setEditingImages((data ?? []).map((img: GummyImageRow) => ({
         id: img.id,
         nickname: img.nickname,
