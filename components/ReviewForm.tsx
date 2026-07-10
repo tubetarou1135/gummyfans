@@ -87,52 +87,61 @@ export default function ReviewForm({ gummyId, inner }: { gummyId: number; inner?
 
   const fields = (
     <>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">ニックネーム</label>
-        <input
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
-          placeholder="例：グミ好き太郎"
-          className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
-          maxLength={30}
-        />
-      </div>
-      <div>
-        <p className="text-sm font-semibold text-gray-700 mb-2">一般評価</p>
-        <div className="space-y-2">
-          {basicFields.map(({ key, label }) => (
-            <div key={key} className="flex items-center gap-3">
-              <span className="text-sm text-gray-600 w-20 shrink-0">{label}</span>
-              <StarRating value={basic[key]} onChange={(v) => setBasic((p) => ({ ...p, [key]: v }))} size="md" />
+      <div className="md:flex md:gap-6">
+        {/* 左カラム：ニックネーム＋一般評価 */}
+        <div className="md:flex-1 space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">ニックネーム</label>
+            <input
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              placeholder="例：グミ好き太郎"
+              className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+              maxLength={30}
+            />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-gray-700 mb-2">一般評価</p>
+            <div className="space-y-2">
+              {basicFields.map(({ key, label }) => (
+                <div key={key} className="flex items-center gap-3">
+                  <span className="text-sm text-gray-600 w-20 shrink-0">{label}</span>
+                  <StarRating value={basic[key]} onChange={(v) => setBasic((p) => ({ ...p, [key]: v }))} size="md" />
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
-      </div>
-      <div>
-        <p className="text-sm font-semibold text-gray-700 mb-0.5">日本グミ協会指標 <span className="text-gray-400 font-normal text-xs">（任意）</span></p>
-        <p className="text-xs text-gray-300 mb-2">この評価指標は日本グミ協会の許可を得て使用しています</p>
-        <div className="space-y-3">
-          {expertFields.map(({ key, label, desc }) => (
-            <div key={key}>
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600 w-40 shrink-0 whitespace-nowrap">{label}</span>
-                <StarRating value={expert[key]} onChange={(v) => setExpert((p) => ({ ...p, [key]: v }))} size="md" />
-              </div>
-              <p className="text-xs text-gray-400 ml-40 pl-3">{desc}</p>
+
+        {/* 右カラム：日本グミ協会指標＋コメント */}
+        <div className="md:flex-1 space-y-5 mt-5 md:mt-0">
+          <div>
+            <p className="text-sm font-semibold text-gray-700 mb-0.5">日本グミ協会指標 <span className="text-gray-400 font-normal text-xs">（任意）</span></p>
+            <p className="text-xs text-gray-300 mb-2">この評価指標は日本グミ協会の許可を得て使用しています</p>
+            <div className="space-y-3">
+              {expertFields.map(({ key, label, desc }) => (
+                <div key={key}>
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-gray-600 w-36 shrink-0 whitespace-nowrap">{label}</span>
+                    <StarRating value={expert[key]} onChange={(v) => setExpert((p) => ({ ...p, [key]: v }))} size="md" />
+                  </div>
+                  <p className="text-xs text-gray-400 ml-36 pl-3">{desc}</p>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">コメント <span className="text-gray-400 font-normal text-xs">（任意）</span></label>
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="食感・味・おすすめポイントなど..."
+              rows={3}
+              className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50 resize-none"
+              maxLength={500}
+            />
+          </div>
         </div>
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">コメント <span className="text-gray-400 font-normal text-xs">（任意）</span></label>
-        <textarea
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          placeholder="食感・味・おすすめポイントなど..."
-          rows={3}
-          className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50 resize-none"
-          maxLength={500}
-        />
       </div>
       {error && <p className="text-red-500 text-sm">{error}</p>}
       <button
