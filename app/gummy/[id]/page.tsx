@@ -196,9 +196,12 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
             </div>
           )}
 
-          {/* レビュー投稿 / 画像提供 タブ */}
-          <PostTabs gummyId={gummy.id} />
         </div>
+      </div>
+
+      {/* レビュー投稿 / 画像提供 タブ（全幅） */}
+      <div className="mt-6">
+        <PostTabs gummyId={gummy.id} />
       </div>
 
       {reviews.length > 0 && (
