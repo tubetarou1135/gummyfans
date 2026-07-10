@@ -15,6 +15,7 @@ async function getNewGummies(): Promise<GummyWithAvg[]> {
     .select('*')
     .gt('new_until', now)
     .order('new_until', { ascending: false })
+    .limit(8)
   return (data ?? []) as GummyWithAvg[]
 }
 
@@ -81,6 +82,11 @@ export default async function HomePage({
               {newGummies.map((g) => (
                 <GummyCard key={g.id} gummy={g} />
               ))}
+            </div>
+            <div className="flex justify-end mt-3">
+              <Link href="/new" className="text-sm font-bold text-pink-500 hover:text-pink-600 hover:underline">
+                新発売グミをもっと見る →
+              </Link>
             </div>
           </div>
         )}
