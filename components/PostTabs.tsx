@@ -7,35 +7,41 @@ import ImageUploadForm from './ImageUploadForm'
 type Tab = 'review' | 'image'
 
 export default function PostTabs({ gummyId }: { gummyId: number }) {
-  const [tab, setTab] = useState<Tab>('review')
+  const [tab, setTab] = useState<Tab | null>(null)
+
+  function handleTab(t: Tab) {
+    setTab((prev) => (prev === t ? null : t))
+  }
 
   return (
     <div className="border-2 border-pink-100 rounded-3xl bg-white overflow-hidden mb-6">
       {/* タブヘッダー */}
-      <div className="flex border-b-2 border-pink-50">
+      <div className="flex">
         <button
-          onClick={() => setTab('review')}
+          onClick={() => handleTab('review')}
           className={`flex-1 py-3 text-sm font-semibold transition-colors ${
-            tab === 'review' ? 'text-pink-500 border-b-2 border-pink-500 -mb-0.5' : 'text-gray-400 hover:text-pink-400'
+            tab === 'review' ? 'text-pink-500 border-b-2 border-pink-500' : 'text-gray-400 hover:text-pink-400 border-b-2 border-pink-50'
           }`}
         >
-          レビューを投稿
+          レビューを投稿 {tab === 'review' ? '▲' : '▼'}
         </button>
         <button
-          onClick={() => setTab('image')}
+          onClick={() => handleTab('image')}
           className={`flex-1 py-3 text-sm font-semibold transition-colors ${
-            tab === 'image' ? 'text-pink-500 border-b-2 border-pink-500 -mb-0.5' : 'text-gray-400 hover:text-pink-400'
+            tab === 'image' ? 'text-pink-500 border-b-2 border-pink-500' : 'text-gray-400 hover:text-pink-400 border-b-2 border-pink-50'
           }`}
         >
-          📸 画像を提供
+          📸 画像を提供 {tab === 'image' ? '▲' : '▼'}
         </button>
       </div>
 
       {/* コンテンツ */}
-      <div className="px-5 pb-5">
-        {tab === 'review' && <ReviewFormInner gummyId={gummyId} />}
-        {tab === 'image' && <ImageUploadForm gummyId={gummyId} />}
-      </div>
+      {tab && (
+        <div className="px-5 pb-5 pt-1">
+          {tab === 'review' && <ReviewFormInner gummyId={gummyId} />}
+          {tab === 'image' && <ImageUploadForm gummyId={gummyId} />}
+        </div>
+      )}
     </div>
   )
 }
