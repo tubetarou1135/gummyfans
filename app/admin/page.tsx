@@ -416,7 +416,6 @@ function GummiesTab() {
     setEditing(prev => prev ? {
       ...prev,
       image_url: item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0]?.imageUrl ?? prev.image_url,
-      rakuten_url: toMoshimoUrl(item.itemUrl),
     } : prev)
     setRakutenResults([])
     setRakutenQuery('')
@@ -492,27 +491,31 @@ function GummiesTab() {
         />
       </div>
 
-      {/* 楽天検索 */}
+      {/* 画像 */}
       <div className="border-2 border-pink-100 rounded-2xl p-4 space-y-3">
-        <p className="text-sm font-semibold text-gray-700">楽天から画像・URLを検索</p>
+        <p className="text-sm font-semibold text-gray-700">メイン画像（楽天・外部URL）</p>
         {editing.image_url ? (
           <div className="flex items-center gap-3">
             <Image src={editing.image_url} alt="" width={80} height={80} className="rounded-xl object-contain shrink-0 border border-pink-100" />
             <div className="space-y-1">
-              <p className="text-xs text-gray-400">{editing.rakuten_url ? '楽天URL設定済み' : 'URLなし'}</p>
+              <input
+                value={editing.image_url}
+                onChange={(e) => setEditing(prev => prev ? { ...prev, image_url: e.target.value || null } : prev)}
+                className="w-full border border-pink-100 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-pink-400 bg-pink-50"
+              />
               <button type="button" onClick={() => setEditing(prev => prev ? { ...prev, image_url: null } : prev)} className="text-xs text-red-400 hover:text-red-600">画像を削除</button>
             </div>
           </div>
         ) : (
-          <p className="text-xs text-gray-400 mb-2">画像なし・{editing.rakuten_url ? '楽天URL設定済み' : 'URLなし'}</p>
+          <p className="text-xs text-gray-400">画像なし</p>
         )}
         <PasteImageArea onUploaded={(url) => setEditing(prev => prev ? { ...prev, image_url: url } : prev)} />
-        <div className="flex gap-2 mt-2">
+        <div className="flex gap-2">
           <input
             value={rakutenQuery}
             onChange={(e) => setRakutenQuery(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleRakutenSearch(e as unknown as React.FormEvent) } }}
-            placeholder={`${editing.name}${editing.flavor ? ' ' + editing.flavor : ''}`}
+            placeholder={`${editing.name}${editing.flavor ? ' ' + editing.flavor : ''} で検索`}
             className="flex-1 border-2 border-pink-100 rounded-2xl px-4 py-2 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
           />
           <button type="button" onClick={handleRakutenSearch} disabled={rakutenSearching} className="bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-pink-600 disabled:opacity-50">
@@ -532,6 +535,17 @@ function GummiesTab() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* 楽天URL */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">楽天URL</label>
+        <input
+          value={editing.rakuten_url ?? ''}
+          onChange={(e) => setEditing(prev => prev ? { ...prev, rakuten_url: e.target.value || null } : prev)}
+          placeholder="https://hb.afl.rakuten.co.jp/..."
+          className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+        />
       </div>
 
       {/* 承認済みユーザー投稿画像 */}
