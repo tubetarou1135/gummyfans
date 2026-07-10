@@ -851,13 +851,6 @@ function ImagesTab() {
   useEffect(() => { load() }, [])
 
   async function handleApprove(img: GummyImageRow & { gummy_name: string }) {
-    // 既存の承認済み画像を却下
-    await supabase
-      .from('gummy_images')
-      .update({ status: 'rejected' })
-      .eq('gummy_id', img.gummy_id)
-      .eq('status', 'approved')
-    // 今回の画像を承認
     const { error } = await supabase
       .from('gummy_images')
       .update({ status: 'approved' })
