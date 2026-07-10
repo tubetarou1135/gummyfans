@@ -119,7 +119,7 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
                     <div className="mt-2 border border-purple-200 rounded-xl p-2.5 bg-purple-50">
                       <p className="text-[10px] font-bold text-purple-400 mb-1">📸 画像について</p>
                       <p className="text-[10px] text-gray-600 mb-2 leading-relaxed">
-                        {gummy.source_label || 'あいうえお🌈🍇💖日本グミ協会会長@aiueoka5様より許可を得て引用しております！'}
+                        {gummy.source_label || 'あいうえお🌈🍇💖日本グミ協会会長@aiueoka5様の画像を引用しております！'}
                       </p>
                       <div className="flex flex-wrap gap-1">
                         {citations.map((c, i) => (
@@ -147,7 +147,7 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
                 <div className="mt-2 border border-blue-200 rounded-xl p-2.5 bg-blue-50">
                   <p className="text-[10px] font-bold text-blue-400 mb-1">🍬 画像について</p>
                   <p className="text-[10px] text-gray-600 mb-2 leading-relaxed">
-                    日本グミ協会(@japan_gummy)より許可を得て引用しております！
+                    日本グミ協会(@japan_gummy)の画像を引用しております！
                   </p>
                   <a
                     href="https://x.com/japan_gummy"
