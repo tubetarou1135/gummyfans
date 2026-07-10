@@ -247,17 +247,21 @@ function RegisterTab() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">画像</label>
-            <input
-              value={form.image_url}
-              onChange={(e) => set('image_url', e.target.value)}
-              placeholder="https://..."
-              className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50 mb-2"
-            />
-            <PasteImageArea onUploaded={(url) => set('image_url', url)} />
-            {form.image_url && (
-              <div className="mt-2">
-                <Image src={form.image_url} alt="プレビュー" width={80} height={80} className="rounded-xl object-contain border border-pink-100" />
+            {form.image_url ? (
+              <div className="flex items-start gap-3 mt-1">
+                <Image src={form.image_url} alt="プレビュー" width={120} height={120} className="rounded-2xl object-contain border-2 border-pink-100" />
+                <button type="button" onClick={() => set('image_url', '')} className="text-xs text-red-400 hover:text-red-600 mt-1">✕ 削除</button>
               </div>
+            ) : (
+              <>
+                <input
+                  value={form.image_url}
+                  onChange={(e) => set('image_url', e.target.value)}
+                  placeholder="https://..."
+                  className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50 mb-2"
+                />
+                <PasteImageArea onUploaded={(url) => set('image_url', url)} />
+              </>
             )}
           </div>
           <div>
