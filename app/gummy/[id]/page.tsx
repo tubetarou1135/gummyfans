@@ -203,9 +203,15 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
         <PostTabs gummyId={gummy.id} />
       </div>
 
+      <h2 className="text-lg font-semibold mt-8 mb-4">みんなのレビュー</h2>
+      {reviews.length === 0 && (
+        <div className="text-center py-10 text-gray-400">
+          <p className="text-3xl mb-2">🍬</p>
+          <p className="text-sm">まだレビューがありません。<br />最初のレビューを投稿してみましょう！</p>
+        </div>
+      )}
       {reviews.length > 0 && (
         <>
-          <h2 className="text-lg font-semibold mt-8 mb-4">みんなのレビュー</h2>
           <div className="space-y-4">
             {reviews.map((r) => (
               <div key={r.id} className="border-2 border-pink-100 rounded-2xl p-4">
