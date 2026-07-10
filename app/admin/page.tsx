@@ -356,6 +356,8 @@ function AdminImageManager({
 }) {
   const [pendingUrl, setPendingUrl] = useState('')
   const [deleteTarget, setDeleteTarget] = useState<'main' | number | null>(null)
+  const [draggingIdx, setDraggingIdx] = useState<number | null>(null)
+  const [overIdx, setOverIdx] = useState<number | null>(null)
   const dragIndex = useRef<number | null>(null)
 
   const allImages: { key: 'main' | number; url: string; label: string }[] = [
@@ -453,13 +455,20 @@ function AdminImageManager({
             return (
             <div key={img.key} className="text-center"
               draggable={img.key !== 'main'}
-              onDragStart={() => { dragIndex.current = subIndex }}
-              onDragOver={(e) => { if (img.key !== 'main') e.preventDefault() }}
-              onDrop={() => { if (img.key !== 'main') handleDrop(subIndex) }}
-              style={{ opacity: img.key !== 'main' ? 1 : 1, cursor: img.key !== 'main' ? 'grab' : 'default' }}
+              onDragStart={() => { dragIndex.current = subIndex; setDraggingIdx(subIndex) }}
+              onDragOver={(e) => { if (img.key !== 'main') { e.preventDefault(); setOverIdx(subIndex) } }}
+              onDragLeave={() => setOverIdx(null)}
+              onDrop={() => { if (img.key !== 'main') { handleDrop(subIndex); setDraggingIdx(null); setOverIdx(null) } }}
+              onDragEnd={() => { setDraggingIdx(null); setOverIdx(null) }}
+              style={{
+                cursor: img.key !== 'main' ? 'grab' : 'default',
+                opacity: draggingIdx === subIndex ? 0.4 : 1,
+                outline: overIdx === subIndex && draggingIdx !== subIndex ? '2px dashed #f472b6' : 'none',
+                borderRadius: 12,
+              }}
             >
               <div className={`rounded-xl overflow-hidden border-2 ${img.key === 'main' ? 'border-pink-400' : 'border-pink-100'}`}>
-                <Image src={img.url} alt="" width={80} height={80} className="object-contain" />
+                <Image src={img.url} alt="" width={80} height={80} className="object-contain" draggable={false} />
               </div>
               <p className={`text-[10px] mt-0.5 font-semibold ${img.key === 'main' ? 'text-pink-500' : 'text-gray-400'}`}>
                 {img.key === 'main' ? '⭐ メイン' : img.label}
