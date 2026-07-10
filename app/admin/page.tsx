@@ -376,9 +376,28 @@ function AdminImageManager({
 
   async function saveImage(url: string) {
     const { data } = await supabase.from('gummy_images').insert({
-      gummy_id: gummyId, nickname: '管理者', storage_path: url, status: 'approved',
+      gummy_id: gummyId, nickname: 'サブ画像', storage_path: url, status: 'approved',
     }).select().single()
-    if (data) onImagesChange([...approvedImages, { id: data.id, url, nickname: '管理者' }])
+    if (data) onImagesChange([...approvedImages, { id: data.id, url, nickname: 'サブ画像' }])
+  }
+
+  async function setAsMain(key: 'main' | number) {
+    if (key === 'main') return
+    const target = approvedImages.find(i => i.id === key)
+    if (!target) return
+    // 現在のメイン画像をサブに移す
+    const prevMain = mainImageUrl
+    if (prevMain) {
+      const { data } = await supabase.from('gummy_images').insert({
+        gummy_id: gummyId, nickname: 'サブ画像', storage_path: prevMain, status: 'approved',
+      }).select().single()
+      if (data) onImagesChange([...approvedImages.filter(i => i.id !== key), { id: data.id, url: prevMain, nickname: 'サブ画像' }])
+    } else {
+      onImagesChange(approvedImages.filter(i => i.id !== key))
+    }
+    // 選択した画像をメインに
+    await supabase.from('gummy_images').delete().eq('id', key)
+    onMainImageChange(target.url)
   }
 
   async function removeAndAdd(key: 'main' | number) {
@@ -408,12 +427,21 @@ function AdminImageManager({
 
       {/* 現在の画像一覧 */}
       {allImages.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-3">
           {allImages.map((img) => (
             <div key={img.key} className="text-center">
-              <Image src={img.url} alt="" width={80} height={80} className="rounded-xl object-contain border border-pink-100" />
-              <p className="text-[10px] text-gray-400 mt-0.5">{img.label}</p>
-              <button type="button" onClick={() => removeImage(img.key)} className="text-[10px] text-red-400 hover:text-red-600">削除</button>
+              <div className={`rounded-xl overflow-hidden border-2 ${img.key === 'main' ? 'border-pink-400' : 'border-pink-100'}`}>
+                <Image src={img.url} alt="" width={80} height={80} className="object-contain" />
+              </div>
+              <p className={`text-[10px] mt-0.5 font-semibold ${img.key === 'main' ? 'text-pink-500' : 'text-gray-400'}`}>
+                {img.key === 'main' ? '⭐ メイン' : img.label}
+              </p>
+              <div className="flex flex-col gap-0.5 mt-0.5">
+                {img.key !== 'main' && (
+                  <button type="button" onClick={() => setAsMain(img.key)} className="text-[10px] text-pink-400 hover:text-pink-600">メインに設定</button>
+                )}
+                <button type="button" onClick={() => removeImage(img.key)} className="text-[10px] text-red-400 hover:text-red-600">削除</button>
+              </div>
             </div>
           ))}
         </div>
