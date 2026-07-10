@@ -27,6 +27,7 @@ export default function PrivacyPage() {
         <section>
           <h2 className="font-bold text-base text-gray-800 mb-2">5. ユーザー提供画像について</h2>
           <p>当サイトに掲載されている商品画像は、ユーザーの皆様からご提供いただいたものです。掲載画像の著作権は各投稿者に帰属します。当サイトは提供いただいた画像を商品紹介目的にのみ使用します。</p>
+          <p className="mt-2">また、一部の画像については、事前に投稿者へ連絡を取り承諾を得たうえで使用しております。</p>
         </section>
 
         <section>
