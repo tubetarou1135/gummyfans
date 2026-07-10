@@ -356,9 +356,6 @@ function AdminImageManager({
 }) {
   const [pendingUrl, setPendingUrl] = useState('')
   const [deleteTarget, setDeleteTarget] = useState<'main' | number | null>(null)
-  const [draggingIdx, setDraggingIdx] = useState<number | null>(null)
-  const [overIdx, setOverIdx] = useState<number | null>(null)
-  const dragIndex = useRef<number | null>(null)
 
   const allImages: { key: 'main' | number; url: string; label: string }[] = [
     ...(mainImageUrl ? [{ key: 'main' as const, url: mainImageUrl, label: 'メイン画像' }] : []),
@@ -385,17 +382,13 @@ function AdminImageManager({
     if (data) onImagesChange([...approvedImages, { id: data.id, url, nickname: 'サブ画像' }])
   }
 
-  async function handleDrop(toIndex: number) {
-    const from = dragIndex.current
-    if (from === null || from === toIndex) return
-    const reordered = [...approvedImages]
-    const [moved] = reordered.splice(from, 1)
-    reordered.splice(toIndex, 0, moved)
+  async function swapSubImages() {
+    if (approvedImages.length < 2) return
+    const reordered = [approvedImages[1], approvedImages[0]]
     onImagesChange(reordered)
     await Promise.all(reordered.map((img, i) =>
       supabase.from('gummy_images').update({ sort_order: i }).eq('id', img.id)
     ))
-    dragIndex.current = null
   }
 
   async function setAsMain(key: 'main' | number) {
@@ -449,31 +442,15 @@ function AdminImageManager({
 
       {/* 現在の画像一覧 */}
       {allImages.length > 0 && (
-        <div className="flex flex-wrap gap-3">
-          {allImages.map((img, i) => {
-            const subIndex = i - (mainImageUrl ? 1 : 0) // approvedImages内のインデックス
-            return (
-            <div key={img.key} className="text-center"
-              draggable={img.key !== 'main'}
-              onDragStart={() => { dragIndex.current = subIndex; setDraggingIdx(subIndex) }}
-              onDragOver={(e) => { if (img.key !== 'main') { e.preventDefault(); setOverIdx(subIndex) } }}
-              onDragLeave={() => setOverIdx(null)}
-              onDrop={() => { if (img.key !== 'main') { handleDrop(subIndex); setDraggingIdx(null); setOverIdx(null) } }}
-              onDragEnd={() => { setDraggingIdx(null); setOverIdx(null) }}
-              style={{
-                cursor: img.key !== 'main' ? 'grab' : 'default',
-                opacity: draggingIdx === subIndex ? 0.4 : 1,
-                outline: overIdx === subIndex && draggingIdx !== subIndex ? '2px dashed #f472b6' : 'none',
-                borderRadius: 12,
-              }}
-            >
+        <div className="flex flex-wrap gap-3 items-start">
+          {allImages.map((img) => (
+            <div key={img.key} className="text-center">
               <div className={`rounded-xl overflow-hidden border-2 ${img.key === 'main' ? 'border-pink-400' : 'border-pink-100'}`}>
-                <Image src={img.url} alt="" width={80} height={80} className="object-contain" draggable={false} />
+                <Image src={img.url} alt="" width={80} height={80} className="object-contain" />
               </div>
               <p className={`text-[10px] mt-0.5 font-semibold ${img.key === 'main' ? 'text-pink-500' : 'text-gray-400'}`}>
                 {img.key === 'main' ? '⭐ メイン' : img.label}
               </p>
-              {/* ユーザー提供画像のみニックネーム編集 */}
               {img.key !== 'main' && img.label !== 'サブ画像' && (
                 <input
                   defaultValue={img.label}
@@ -488,8 +465,13 @@ function AdminImageManager({
                 <button type="button" onClick={() => removeImage(img.key)} className="text-[10px] text-red-400 hover:text-red-600">削除</button>
               </div>
             </div>
-            )
-          })}
+          ))}
+          {approvedImages.length >= 2 && (
+            <button type="button" onClick={swapSubImages}
+              className="self-center text-xs bg-pink-50 text-pink-500 px-3 py-2 rounded-full hover:bg-pink-100 font-semibold border border-pink-200">
+              ⇄ 2・3枚目<br />入れ替え
+            </button>
+          )}
         </div>
       )}
 
