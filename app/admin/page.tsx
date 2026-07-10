@@ -245,23 +245,31 @@ function RegisterTab() {
               className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50 resize-none"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">画像</label>
-            {form.image_url ? (
-              <div className="flex items-start gap-3 mt-1">
-                <Image src={form.image_url} alt="プレビュー" width={120} height={120} className="rounded-2xl object-contain border-2 border-pink-100" />
-                <button type="button" onClick={() => set('image_url', '')} className="text-xs text-red-400 hover:text-red-600 mt-1">✕ 削除</button>
+          <div className="border-2 border-pink-100 rounded-2xl p-4 space-y-3">
+            <p className="text-sm font-semibold text-gray-700">画像（{form.image_url ? '1' : '0'}/1枚）</p>
+            {form.image_url && (
+              <div className="flex flex-wrap gap-3">
+                <div className="text-center">
+                  <div className="rounded-xl overflow-hidden border-2 border-pink-400">
+                    <Image src={form.image_url} alt="" width={80} height={80} className="object-contain" />
+                  </div>
+                  <p className="text-[10px] mt-0.5 font-semibold text-pink-500">⭐ メイン</p>
+                  <button type="button" onClick={() => set('image_url', '')} className="text-[10px] text-red-400 hover:text-red-600 mt-0.5">削除</button>
+                </div>
               </div>
-            ) : (
-              <>
-                <input
-                  value={form.image_url}
-                  onChange={(e) => set('image_url', e.target.value)}
-                  placeholder="https://..."
-                  className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50 mb-2"
-                />
+            )}
+            {!form.image_url && (
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <input
+                    value={form.image_url}
+                    onChange={(e) => set('image_url', e.target.value)}
+                    placeholder="画像URLを入力..."
+                    className="flex-1 border-2 border-pink-100 rounded-2xl px-4 py-2 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+                  />
+                </div>
                 <PasteImageArea onUploaded={(url) => set('image_url', url)} />
-              </>
+              </div>
             )}
           </div>
           <div>
