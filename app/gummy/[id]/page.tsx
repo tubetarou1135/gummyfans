@@ -77,8 +77,9 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
     getApprovedImages(gummy.id),
   ])
 
+  const hasCitationCard = gummy.show_citation_card || gummy.show_jga_card
   const galleryImages = [
-    ...(gummy.image_url ? [{ url: gummy.image_url, label: '楽天市場' }] : []),
+    ...(gummy.image_url ? [{ url: gummy.image_url, label: hasCitationCard ? '' : '楽天市場' }] : []),
     ...approvedImages.map((img) => ({
       url: supabase.storage.from('gummy-images').getPublicUrl(img.storage_path).data.publicUrl,
       label: `${img.nickname}さんからの画像提供`,

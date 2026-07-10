@@ -64,9 +64,11 @@ export default function GummyImageGallery({ images }: { images: ImageItem[] }) {
         </div>
       )}
 
-      <p className="text-center text-xs text-gray-400 mt-1">
-        📸 {images[current].label}
-      </p>
+      {images[current].label && (
+        <p className="text-center text-xs text-gray-400 mt-1">
+          📸 {images[current].label}
+        </p>
+      )}
     </div>
   )
 }
