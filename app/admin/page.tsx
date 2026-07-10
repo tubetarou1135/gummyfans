@@ -346,6 +346,7 @@ function RegisterTab() {
 function GummiesTab() {
   const [gummies, setGummies] = useState<GummyRow[]>([])
   const [editing, setEditing] = useState<GummyRow | null>(null)
+  const [editingImages, setEditingImages] = useState<{ url: string; id: number; nickname: string }[]>([])
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
   const [loading, setLoading] = useState(false)
   const [makerFilter, setMakerFilter] = useState('')
@@ -360,6 +361,17 @@ function GummiesTab() {
   }
 
   useEffect(() => { load() }, [])
+
+  useEffect(() => {
+    if (!editing) { setEditingImages([]); return }
+    supabase.from('gummy_images').select('*').eq('gummy_id', editing.id).eq('status', 'approved').order('created_at', { ascending: false }).then(({ data }) => {
+      setEditingImages((data ?? []).map((img: GummyImageRow) => ({
+        id: img.id,
+        nickname: img.nickname,
+        url: supabase.storage.from('gummy-images').getPublicUrl(img.storage_path).data.publicUrl,
+      })))
+    })
+  }, [editing?.id])
 
   const makers = Array.from(new Set(gummies.map(g => g.maker))).sort((a, b) => a.localeCompare(b, 'ja'))
   const filtered = gummies
@@ -521,6 +533,21 @@ function GummiesTab() {
           </div>
         )}
       </div>
+
+      {/* 承認済みユーザー投稿画像 */}
+      {editingImages.length > 0 && (
+        <div className="border-2 border-pink-100 rounded-2xl p-4 space-y-2">
+          <p className="text-sm font-semibold text-gray-700">承認済み画像（{editingImages.length}枚）</p>
+          <div className="flex flex-wrap gap-2">
+            {editingImages.map((img) => (
+              <div key={img.id} className="relative">
+                <Image src={img.url} alt="" width={80} height={80} className="rounded-xl object-contain border border-pink-100" />
+                <p className="text-[10px] text-gray-400 text-center mt-0.5">{img.nickname}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* 引用元URL */}
       <div>
