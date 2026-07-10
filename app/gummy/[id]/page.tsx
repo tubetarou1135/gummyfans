@@ -96,6 +96,11 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
         <div className="md:w-80 md:shrink-0 mb-4 md:mb-0">
           {(gummy.image_url || imageUrl) ? (
             <>
+              {gummy.show_citation_card && (
+                <p className="text-xs text-purple-400 font-semibold mb-1">
+                  📸 {gummy.source_label || 'あいうえお🌈🍇💖日本グミ協会会長@aiueoka5様より許可を得て引用しております！'}
+                </p>
+              )}
               <div className="relative w-full aspect-square max-w-sm mx-auto md:mx-0 rounded-3xl overflow-hidden border-2 border-pink-100">
                 <Image src={gummy.image_url ?? imageUrl!} alt={gummy.name} fill sizes="(max-width: 768px) 100vw, 320px" quality={90} className="object-contain" />
               </div>
@@ -117,12 +122,8 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
               </p>
             </div>
           )}
-          {gummy.show_citation_card && gummy.source_url ? (
-            <div className="mt-3 border-2 border-purple-200 rounded-2xl p-4 bg-purple-50">
-              <p className="text-xs font-bold text-purple-400 mb-2">📸 画像について</p>
-              <p className="text-sm text-gray-700 mb-3 leading-relaxed">
-                {gummy.source_label || 'あいうえお🌈🍇💖日本グミ協会会長@aiueoka5様より許可を得て引用しております！'}
-              </p>
+          {gummy.source_url && (
+            <div className="mt-3">
               <a
                 href={gummy.source_url}
                 target="_blank"
@@ -132,18 +133,7 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
                 引用元の投稿はコチラから
               </a>
             </div>
-          ) : gummy.source_url ? (
-            <div className="mt-3 text-center">
-              <a
-                href={gummy.source_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-gray-800 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-gray-700 transition-colors"
-              >
-                {gummy.source_label || '𝕏 投稿を見る'}
-              </a>
-            </div>
-          ) : null}
+          )}
         </div>
 
         {/* 右カラム：商品情報 */}
