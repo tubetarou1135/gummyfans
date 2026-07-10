@@ -69,6 +69,8 @@ function RegisterTab() {
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
   const [loading, setLoading] = useState(false)
   const [makerSuggestions, setMakerSuggestions] = useState<string[]>([])
+  const [pendingImages, setPendingImages] = useState<string[]>([])
+  const [pendingUrl, setPendingUrl] = useState('')
 
   useEffect(() => {
     supabase.from('gummies').select('maker').then(({ data }) => {
@@ -131,12 +133,13 @@ function RegisterTab() {
       return
     }
     setLoading(true)
-    const { error } = await supabase.from('gummies').insert({
+    const mainImage = pendingImages[0] ?? form.image_url.trim() || null
+    const { data: inserted, error } = await supabase.from('gummies').insert({
       name: form.name.trim(),
       maker: form.maker.trim(),
       flavor: form.flavor.trim() || null,
       description: form.description.trim() || null,
-      image_url: form.image_url.trim() || null,
+      image_url: mainImage,
       rakuten_url: form.rakuten_url.trim() || null,
       source_url: form.source_url.trim() || null,
       source_label: form.source_label.trim() || null,
@@ -146,17 +149,27 @@ function RegisterTab() {
       source_label_3: form.source_label_3.trim() || null,
       show_citation_card: form.show_citation_card,
       show_jga_card: form.show_jga_card,
-    })
-    setLoading(false)
-    if (error) {
-      setMsg({ type: 'err', text: '登録に失敗しました: ' + error.message })
-    } else {
-      setMsg({ type: 'ok', text: '登録しました！' })
-      setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false })
-      setSelected(null)
-      setResults([])
-      setQuery('')
+    }).select().single()
+    if (error || !inserted) {
+      setLoading(false)
+      setMsg({ type: 'err', text: '登録に失敗しました: ' + error?.message })
+      return
     }
+    // 2枚目以降をgummy_imagesに保存
+    const subImages = pendingImages.slice(1)
+    if (subImages.length > 0) {
+      await Promise.all(subImages.map((url, i) =>
+        supabase.from('gummy_images').insert({ gummy_id: inserted.id, nickname: 'サブ画像', storage_path: url, status: 'approved', sort_order: i })
+      ))
+    }
+    setLoading(false)
+    setMsg({ type: 'ok', text: '登録しました！' })
+    setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false })
+    setPendingImages([])
+    setPendingUrl('')
+    setSelected(null)
+    setResults([])
+    setQuery('')
   }
 
   return (
@@ -246,29 +259,34 @@ function RegisterTab() {
             />
           </div>
           <div className="border-2 border-pink-100 rounded-2xl p-4 space-y-3">
-            <p className="text-sm font-semibold text-gray-700">画像（{form.image_url ? '1' : '0'}/1枚）</p>
-            {form.image_url && (
+            <p className="text-sm font-semibold text-gray-700">画像（{pendingImages.length}/3枚）</p>
+            {pendingImages.length > 0 && (
               <div className="flex flex-wrap gap-3">
-                <div className="text-center">
-                  <div className="rounded-xl overflow-hidden border-2 border-pink-400">
-                    <Image src={form.image_url} alt="" width={80} height={80} className="object-contain" />
+                {pendingImages.map((url, i) => (
+                  <div key={i} className="text-center">
+                    <div className={`rounded-xl overflow-hidden border-2 ${i === 0 ? 'border-pink-400' : 'border-pink-100'}`}>
+                      <Image src={url} alt="" width={80} height={80} className="object-contain" />
+                    </div>
+                    <p className={`text-[10px] mt-0.5 font-semibold ${i === 0 ? 'text-pink-500' : 'text-gray-400'}`}>
+                      {i === 0 ? '⭐ メイン' : 'サブ画像'}
+                    </p>
+                    <button type="button" onClick={() => setPendingImages((prev) => prev.filter((_, j) => j !== i))} className="text-[10px] text-red-400 hover:text-red-600">削除</button>
                   </div>
-                  <p className="text-[10px] mt-0.5 font-semibold text-pink-500">⭐ メイン</p>
-                  <button type="button" onClick={() => set('image_url', '')} className="text-[10px] text-red-400 hover:text-red-600 mt-0.5">削除</button>
-                </div>
+                ))}
               </div>
             )}
-            {!form.image_url && (
+            {pendingImages.length < 3 && (
               <div className="space-y-2">
                 <div className="flex gap-2">
                   <input
-                    value={form.image_url}
-                    onChange={(e) => set('image_url', e.target.value)}
+                    value={pendingUrl}
+                    onChange={(e) => setPendingUrl(e.target.value)}
                     placeholder="画像URLを入力..."
                     className="flex-1 border-2 border-pink-100 rounded-2xl px-4 py-2 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
                   />
+                  <button type="button" onClick={() => { if (pendingUrl.trim()) { setPendingImages((p) => [...p, pendingUrl.trim()]); setPendingUrl('') } }} className="bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-pink-600">追加</button>
                 </div>
-                <PasteImageArea onUploaded={(url) => set('image_url', url)} />
+                <PasteImageArea onUploaded={(url) => setPendingImages((p) => [...p, url])} />
               </div>
             )}
           </div>
