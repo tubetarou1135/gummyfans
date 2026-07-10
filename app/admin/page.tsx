@@ -390,37 +390,6 @@ function GummiesTab() {
     load()
   }
 
-  const [rakutenQuery, setRakutenQuery] = useState('')
-  const [rakutenResults, setRakutenResults] = useState<RakutenItem[]>([])
-  const [rakutenSearching, setRakutenSearching] = useState(false)
-
-  async function handleRakutenSearch(e?: React.FormEvent | React.MouseEvent) {
-    e?.preventDefault()
-    if (!rakutenQuery.trim()) return
-    setRakutenSearching(true)
-    setRakutenResults([])
-    const appId = process.env.NEXT_PUBLIC_RAKUTEN_APP_ID
-    const accessKey = process.env.NEXT_PUBLIC_RAKUTEN_ACCESS_KEY
-    const affiliateId = process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID
-    const res = await fetch(`https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey ?? '')}&format=json`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ applicationId: appId, accessKey, affiliateId, keyword: rakutenQuery + ' グミ', hits: 20 }),
-    })
-    const data = await res.json()
-    setRakutenResults(data.Items?.map((i: { Item: RakutenItem }) => i.Item) ?? [])
-    setRakutenSearching(false)
-  }
-
-  function handleRakutenSelect(item: RakutenItem) {
-    setEditing(prev => prev ? {
-      ...prev,
-      image_url: item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0]?.imageUrl ?? prev.image_url,
-    } : prev)
-    setRakutenResults([])
-    setRakutenQuery('')
-  }
-
   async function handleUpdate(e: React.FormEvent) {
     e.preventDefault()
     if (!editing) return
@@ -448,7 +417,6 @@ function GummiesTab() {
     } else {
       setMsg({ type: 'ok', text: '更新しました！' })
       setEditing(null)
-      setRakutenResults([])
       load().then(() => window.scrollTo({ top: scrollRef.current }))
     }
   }
@@ -493,48 +461,23 @@ function GummiesTab() {
 
       {/* 画像 */}
       <div className="border-2 border-pink-100 rounded-2xl p-4 space-y-3">
-        <p className="text-sm font-semibold text-gray-700">メイン画像（楽天・外部URL）</p>
-        {editing.image_url ? (
+        <p className="text-sm font-semibold text-gray-700">メイン画像</p>
+        {editing.image_url && (
           <div className="flex items-center gap-3">
             <Image src={editing.image_url} alt="" width={80} height={80} className="rounded-xl object-contain shrink-0 border border-pink-100" />
-            <div className="space-y-1">
-              <input
-                value={editing.image_url}
-                onChange={(e) => setEditing(prev => prev ? { ...prev, image_url: e.target.value || null } : prev)}
-                className="w-full border border-pink-100 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-pink-400 bg-pink-50"
-              />
-              <button type="button" onClick={() => setEditing(prev => prev ? { ...prev, image_url: null } : prev)} className="text-xs text-red-400 hover:text-red-600">画像を削除</button>
-            </div>
+            <button type="button" onClick={() => setEditing(prev => prev ? { ...prev, image_url: null } : prev)} className="text-xs text-red-400 hover:text-red-600">画像を削除</button>
           </div>
-        ) : (
-          <p className="text-xs text-gray-400">画像なし</p>
         )}
-        <PasteImageArea onUploaded={(url) => setEditing(prev => prev ? { ...prev, image_url: url } : prev)} />
-        <div className="flex gap-2">
+        <div>
+          <label className="block text-xs text-gray-500 mb-1">画像URL</label>
           <input
-            value={rakutenQuery}
-            onChange={(e) => setRakutenQuery(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleRakutenSearch(e as unknown as React.FormEvent) } }}
-            placeholder={`${editing.name}${editing.flavor ? ' ' + editing.flavor : ''} で検索`}
-            className="flex-1 border-2 border-pink-100 rounded-2xl px-4 py-2 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+            value={editing.image_url ?? ''}
+            onChange={(e) => setEditing(prev => prev ? { ...prev, image_url: e.target.value || null } : prev)}
+            placeholder="https://..."
+            className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
           />
-          <button type="button" onClick={handleRakutenSearch} disabled={rakutenSearching} className="bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-pink-600 disabled:opacity-50">
-            {rakutenSearching ? '...' : '検索'}
-          </button>
         </div>
-        {rakutenResults.length > 0 && (
-          <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto">
-            {rakutenResults.map((item, i) => (
-              <button key={i} type="button" onClick={() => handleRakutenSelect(item)}
-                className="flex items-center gap-2 border-2 border-pink-100 rounded-xl p-2 hover:border-pink-400 hover:bg-pink-50 transition-colors text-left">
-                {(item.largeImageUrls?.[0] || item.mediumImageUrls[0]) && (
-                  <Image src={item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0].imageUrl} alt="" width={40} height={40} className="rounded-lg object-contain shrink-0" />
-                )}
-                <p className="text-xs text-gray-700 line-clamp-2">{item.itemName}</p>
-              </button>
-            ))}
-          </div>
-        )}
+        <PasteImageArea onUploaded={(url) => setEditing(prev => prev ? { ...prev, image_url: url } : prev)} />
       </div>
 
       {/* 楽天URL */}
@@ -660,7 +603,7 @@ function GummiesTab() {
 
       {msg && <p className={`text-sm ${msg.type === 'ok' ? 'text-green-600' : 'text-red-500'}`}>{msg.text}</p>}
       <div className="flex gap-2">
-        <button type="button" onClick={() => { setEditing(null); setRakutenResults([]); window.scrollTo({ top: scrollRef.current }) }} className="flex-1 border-2 border-pink-200 text-pink-500 py-3 rounded-full text-sm font-bold hover:bg-pink-50 transition-colors">
+        <button type="button" onClick={() => { setEditing(null); window.scrollTo({ top: scrollRef.current }) }} className="flex-1 border-2 border-pink-200 text-pink-500 py-3 rounded-full text-sm font-bold hover:bg-pink-50 transition-colors">
           キャンセル
         </button>
         <button type="submit" disabled={loading} className="flex-1 bg-pink-500 text-white py-3 rounded-full text-sm font-bold hover:bg-pink-600 transition-colors disabled:opacity-50">
@@ -714,7 +657,7 @@ function GummiesTab() {
             <p className="text-xs text-gray-500">{g.maker}{g.flavor && ` / ${g.flavor}`}</p>
           </div>
           <div className="flex gap-2">
-            <button onClick={() => { scrollRef.current = window.scrollY; setEditing(g); setRakutenQuery(g.name + (g.flavor ? ' ' + g.flavor : '')) }} className="text-xs bg-pink-50 text-pink-500 px-3 py-1.5 rounded-full hover:bg-pink-100 transition-colors font-semibold">
+            <button onClick={() => { scrollRef.current = window.scrollY; setEditing(g) }} className="text-xs bg-pink-50 text-pink-500 px-3 py-1.5 rounded-full hover:bg-pink-100 transition-colors font-semibold">
               編集
             </button>
             <button onClick={() => handleDelete(g.id)} className="text-xs bg-red-50 text-red-400 px-3 py-1.5 rounded-full hover:bg-red-100 transition-colors font-semibold">
