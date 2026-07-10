@@ -104,7 +104,7 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
                   📸 {approvedImage.nickname}さんからの画像提供
                 </p>
               )}
-              {gummy.image_url && gummy.rakuten_url && (
+              {gummy.image_url && gummy.rakuten_url && !gummy.show_citation_card && !gummy.show_jga_card && (
                 <p className="text-center text-xs text-gray-400 mt-2">画像提供：楽天市場</p>
               )}
               {(() => {
