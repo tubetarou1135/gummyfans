@@ -342,6 +342,118 @@ function RegisterTab() {
   )
 }
 
+// ---- 画像管理コンポーネント ----
+type EditingImage = { id: number; url: string; nickname: string }
+
+function AdminImageManager({
+  gummyId, mainImageUrl, approvedImages, onMainImageChange, onImagesChange,
+}: {
+  gummyId: number
+  mainImageUrl: string | null
+  approvedImages: EditingImage[]
+  onMainImageChange: (url: string | null) => void
+  onImagesChange: (imgs: EditingImage[]) => void
+}) {
+  const [pendingUrl, setPendingUrl] = useState('')
+  const [deleteTarget, setDeleteTarget] = useState<'main' | number | null>(null)
+
+  const allImages: { key: 'main' | number; url: string; label: string }[] = [
+    ...(mainImageUrl ? [{ key: 'main' as const, url: mainImageUrl, label: 'メイン画像' }] : []),
+    ...approvedImages.map(img => ({ key: img.id as number, url: img.url, label: img.nickname })),
+  ]
+  const count = allImages.length
+
+  async function addImage(url: string) {
+    if (!url.trim()) return
+    if (count >= 3) {
+      setDeleteTarget('main') // ダイアログを開く（初期値はmainだが選択させる）
+      setPendingUrl(url.trim())
+      return
+    }
+    await saveImage(url.trim())
+    setPendingUrl('')
+  }
+
+  async function saveImage(url: string) {
+    const { data } = await supabase.from('gummy_images').insert({
+      gummy_id: gummyId, nickname: '管理者', storage_path: url, status: 'approved',
+    }).select().single()
+    if (data) onImagesChange([...approvedImages, { id: data.id, url, nickname: '管理者' }])
+  }
+
+  async function removeAndAdd(key: 'main' | number) {
+    if (key === 'main') {
+      onMainImageChange(null)
+    } else {
+      await supabase.from('gummy_images').delete().eq('id', key)
+      onImagesChange(approvedImages.filter(i => i.id !== key))
+    }
+    await saveImage(pendingUrl)
+    setPendingUrl('')
+    setDeleteTarget(null)
+  }
+
+  async function removeImage(key: 'main' | number) {
+    if (key === 'main') {
+      onMainImageChange(null)
+    } else {
+      await supabase.from('gummy_images').delete().eq('id', key)
+      onImagesChange(approvedImages.filter(i => i.id !== key))
+    }
+  }
+
+  return (
+    <div className="border-2 border-pink-100 rounded-2xl p-4 space-y-3">
+      <p className="text-sm font-semibold text-gray-700">画像（{count}/3枚）</p>
+
+      {/* 現在の画像一覧 */}
+      {allImages.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {allImages.map((img) => (
+            <div key={img.key} className="text-center">
+              <Image src={img.url} alt="" width={80} height={80} className="rounded-xl object-contain border border-pink-100" />
+              <p className="text-[10px] text-gray-400 mt-0.5">{img.label}</p>
+              <button type="button" onClick={() => removeImage(img.key)} className="text-[10px] text-red-400 hover:text-red-600">削除</button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* 追加 */}
+      <div className="space-y-2">
+        <div className="flex gap-2">
+          <input
+            value={pendingUrl}
+            onChange={(e) => setPendingUrl(e.target.value)}
+            placeholder="画像URLを入力..."
+            className="flex-1 border-2 border-pink-100 rounded-2xl px-4 py-2 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+          />
+          <button type="button" onClick={() => addImage(pendingUrl)} className="bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-pink-600">追加</button>
+        </div>
+        <PasteImageArea onUploaded={(url) => addImage(url)} />
+      </div>
+
+      {/* 3枚上限時：削除選択モーダル */}
+      {deleteTarget !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl space-y-4">
+            <p className="text-sm font-bold text-gray-800 text-center">どの画像を削除しますか？</p>
+            <div className="flex flex-wrap gap-3 justify-center">
+              {allImages.map((img) => (
+                <button key={img.key} type="button" onClick={() => removeAndAdd(img.key)} className="text-center hover:opacity-70 transition-opacity">
+                  <Image src={img.url} alt="" width={72} height={72} className="rounded-xl object-contain border-2 border-pink-200" />
+                  <p className="text-[10px] text-gray-500 mt-0.5">{img.label}</p>
+                </button>
+              ))}
+            </div>
+            <button type="button" onClick={() => { setDeleteTarget(null); setPendingUrl('') }} className="w-full border-2 border-pink-200 text-pink-500 py-2 rounded-full text-sm font-bold hover:bg-pink-50">キャンセル</button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ---- グミ編集・削除タブ ----
 function GummiesTab() {
   const [gummies, setGummies] = useState<GummyRow[]>([])
@@ -459,52 +571,14 @@ function GummiesTab() {
         />
       </div>
 
-      {/* 画像 */}
-      <div className="border-2 border-pink-100 rounded-2xl p-4 space-y-3">
-        <p className="text-sm font-semibold text-gray-700">メイン画像</p>
-        {editing.image_url && (
-          <div className="flex items-center gap-3">
-            <Image src={editing.image_url} alt="" width={80} height={80} className="rounded-xl object-contain shrink-0 border border-pink-100" />
-            <button type="button" onClick={() => setEditing(prev => prev ? { ...prev, image_url: null } : prev)} className="text-xs text-red-400 hover:text-red-600">画像を削除</button>
-          </div>
-        )}
-        <div>
-          <label className="block text-xs text-gray-500 mb-1">画像URL</label>
-          <input
-            value={editing.image_url ?? ''}
-            onChange={(e) => setEditing(prev => prev ? { ...prev, image_url: e.target.value || null } : prev)}
-            placeholder="https://..."
-            className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
-          />
-        </div>
-        <PasteImageArea onUploaded={(url) => setEditing(prev => prev ? { ...prev, image_url: url } : prev)} />
-      </div>
-
-      {/* 楽天URL */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">楽天URL</label>
-        <input
-          value={editing.rakuten_url ?? ''}
-          onChange={(e) => setEditing(prev => prev ? { ...prev, rakuten_url: e.target.value || null } : prev)}
-          placeholder="https://hb.afl.rakuten.co.jp/..."
-          className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
-        />
-      </div>
-
-      {/* 承認済みユーザー投稿画像 */}
-      {editingImages.length > 0 && (
-        <div className="border-2 border-pink-100 rounded-2xl p-4 space-y-2">
-          <p className="text-sm font-semibold text-gray-700">承認済み画像（{editingImages.length}枚）</p>
-          <div className="flex flex-wrap gap-2">
-            {editingImages.map((img) => (
-              <div key={img.id} className="relative">
-                <Image src={img.url} alt="" width={80} height={80} className="rounded-xl object-contain border border-pink-100" />
-                <p className="text-[10px] text-gray-400 text-center mt-0.5">{img.nickname}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* 画像管理 */}
+      <AdminImageManager
+        gummyId={editing.id}
+        mainImageUrl={editing.image_url}
+        approvedImages={editingImages}
+        onMainImageChange={(url) => setEditing(prev => prev ? { ...prev, image_url: url } : prev)}
+        onImagesChange={setEditingImages}
+      />
 
       {/* 引用元URL */}
       <div>
