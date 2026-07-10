@@ -96,11 +96,6 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
         <div className="md:w-80 md:shrink-0 mb-4 md:mb-0">
           {(gummy.image_url || imageUrl) ? (
             <>
-              {gummy.show_citation_card && (
-                <p className="text-xs text-purple-400 font-semibold mb-1">
-                  📸 {gummy.source_label || 'あいうえお🌈🍇💖日本グミ協会会長@aiueoka5様より許可を得て引用しております！'}
-                </p>
-              )}
               <div className="relative w-full aspect-square max-w-sm mx-auto md:mx-0 rounded-3xl overflow-hidden border-2 border-pink-100">
                 <Image src={gummy.image_url ?? imageUrl!} alt={gummy.name} fill sizes="(max-width: 768px) 100vw, 320px" quality={90} className="object-contain" />
               </div>
@@ -112,6 +107,42 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
               {gummy.image_url && gummy.rakuten_url && (
                 <p className="text-center text-xs text-gray-400 mt-2">画像提供：楽天市場</p>
               )}
+              {(() => {
+                const citations = [
+                  { url: gummy.source_url, label: gummy.source_label },
+                  { url: gummy.source_url_2, label: gummy.source_label_2 },
+                  { url: gummy.source_url_3, label: gummy.source_label_3 },
+                ].filter((c) => c.url)
+                if (citations.length === 0) return null
+                if (gummy.show_citation_card) {
+                  return (
+                    <div className="mt-2 border border-purple-200 rounded-xl p-2.5 bg-purple-50">
+                      <p className="text-[10px] font-bold text-purple-400 mb-1">📸 画像について</p>
+                      <p className="text-[10px] text-gray-600 mb-2 leading-relaxed">
+                        {gummy.source_label || 'あいうえお🌈🍇💖日本グミ協会会長@aiueoka5様より許可を得て引用しております！'}
+                      </p>
+                      <div className="flex flex-wrap gap-1">
+                        {citations.map((c, i) => (
+                          <a key={i} href={c.url!} target="_blank" rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 bg-purple-500 text-white px-3 py-1 rounded-full text-[10px] font-bold hover:bg-purple-600 transition-colors">
+                            {i === 0 ? (c.label || '引用元の投稿はコチラから') : `引用元${i + 1}`}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                }
+                return (
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {citations.map((c, i) => (
+                      <a key={i} href={c.url!} target="_blank" rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 bg-purple-500 text-white px-3 py-1 rounded-full text-[10px] font-bold hover:bg-purple-600 transition-colors">
+                        {c.label || (i === 0 ? '引用元の投稿はコチラから' : `引用元${i + 1}`)}
+                      </a>
+                    ))}
+                  </div>
+                )
+              })()}
             </>
           ) : (
             <div className="w-full aspect-square max-w-sm mx-auto md:mx-0 rounded-3xl border-2 border-dashed border-pink-200 bg-pink-50 flex flex-col items-center justify-center gap-2">
@@ -120,18 +151,6 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
                 画像がありません<br />
                 画像提供お願いします。
               </p>
-            </div>
-          )}
-          {gummy.source_url && (
-            <div className="mt-3">
-              <a
-                href={gummy.source_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-purple-500 text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-purple-600 transition-colors"
-              >
-                引用元の投稿はコチラから
-              </a>
             </div>
           )}
         </div>
