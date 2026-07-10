@@ -84,106 +84,113 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
     : null
 
   return (
-    <main className="max-w-2xl mx-auto px-4 py-8">
+    <main className="max-w-4xl mx-auto px-4 py-8">
       <Link href="/" className="text-pink-500 text-sm hover:underline mb-4 inline-block">
         ← 一覧に戻る
       </Link>
 
-      {/* 商品画像 */}
-      <div className="mb-4">
-        {(gummy.image_url || imageUrl) ? (
-          <>
-            <div className="relative w-full aspect-square max-w-sm mx-auto rounded-3xl overflow-hidden border-2 border-pink-100">
-              <Image src={gummy.image_url ?? imageUrl!} alt={gummy.name} fill sizes="(max-width: 640px) 100vw, 384px" quality={90} className="object-contain" />
-            </div>
-            {!gummy.image_url && approvedImage && (
-              <p className="text-center text-xs text-gray-400 mt-2">
-                📸 {approvedImage.nickname}さんからの画像提供
+      {/* PC: 横並び / SP: 縦並び */}
+      <div className="md:flex md:gap-8 md:items-start">
+
+        {/* 左カラム：画像 */}
+        <div className="md:w-80 md:shrink-0 mb-4 md:mb-0">
+          {(gummy.image_url || imageUrl) ? (
+            <>
+              <div className="relative w-full aspect-square max-w-sm mx-auto md:mx-0 rounded-3xl overflow-hidden border-2 border-pink-100">
+                <Image src={gummy.image_url ?? imageUrl!} alt={gummy.name} fill sizes="(max-width: 768px) 100vw, 320px" quality={90} className="object-contain" />
+              </div>
+              {!gummy.image_url && approvedImage && (
+                <p className="text-center text-xs text-gray-400 mt-2">
+                  📸 {approvedImage.nickname}さんからの画像提供
+                </p>
+              )}
+              {gummy.image_url && gummy.rakuten_url && (
+                <p className="text-center text-xs text-gray-400 mt-2">画像提供：楽天市場</p>
+              )}
+            </>
+          ) : (
+            <div className="w-full aspect-square max-w-sm mx-auto md:mx-0 rounded-3xl border-2 border-dashed border-pink-200 bg-pink-50 flex flex-col items-center justify-center gap-2">
+              <span className="text-5xl">🍬</span>
+              <p className="text-sm text-gray-400 text-center leading-relaxed">
+                画像がありません<br />
+                画像提供お願いします。
               </p>
-            )}
-            {gummy.image_url && gummy.rakuten_url && (
-              <p className="text-center text-xs text-gray-400 mt-2">画像提供：楽天市場</p>
-            )}
-          </>
-        ) : (
-          <div className="w-full aspect-square max-w-sm mx-auto rounded-3xl border-2 border-dashed border-pink-200 bg-pink-50 flex flex-col items-center justify-center gap-2">
-            <span className="text-5xl">🍬</span>
-            <p className="text-sm text-gray-400 text-center leading-relaxed">
-              画像がありません<br />
-              画像提供お願いします。
-            </p>
-          </div>
-        )}
-        {gummy.show_citation_card && gummy.source_url ? (
-          <div className="mt-3 border-2 border-purple-200 rounded-2xl p-4 bg-purple-50">
-            <p className="text-xs font-bold text-purple-400 mb-2">📸 画像について</p>
-            <p className="text-sm text-gray-700 mb-3 leading-relaxed">
-              {gummy.source_label || 'あいうえお🌈🍇💖日本グミ協会会長@aiueoka5様より許可を得て引用しております！'}
-            </p>
-            <a
-              href={gummy.source_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-purple-500 text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-purple-600 transition-colors"
-            >
-              引用元の投稿はコチラから
-            </a>
-          </div>
-        ) : gummy.source_url ? (
-          <div className="mt-3 text-center">
-            <a
-              href={gummy.source_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-gray-800 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-gray-700 transition-colors"
-            >
-              {gummy.source_label || '𝕏 投稿を見る'}
-            </a>
-          </div>
-        ) : null}
-      </div>
-
-      <div className="mb-4">
-        <h1 className="text-2xl font-bold text-gray-800 mb-1">{gummy.name}</h1>
-        <p className="text-sm text-gray-500">
-          {gummy.maker}
-          {gummy.flavor && ` / ${gummy.flavor}`}
-        </p>
-      </div>
-
-      {gummy.avg_overall != null && (
-        <div className="bg-pink-50 rounded-2xl p-5 mb-6">
-          <p className="text-xs text-gray-400 mb-2">平均総合評価</p>
-          <div className="flex items-center gap-4 mb-4">
-            <span className="text-4xl font-bold text-pink-500">{gummy.avg_overall}</span>
-            <div>
-              <StarRating value={Math.round(gummy.avg_overall)} readonly />
-              <p className="text-xs text-gray-500 mt-1">{gummy.review_count}件のレビュー</p>
             </div>
+          )}
+          {gummy.show_citation_card && gummy.source_url ? (
+            <div className="mt-3 border-2 border-purple-200 rounded-2xl p-4 bg-purple-50">
+              <p className="text-xs font-bold text-purple-400 mb-2">📸 画像について</p>
+              <p className="text-sm text-gray-700 mb-3 leading-relaxed">
+                {gummy.source_label || 'あいうえお🌈🍇💖日本グミ協会会長@aiueoka5様より許可を得て引用しております！'}
+              </p>
+              <a
+                href={gummy.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-purple-500 text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-purple-600 transition-colors"
+              >
+                引用元の投稿はコチラから
+              </a>
+            </div>
+          ) : gummy.source_url ? (
+            <div className="mt-3 text-center">
+              <a
+                href={gummy.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-gray-800 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-gray-700 transition-colors"
+              >
+                {gummy.source_label || '𝕏 投稿を見る'}
+              </a>
+            </div>
+          ) : null}
+        </div>
+
+        {/* 右カラム：商品情報 */}
+        <div className="flex-1 min-w-0">
+          <div className="mb-4">
+            <h1 className="text-2xl font-bold text-gray-800 mb-1">{gummy.name}</h1>
+            <p className="text-sm text-gray-500">
+              {gummy.maker}
+              {gummy.flavor && ` / ${gummy.flavor}`}
+            </p>
           </div>
-          <ScoreTabs gummy={gummy} />
+
+          {gummy.avg_overall != null && (
+            <div className="bg-pink-50 rounded-2xl p-5 mb-6">
+              <p className="text-xs text-gray-400 mb-2">平均総合評価</p>
+              <div className="flex items-center gap-4 mb-4">
+                <span className="text-4xl font-bold text-pink-500">{gummy.avg_overall}</span>
+                <div>
+                  <StarRating value={Math.round(gummy.avg_overall)} readonly />
+                  <p className="text-xs text-gray-500 mt-1">{gummy.review_count}件のレビュー</p>
+                </div>
+              </div>
+              <ScoreTabs gummy={gummy} />
+            </div>
+          )}
+
+          {gummy.description && (
+            <p className="text-sm text-gray-600 mb-4">{gummy.description}</p>
+          )}
+
+          {gummy.rakuten_url && (
+            <div className="mb-6">
+              <a
+                href={gummy.rakuten_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-red-500 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-red-600 transition-colors"
+              >
+                🛒 楽天市場で買う
+              </a>
+            </div>
+          )}
+
+          {/* レビュー投稿 / 画像提供 タブ */}
+          <PostTabs gummyId={gummy.id} />
         </div>
-      )}
-
-      {gummy.description && (
-        <p className="text-sm text-gray-600 mb-4">{gummy.description}</p>
-      )}
-
-      {gummy.rakuten_url && (
-        <div className="mb-6">
-          <a
-            href={gummy.rakuten_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-red-500 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-red-600 transition-colors"
-          >
-            🛒 楽天市場で買う
-          </a>
-        </div>
-      )}
-
-      {/* レビュー投稿 / 画像提供 タブ */}
-      <PostTabs gummyId={gummy.id} />
+      </div>
 
       {reviews.length > 0 && (
         <>
@@ -226,6 +233,7 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
           </div>
         </>
       )}
+
     </main>
   )
 }
