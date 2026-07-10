@@ -529,7 +529,7 @@ function GummiesTab() {
     if (error) {
       setMsg({ type: 'err', text: '更新に失敗しました' })
     } else {
-      setMsg({ type: 'ok', text: '更新しました！' })
+      setMsg(null)
       setEditing(null)
       load().then(() => window.scrollTo({ top: scrollRef.current }))
     }
@@ -733,7 +733,7 @@ function GummiesTab() {
             <p className="text-xs text-gray-500">{g.maker}{g.flavor && ` / ${g.flavor}`}</p>
           </div>
           <div className="flex gap-2">
-            <button onClick={() => { scrollRef.current = window.scrollY; setEditing(g) }} className="text-xs bg-pink-50 text-pink-500 px-3 py-1.5 rounded-full hover:bg-pink-100 transition-colors font-semibold">
+            <button onClick={() => { scrollRef.current = window.scrollY; setEditing(g); setMsg(null) }} className="text-xs bg-pink-50 text-pink-500 px-3 py-1.5 rounded-full hover:bg-pink-100 transition-colors font-semibold">
               編集
             </button>
             <button onClick={() => handleDelete(g.id)} className="text-xs bg-red-50 text-red-400 px-3 py-1.5 rounded-full hover:bg-red-100 transition-colors font-semibold">
