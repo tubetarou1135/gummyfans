@@ -68,6 +68,13 @@ function RegisterTab() {
   const [form, setForm] = useState({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false })
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
   const [loading, setLoading] = useState(false)
+  const [makerSuggestions, setMakerSuggestions] = useState<string[]>([])
+
+  useEffect(() => {
+    supabase.from('gummies').select('maker').then(({ data }) => {
+      if (data) setMakerSuggestions(Array.from(new Set(data.map((g) => g.maker))).sort((a, b) => a.localeCompare(b, 'ja')))
+    })
+  }, [])
 
   function set(key: string, value: string) {
     setForm((prev) => ({ ...prev, [key]: value }))
@@ -202,7 +209,6 @@ function RegisterTab() {
           )}
           {[
             { key: 'name', label: '商品名 *', placeholder: '' },
-            { key: 'maker', label: 'メーカー *', placeholder: '' },
             { key: 'flavor', label: 'フレーバー', placeholder: '' },
           ].map(({ key, label, placeholder }) => (
             <div key={key}>
@@ -215,6 +221,19 @@ function RegisterTab() {
               />
             </div>
           ))}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">メーカー *</label>
+            <datalist id="maker-suggestions-register">
+              {makerSuggestions.map((m) => <option key={m} value={m} />)}
+            </datalist>
+            <input
+              value={form.maker}
+              onChange={(e) => set('maker', e.target.value)}
+              list="maker-suggestions-register"
+              placeholder="例：UHA味覚糖"
+              className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+            />
+          </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">説明</label>
             <textarea
@@ -416,7 +435,6 @@ function GummiesTab() {
       <h2 className="font-semibold text-gray-700">編集: {editing.name}</h2>
       {[
         { key: 'name', label: '商品名' },
-        { key: 'maker', label: 'メーカー' },
         { key: 'flavor', label: 'フレーバー' },
       ].map(({ key, label }) => (
         <div key={key}>
@@ -428,6 +446,18 @@ function GummiesTab() {
           />
         </div>
       ))}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">メーカー</label>
+        <datalist id="maker-suggestions-edit">
+          {makers.map((m) => <option key={m} value={m} />)}
+        </datalist>
+        <input
+          value={editing.maker ?? ''}
+          onChange={(e) => setEditing((prev) => prev ? { ...prev, maker: e.target.value } : prev)}
+          list="maker-suggestions-edit"
+          className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+        />
+      </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">説明</label>
         <textarea
