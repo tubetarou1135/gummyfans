@@ -107,8 +107,9 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
               { url: gummy.source_url_2, label: gummy.source_label_2 },
               { url: gummy.source_url_3, label: gummy.source_label_3 },
             ].filter((c) => c.url)
-            if (citations.length === 0) return null
-            if (gummy.show_citation_card) {
+
+            // あいうえおカード
+            if (gummy.show_citation_card && citations.length > 0) {
               return (
                 <div className="mt-2 border border-purple-200 rounded-xl p-2.5 bg-purple-50">
                   <p className="text-[10px] font-bold text-purple-400 mb-1">📸 画像について</p>
@@ -126,33 +127,47 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
                 </div>
               )
             }
-            return (
-              <div className="mt-2 flex flex-wrap gap-1">
-                {citations.map((c, i) => (
-                  <a key={i} href={c.url!} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 bg-purple-500 text-white px-3 py-1 rounded-full text-[10px] font-bold hover:bg-purple-600 transition-colors">
-                    {c.label || (i === 0 ? '引用元の投稿はコチラから' : `引用元${i + 1}`)}
-                  </a>
-                ))}
-              </div>
-            )
+
+            // JGAカード（引用リンクも内包）
+            if (gummy.show_jga_card) {
+              return (
+                <div className="mt-2 border border-blue-200 rounded-xl p-2.5 bg-blue-50">
+                  <p className="text-[10px] font-bold text-blue-400 mb-1">🍬 画像について</p>
+                  <p className="text-[10px] text-gray-600 mb-2 leading-relaxed">
+                    日本グミ協会(@japan_gummy)の画像を引用しております！
+                  </p>
+                  <div className="flex flex-wrap gap-1">
+                    <a href="https://x.com/japan_gummy" target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 bg-blue-500 text-white px-3 py-1 rounded-full text-[10px] font-bold hover:bg-blue-600 transition-colors">
+                      引用元の投稿はコチラ
+                    </a>
+                    {citations.map((c, i) => (
+                      <a key={i} href={c.url!} target="_blank" rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 bg-blue-500 text-white px-3 py-1 rounded-full text-[10px] font-bold hover:bg-blue-600 transition-colors">
+                        {c.label || (i === 0 ? '引用元の投稿はコチラから' : `引用元${i + 1}`)}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )
+            }
+
+            // カードなし：スタンドアロンボタン
+            if (citations.length > 0) {
+              return (
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {citations.map((c, i) => (
+                    <a key={i} href={c.url!} target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 bg-purple-500 text-white px-3 py-1 rounded-full text-[10px] font-bold hover:bg-purple-600 transition-colors">
+                      {c.label || (i === 0 ? '引用元の投稿はコチラから' : `引用元${i + 1}`)}
+                    </a>
+                  ))}
+                </div>
+              )
+            }
+
+            return null
           })()}
-          {gummy.show_jga_card && (
-            <div className="mt-2 border border-blue-200 rounded-xl p-2.5 bg-blue-50">
-              <p className="text-[10px] font-bold text-blue-400 mb-1">🍬 画像について</p>
-              <p className="text-[10px] text-gray-600 mb-2 leading-relaxed">
-                日本グミ協会(@japan_gummy)の画像を引用しております！
-              </p>
-              <a
-                href="https://x.com/japan_gummy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 bg-blue-500 text-white px-3 py-1 rounded-full text-[10px] font-bold hover:bg-blue-600 transition-colors"
-              >
-                引用元の投稿はコチラ
-              </a>
-            </div>
-          )}
         </div>
 
         {/* 右カラム：商品情報 */}
