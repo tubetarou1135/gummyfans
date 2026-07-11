@@ -140,9 +140,17 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
           {gummy.show_jga_card && (
             <div className="mt-2 border border-blue-200 rounded-xl p-2.5 bg-blue-50">
               <p className="text-[10px] font-bold text-blue-400 mb-1">🍬 画像について</p>
-              <p className="text-[10px] text-gray-600 leading-relaxed">
+              <p className="text-[10px] text-gray-600 mb-2 leading-relaxed">
                 日本グミ協会(@japan_gummy)の画像を引用しております！
               </p>
+              <a
+                href="https://x.com/japan_gummy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 bg-blue-500 text-white px-3 py-1 rounded-full text-[10px] font-bold hover:bg-blue-600 transition-colors"
+              >
+                引用元の投稿はコチラ
+              </a>
             </div>
           )}
         </div>
