@@ -235,7 +235,7 @@ function RegisterTab() {
               <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
               <input
                 value={(form as Record<string, string | boolean>)[key] as string}
-                onChange={(e) => { if (!composing.current) set(key, e.target.value) }}
+                onChange={(e) => { set(key, e.target.value) }}
                 onCompositionStart={() => { composing.current = true }}
                 onCompositionEnd={(e) => { composing.current = false; set(key, (e.target as HTMLInputElement).value) }}
                 placeholder={placeholder}
@@ -250,7 +250,7 @@ function RegisterTab() {
             </datalist>
             <input
               value={form.maker}
-              onChange={(e) => { if (!composing.current) set('maker', e.target.value) }}
+              onChange={(e) => { set('maker', e.target.value) }}
               onCompositionStart={() => { composing.current = true }}
               onCompositionEnd={(e) => { composing.current = false; set('maker', (e.target as HTMLInputElement).value) }}
               list="maker-suggestions-register"
@@ -262,7 +262,7 @@ function RegisterTab() {
             <label className="block text-sm font-medium text-gray-700 mb-1">説明</label>
             <textarea
               value={form.description}
-              onChange={(e) => { if (!composing.current) set('description', e.target.value) }}
+              onChange={(e) => { set('description', e.target.value) }}
               onCompositionStart={() => { composing.current = true }}
               onCompositionEnd={(e) => { composing.current = false; set('description', (e.target as HTMLTextAreaElement).value) }}
               rows={3}
@@ -672,7 +672,7 @@ function GummiesTab() {
           <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
           <input
             value={(editing as unknown as Record<string, string | null>)[key] ?? ''}
-            onChange={(e) => { if (!composingEdit.current) setEditing((prev) => prev ? { ...prev, [key]: e.target.value } : prev) }}
+            onChange={(e) => { setEditing((prev) => prev ? { ...prev, [key]: e.target.value } : prev) }}
             onCompositionStart={() => { composingEdit.current = true }}
             onCompositionEnd={(e) => { composingEdit.current = false; setEditing((prev) => prev ? { ...prev, [key]: (e.target as HTMLInputElement).value } : prev) }}
             className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
@@ -686,7 +686,7 @@ function GummiesTab() {
         </datalist>
         <input
           value={editing.maker ?? ''}
-          onChange={(e) => { if (!composingEdit.current) setEditing((prev) => prev ? { ...prev, maker: e.target.value } : prev) }}
+          onChange={(e) => { setEditing((prev) => prev ? { ...prev, maker: e.target.value } : prev) }}
           onCompositionStart={() => { composingEdit.current = true }}
           onCompositionEnd={(e) => { composingEdit.current = false; setEditing((prev) => prev ? { ...prev, maker: (e.target as HTMLInputElement).value } : prev) }}
           list="maker-suggestions-edit"
@@ -697,7 +697,7 @@ function GummiesTab() {
         <label className="block text-sm font-medium text-gray-700 mb-1">説明</label>
         <textarea
           value={editing.description ?? ''}
-          onChange={(e) => { if (!composingEdit.current) setEditing((prev) => prev ? { ...prev, description: e.target.value } : prev) }}
+          onChange={(e) => { setEditing((prev) => prev ? { ...prev, description: e.target.value } : prev) }}
           onCompositionStart={() => { composingEdit.current = true }}
           onCompositionEnd={(e) => { composingEdit.current = false; setEditing((prev) => prev ? { ...prev, description: (e.target as HTMLTextAreaElement).value } : prev) }}
           rows={3}
