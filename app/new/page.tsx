@@ -16,6 +16,7 @@ async function getNewGummies(): Promise<GummyWithAvg[]> {
   const { data } = await supabase
     .from('gummies_with_avg')
     .select('*')
+    .eq('published', true)
     .gt('new_until', now)
     .order('new_until', { ascending: false })
   return (data ?? []) as GummyWithAvg[]

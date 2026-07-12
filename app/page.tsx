@@ -13,6 +13,7 @@ async function getNewGummies(): Promise<GummyWithAvg[]> {
   const { data } = await supabase
     .from('gummies_with_avg')
     .select('*')
+    .eq('published', true)
     .gt('new_until', now)
   const all = (data ?? []) as GummyWithAvg[]
   // 画像ありを優先、それぞれランダム
@@ -25,6 +26,7 @@ async function getGummies(q?: string): Promise<GummyWithAvg[]> {
   let query = supabase
     .from('gummies_with_avg')
     .select('*')
+    .eq('published', true)
     .order('avg_overall', { ascending: false, nullsFirst: false })
 
   if (q) {

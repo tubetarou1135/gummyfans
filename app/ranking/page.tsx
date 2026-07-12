@@ -30,6 +30,7 @@ async function getRanking(field: keyof GummyWithAvg, ascending: boolean): Promis
   const { data, error } = await supabase
     .from('gummies_with_avg')
     .select('*')
+    .eq('published', true)
     .not(field as string, 'is', null)
     .order(field as string, { ascending })
     .limit(20)

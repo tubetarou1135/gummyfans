@@ -65,7 +65,7 @@ function RegisterTab() {
   const [searching, setSearching] = useState(false)
   const [results, setResults] = useState<RakutenItem[]>([])
   const [selected, setSelected] = useState<RakutenItem | null>(null)
-  const [form, setForm] = useState({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false, show_mushatter_card: false, new_until: null as string | null })
+  const [form, setForm] = useState({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false, show_mushatter_card: false, published: false, new_until: null as string | null })
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
   const [loading, setLoading] = useState(false)
   const [makerSuggestions, setMakerSuggestions] = useState<string[]>([])
@@ -153,6 +153,7 @@ function RegisterTab() {
       show_citation_card: form.show_citation_card,
       show_jga_card: form.show_jga_card,
       show_mushatter_card: form.show_mushatter_card,
+      published: form.published,
       new_until: form.new_until,
     }).select().single()
     if (error || !inserted) {
@@ -169,7 +170,7 @@ function RegisterTab() {
     }
     setLoading(false)
     setMsg({ type: 'ok', text: '登録しました！' })
-    setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false, show_mushatter_card: false, new_until: null })
+    setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false, show_mushatter_card: false, published: false, new_until: null })
     setPendingImages([])
     setPendingUrl('')
     setSelected(null)
@@ -224,7 +225,7 @@ function RegisterTab() {
                 <p className="text-xs font-semibold text-gray-700 line-clamp-1">{selected.itemName}</p>
                 <p className="text-xs text-gray-400">選択中</p>
               </div>
-              <button type="button" onClick={() => { setSelected(null); setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false, show_mushatter_card: false, new_until: null }) }} className="text-xs text-gray-400 hover:text-red-400">変更</button>
+              <button type="button" onClick={() => { setSelected(null); setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false, show_mushatter_card: false, published: false, new_until: null }) }} className="text-xs text-gray-400 hover:text-red-400">変更</button>
             </div>
           )}
           {[
@@ -383,6 +384,15 @@ function RegisterTab() {
               className="w-5 h-5 accent-green-500"
             />
             <span className="text-sm font-medium text-gray-700">🍬 武者慶佑カードを表示する</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={form.published}
+              onChange={(e) => setForm((prev) => ({ ...prev, published: e.target.checked }))}
+              className="w-5 h-5 accent-pink-500"
+            />
+            <span className="text-sm font-medium text-gray-700">✅ 公開する</span>
           </label>
           <div className="border-2 border-pink-100 rounded-2xl p-4">
             <p className="text-sm font-semibold text-gray-700 mb-2">新グミタグ</p>
@@ -650,6 +660,7 @@ function GummiesTab() {
       show_citation_card: editing.show_citation_card,
       show_jga_card: editing.show_jga_card,
       show_mushatter_card: editing.show_mushatter_card,
+      published: editing.published ?? false,
     }).eq('id', editing.id)
     setLoading(false)
     if (error) {
@@ -795,6 +806,15 @@ function GummiesTab() {
           className="w-5 h-5 accent-green-500"
         />
         <span className="text-sm font-medium text-gray-700">🍬 武者慶佑カードを表示する</span>
+      </label>
+      <label className="flex items-center gap-2 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={editing.published ?? false}
+          onChange={(e) => setEditing((prev) => prev ? { ...prev, published: e.target.checked } : prev)}
+          className="w-5 h-5 accent-pink-500"
+        />
+        <span className="text-sm font-medium text-gray-700">✅ 公開する</span>
       </label>
 
       {/* 新グミ設定 */}

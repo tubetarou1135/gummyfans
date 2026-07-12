@@ -17,6 +17,7 @@ export type GummyRow = {
   show_citation_card: boolean
   show_jga_card: boolean
   show_mushatter_card: boolean
+  published: boolean
   created_at: string
 }
 
@@ -34,6 +35,7 @@ export type GummyInsert = Omit<GummyRow, 'id' | 'created_at' | 'image_url' | 'ra
   show_citation_card?: boolean
   show_jga_card?: boolean
   show_mushatter_card?: boolean
+  published?: boolean
 }
 
 export type ReviewRow = {
