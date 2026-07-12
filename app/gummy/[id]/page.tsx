@@ -78,7 +78,7 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
     getApprovedImages(gummy.id),
   ])
 
-  const hasCitationCard = gummy.show_citation_card || gummy.show_jga_card
+  const hasCitationCard = gummy.show_citation_card || gummy.show_jga_card || gummy.show_mushatter_card
   const galleryImages = [
     ...(gummy.image_url ? [{ url: gummy.image_url, label: hasCitationCard ? '' : '楽天市場' }] : []),
     ...approvedImages.map((img) => ({
@@ -124,6 +124,28 @@ export default async function GummyPage({ params }: { params: Promise<{ id: stri
                       </a>
                     ))}
                   </div>
+                </div>
+              )
+            }
+
+            // 武者慶佑カード
+            if (gummy.show_mushatter_card) {
+              return (
+                <div className="mt-2 border border-green-200 rounded-xl p-2.5 bg-green-50">
+                  <p className="text-[10px] font-bold text-green-500 mb-1">🍬 画像について</p>
+                  <p className="text-[10px] text-gray-600 mb-2 leading-relaxed">
+                    日本グミ協会名誉会長 武者慶佑(@mushatter)の画像を引用しております！
+                  </p>
+                  {citations.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {citations.map((c, i) => (
+                        <a key={i} href={c.url!} target="_blank" rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 bg-green-500 text-white px-3 py-1 rounded-full text-[10px] font-bold hover:bg-green-600 transition-colors">
+                          {c.label || (i === 0 ? '引用元の投稿はコチラ' : `引用元${i + 1}`)}
+                        </a>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )
             }
