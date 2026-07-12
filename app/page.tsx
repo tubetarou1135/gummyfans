@@ -14,9 +14,11 @@ async function getNewGummies(): Promise<GummyWithAvg[]> {
     .from('gummies_with_avg')
     .select('*')
     .gt('new_until', now)
-    .order('new_until', { ascending: false })
-    .limit(8)
-  return (data ?? []) as GummyWithAvg[]
+  const all = (data ?? []) as GummyWithAvg[]
+  // 画像ありを優先、それぞれランダム
+  const withImage = all.filter((g) => g.image_url).sort(() => Math.random() - 0.5)
+  const withoutImage = all.filter((g) => !g.image_url).sort(() => Math.random() - 0.5)
+  return [...withImage, ...withoutImage].slice(0, 8)
 }
 
 async function getGummies(q?: string): Promise<GummyWithAvg[]> {
@@ -40,7 +42,7 @@ export default async function HomePage({
   searchParams: Promise<{ q?: string }>
 }) {
   const { q } = await searchParams
-  const [gummies, newGummies] = await Promise.all([getGummies(q), getNewGummies()])
+  const [gummies, newGummies] = await Promise.all([getGummies(q), q ? Promise.resolve([]) : getNewGummies()])
 
   return (
     <main>
