@@ -1,6 +1,8 @@
 import type { MetadataRoute } from 'next'
 import { supabase } from '@/lib/supabase'
 
+export const revalidate = 3600 // 1時間ごとに更新
+
 const BASE = 'https://www.gummyfans.jp'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
