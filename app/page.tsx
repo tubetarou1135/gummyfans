@@ -33,7 +33,12 @@ async function getGummies(q?: string): Promise<GummyWithAvg[]> {
 
   const { data, error } = await query
   if (error) throw error
-  return (data ?? []) as GummyWithAvg[]
+  const all = (data ?? []) as GummyWithAvg[]
+  // 画像ありを優先、同グループ内は avg_overall 順を維持
+  return [
+    ...all.filter((g) => g.image_url),
+    ...all.filter((g) => !g.image_url),
+  ]
 }
 
 export default async function HomePage({
