@@ -125,6 +125,7 @@ function RegisterTab() {
       show_citation_card: false,
       show_jga_card: false,
       show_mushatter_card: false,
+      published: false,
       new_until: null,
     })
   }
