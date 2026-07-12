@@ -65,7 +65,7 @@ function RegisterTab() {
   const [searching, setSearching] = useState(false)
   const [results, setResults] = useState<RakutenItem[]>([])
   const [selected, setSelected] = useState<RakutenItem | null>(null)
-  const [form, setForm] = useState({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false })
+  const [form, setForm] = useState({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false, new_until: null as string | null })
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
   const [loading, setLoading] = useState(false)
   const [makerSuggestions, setMakerSuggestions] = useState<string[]>([])
@@ -123,6 +123,7 @@ function RegisterTab() {
       source_label_3: '',
       show_citation_card: false,
       show_jga_card: false,
+      new_until: null,
     })
   }
 
@@ -149,6 +150,7 @@ function RegisterTab() {
       source_label_3: form.source_label_3.trim() || null,
       show_citation_card: form.show_citation_card,
       show_jga_card: form.show_jga_card,
+      new_until: form.new_until,
     }).select().single()
     if (error || !inserted) {
       setLoading(false)
@@ -164,7 +166,7 @@ function RegisterTab() {
     }
     setLoading(false)
     setMsg({ type: 'ok', text: '登録しました！' })
-    setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false })
+    setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false, new_until: null })
     setPendingImages([])
     setPendingUrl('')
     setSelected(null)
@@ -219,7 +221,7 @@ function RegisterTab() {
                 <p className="text-xs font-semibold text-gray-700 line-clamp-1">{selected.itemName}</p>
                 <p className="text-xs text-gray-400">選択中</p>
               </div>
-              <button type="button" onClick={() => { setSelected(null); setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false }) }} className="text-xs text-gray-400 hover:text-red-400">変更</button>
+              <button type="button" onClick={() => { setSelected(null); setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false, new_until: null }) }} className="text-xs text-gray-400 hover:text-red-400">変更</button>
             </div>
           )}
           {[
@@ -362,6 +364,21 @@ function RegisterTab() {
             />
             <span className="text-sm font-medium text-gray-700">🍬 日本グミ協会カードを表示する</span>
           </label>
+          <div className="border-2 border-pink-100 rounded-2xl p-4">
+            <p className="text-sm font-semibold text-gray-700 mb-2">新グミタグ</p>
+            {form.new_until && new Date(form.new_until) > new Date() ? (
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-green-600 font-semibold">🆕 設定中 〜 {new Date(form.new_until).toLocaleDateString('ja-JP')}</p>
+                <button type="button" onClick={() => setForm(prev => ({ ...prev, new_until: null }))} className="text-xs text-red-400 hover:text-red-600">解除</button>
+              </div>
+            ) : (
+              <button type="button"
+                onClick={() => { const d = new Date(); d.setMonth(d.getMonth() + 1); setForm(prev => ({ ...prev, new_until: d.toISOString() })) }}
+                className="text-xs bg-pink-50 text-pink-500 px-4 py-2 rounded-full hover:bg-pink-100 transition-colors font-semibold">
+                新グミに設定（1ヶ月間）
+              </button>
+            )}
+          </div>
           {msg && <p className={`text-sm ${msg.type === 'ok' ? 'text-green-600' : 'text-red-500'}`}>{msg.text}</p>}
           <button type="submit" disabled={loading} className="w-full bg-pink-500 text-white py-3 rounded-full text-sm font-bold hover:bg-pink-600 transition-colors disabled:opacity-50">
             {loading ? '登録中...' : '登録する'}
