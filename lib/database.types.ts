@@ -21,7 +21,7 @@ export type GummyRow = {
   created_at: string
 }
 
-export type GummyInsert = Omit<GummyRow, 'id' | 'created_at' | 'image_url' | 'rakuten_url' | 'discontinued' | 'new_until' | 'source_url' | 'source_label' | 'source_url_2' | 'source_label_2' | 'source_url_3' | 'source_label_3' | 'show_citation_card' | 'show_jga_card' | 'show_mushatter_card'> & {
+export type GummyInsert = Omit<GummyRow, 'id' | 'created_at' | 'image_url' | 'rakuten_url' | 'discontinued' | 'new_until' | 'source_url' | 'source_label' | 'source_url_2' | 'source_label_2' | 'source_url_3' | 'source_label_3' | 'show_citation_card' | 'show_jga_card' | 'show_mushatter_card' | 'published'> & {
   image_url?: string | null
   rakuten_url?: string | null
   discontinued?: boolean

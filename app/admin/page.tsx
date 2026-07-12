@@ -978,6 +978,7 @@ function RequestsTab() {
       description: req.description,
       image_url: null,
       rakuten_url: null,
+      published: false,
     })
     if (error) {
       setMsg({ type: 'err', text: '登録に失敗しました: ' + error.message })
