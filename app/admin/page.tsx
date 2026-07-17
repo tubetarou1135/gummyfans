@@ -74,6 +74,7 @@ function RegisterTab() {
   const [rakutenSearching, setRakutenSearching] = useState(false)
   const [rakutenResults, setRakutenResults] = useState<RakutenItem[]>([])
   const [showRakutenSearch, setShowRakutenSearch] = useState(false)
+  const [rakutenImageUrl, setRakutenImageUrl] = useState<string | null>(null)
   const composing = useRef(false)
 
   useEffect(() => {
@@ -247,6 +248,21 @@ function RegisterTab() {
           </div>
           <div className="border-2 border-pink-100 rounded-2xl p-4 space-y-3">
             <p className="text-sm font-semibold text-gray-700">画像（{pendingImages.length}/3枚）</p>
+            {rakutenImageUrl && !pendingImages.includes(rakutenImageUrl) && (
+              <label className="flex items-center gap-3 cursor-pointer bg-orange-50 border-2 border-orange-200 rounded-xl px-3 py-2">
+                <input
+                  type="checkbox"
+                  onChange={(e) => {
+                    if (e.target.checked && pendingImages.length < 3) {
+                      setPendingImages(prev => [rakutenImageUrl, ...prev.filter(u => u !== rakutenImageUrl)])
+                    }
+                  }}
+                  className="w-4 h-4 accent-orange-500"
+                />
+                <Image src={rakutenImageUrl} alt="楽天画像" width={40} height={40} className="rounded-lg object-contain shrink-0" />
+                <span className="text-xs font-semibold text-orange-700">楽天の画像を使用する</span>
+              </label>
+            )}
             {pendingImages.length > 0 && (
               <div className="flex flex-wrap gap-3">
                 {pendingImages.map((url, i) => (
@@ -309,7 +325,7 @@ function RegisterTab() {
                   <div className="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto">
                     {rakutenResults.map((item, i) => (
                       <button key={i} type="button"
-                        onClick={() => { set('rakuten_url', item.itemUrl); setShowRakutenSearch(false); setRakutenResults([]) }}
+                        onClick={() => { set('rakuten_url', item.itemUrl); setRakutenImageUrl(item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0]?.imageUrl ?? null); setShowRakutenSearch(false); setRakutenResults([]) }}
                         className="flex items-center gap-2 bg-white border-2 border-pink-100 rounded-xl p-2 hover:border-pink-400 text-left transition-colors">
                         {(item.largeImageUrls?.[0] || item.mediumImageUrls[0]) && (
                           <Image src={item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0].imageUrl} alt={item.itemName} width={48} height={48} className="rounded-lg object-contain shrink-0" />
@@ -622,6 +638,7 @@ function GummiesTab() {
   const [rakutenSearching, setRakutenSearching] = useState(false)
   const [rakutenResults, setRakutenResults] = useState<RakutenItem[]>([])
   const [showRakutenSearch, setShowRakutenSearch] = useState(false)
+  const [rakutenImageUrl, setRakutenImageUrl] = useState<string | null>(null)
   const [imageFilter, setImageFilter] = useState<'all' | 'with' | 'without'>('all')
   const [publishedFilter, setPublishedFilter] = useState<'all' | 'published' | 'unpublished'>('all')
   const [sortAsc, setSortAsc] = useState(true)
@@ -762,6 +779,26 @@ function GummiesTab() {
         />
       </div>
 
+      {/* 楽天画像チェックボックス */}
+      {rakutenImageUrl && (
+        <label className="flex items-center gap-3 cursor-pointer bg-orange-50 border-2 border-orange-200 rounded-xl px-3 py-2">
+          <input
+            type="checkbox"
+            checked={editing.image_url === rakutenImageUrl || editingImages.some(i => i.url === rakutenImageUrl)}
+            onChange={(e) => {
+              if (e.target.checked) {
+                setEditing(prev => prev ? { ...prev, image_url: rakutenImageUrl } : prev)
+              } else {
+                setEditing(prev => prev ? { ...prev, image_url: null } : prev)
+              }
+            }}
+            className="w-4 h-4 accent-orange-500"
+          />
+          <Image src={rakutenImageUrl} alt="楽天画像" width={40} height={40} className="rounded-lg object-contain shrink-0" />
+          <span className="text-xs font-semibold text-orange-700">楽天の画像を使用する</span>
+        </label>
+      )}
+
       {/* 画像管理 */}
       <AdminImageManager
         gummyId={editing.id}
@@ -804,7 +841,7 @@ function GummiesTab() {
               <div className="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto">
                 {rakutenResults.map((item, i) => (
                   <button key={i} type="button"
-                    onClick={() => { setEditing(prev => prev ? { ...prev, rakuten_url: item.itemUrl } : prev); setShowRakutenSearch(false); setRakutenResults([]) }}
+                    onClick={() => { setEditing(prev => prev ? { ...prev, rakuten_url: item.itemUrl } : prev); setRakutenImageUrl(item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0]?.imageUrl ?? null); setShowRakutenSearch(false); setRakutenResults([]) }}
                     className="flex items-center gap-2 bg-white border-2 border-pink-100 rounded-xl p-2 hover:border-pink-400 text-left transition-colors">
                     {(item.largeImageUrls?.[0] || item.mediumImageUrls[0]) && (
                       <Image src={item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0].imageUrl} alt={item.itemName} width={48} height={48} className="rounded-lg object-contain shrink-0" />
