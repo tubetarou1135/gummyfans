@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import type { GummyRow, ReviewRow, ContactRow, GummyImageRow } from '@/lib/database.types'
-import { toMoshimoUrl } from '@/lib/moshimo'
 import Image from 'next/image'
 
 type Tab = 'register' | 'gummies' | 'reviews' | 'requests' | 'contacts' | 'images'
@@ -115,7 +114,7 @@ function RegisterTab() {
       flavor: '',
       description: '',
       image_url: item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0]?.imageUrl ?? '',
-      rakuten_url: toMoshimoUrl(item.itemUrl),
+      rakuten_url: item.itemUrl,
       source_url: '',
       source_label: '',
       source_url_2: '',
