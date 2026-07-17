@@ -65,7 +65,7 @@ function RegisterTab() {
   const [searching, setSearching] = useState(false)
   const [results, setResults] = useState<RakutenItem[]>([])
   const [selected, setSelected] = useState<RakutenItem | null>(null)
-  const [form, setForm] = useState({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false, show_mushatter_card: false, published: false, new_until: null as string | null })
+  const [form, setForm] = useState({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false, show_mushatter_card: false, published: true, new_until: null as string | null })
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
   const [loading, setLoading] = useState(false)
   const [makerSuggestions, setMakerSuggestions] = useState<string[]>([])
@@ -125,7 +125,7 @@ function RegisterTab() {
       show_citation_card: false,
       show_jga_card: false,
       show_mushatter_card: false,
-      published: false,
+      published: true,
       new_until: null,
     })
   }
@@ -171,7 +171,7 @@ function RegisterTab() {
     }
     setLoading(false)
     setMsg({ type: 'ok', text: '登録しました！' })
-    setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false, show_mushatter_card: false, published: false, new_until: null })
+    setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false, show_mushatter_card: false, published: true, new_until: null })
     setPendingImages([])
     setPendingUrl('')
     setSelected(null)
@@ -226,7 +226,7 @@ function RegisterTab() {
                 <p className="text-xs font-semibold text-gray-700 line-clamp-1">{selected.itemName}</p>
                 <p className="text-xs text-gray-400">選択中</p>
               </div>
-              <button type="button" onClick={() => { setSelected(null); setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false, show_mushatter_card: false, published: false, new_until: null }) }} className="text-xs text-gray-400 hover:text-red-400">変更</button>
+              <button type="button" onClick={() => { setSelected(null); setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false, show_mushatter_card: false, published: true, new_until: null }) }} className="text-xs text-gray-400 hover:text-red-400">変更</button>
             </div>
           )}
           {[
