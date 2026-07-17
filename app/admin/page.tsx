@@ -598,6 +598,7 @@ function GummiesTab() {
   const [loading, setLoading] = useState(false)
   const [makerFilter, setMakerFilter] = useState('')
   const [imageFilter, setImageFilter] = useState<'all' | 'with' | 'without'>('all')
+  const [publishedFilter, setPublishedFilter] = useState<'all' | 'published' | 'unpublished'>('all')
   const [sortAsc, setSortAsc] = useState(true)
   const [keyword, setKeyword] = useState('')
   const scrollRef = useRef(0)
@@ -627,6 +628,7 @@ function GummiesTab() {
   const filtered = gummies
     .filter(g => makerFilter ? g.maker === makerFilter : true)
     .filter(g => imageFilter === 'with' ? !!g.image_url : imageFilter === 'without' ? !g.image_url : true)
+    .filter(g => publishedFilter === 'published' ? g.published : publishedFilter === 'unpublished' ? !g.published : true)
     .filter(g => keyword ? g.name.includes(keyword) || g.maker.includes(keyword) || (g.flavor ?? '').includes(keyword) : true)
     .slice()
     .sort((a, b) => {
@@ -887,6 +889,15 @@ function GummiesTab() {
             五十音 {sortAsc ? '▲' : '▼'}
           </button>
         </div>
+        <select
+          value={publishedFilter}
+          onChange={(e) => setPublishedFilter(e.target.value as 'all' | 'published' | 'unpublished')}
+          className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+        >
+          <option value="all">公開状態：全て ({gummies.length}件)</option>
+          <option value="published">公開中 ({gummies.filter(g => g.published).length}件)</option>
+          <option value="unpublished">非公開 ({gummies.filter(g => !g.published).length}件)</option>
+        </select>
       </div>
       <p className="text-xs text-gray-400">{filtered.length}件表示中</p>
       {filtered.length === 0 && <p className="text-gray-400 text-sm">グミが登録されていません</p>}
