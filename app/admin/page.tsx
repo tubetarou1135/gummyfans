@@ -92,7 +92,7 @@ function RegisterTab() {
     setRakutenSearching(true)
     setRakutenResults([])
     try {
-      const appId = process.env.NEXT_PUBLIC_RAKUTEN_APP_ID ?? ''
+      const appId = 'beef9ec2-6740-42ab-a5ee-5926c52a4742'
       const affiliateId = process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID ?? ''
       const accessKey = 'pk_NqeOiyYlRyXKylDuyJVo13T1KJ3JieoYoPAmH8Uvg48'
       const res = await fetch(
@@ -694,7 +694,7 @@ function GummiesTab() {
     setRakutenSearching(true)
     setRakutenResults([])
     try {
-      const appId = process.env.NEXT_PUBLIC_RAKUTEN_APP_ID ?? ''
+      const appId = 'beef9ec2-6740-42ab-a5ee-5926c52a4742'
       const affiliateId = process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID ?? ''
       const accessKey = 'pk_NqeOiyYlRyXKylDuyJVo13T1KJ3JieoYoPAmH8Uvg48'
       const res = await fetch(
