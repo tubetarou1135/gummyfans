@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
       `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${ACCESS_KEY}&format=json`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Referer': 'https://www.gummyfans.jp/' },
         body: JSON.stringify({ applicationId: appId, accessKey: ACCESS_KEY, affiliateId, keyword, hits: 20 }),
       }
     )

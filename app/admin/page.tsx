@@ -99,7 +99,7 @@ function RegisterTab() {
         `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey)}&format=json`,
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'Referer': 'https://www.gummyfans.jp/' },
           body: JSON.stringify({ applicationId: appId, accessKey, affiliateId, keyword: rakutenQuery, hits: 20 }),
         }
       )
@@ -701,7 +701,7 @@ function GummiesTab() {
         `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey)}&format=json`,
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'Referer': 'https://www.gummyfans.jp/' },
           body: JSON.stringify({ applicationId: appId, accessKey, affiliateId, keyword: rakutenQuery, hits: 20 }),
         }
       )
