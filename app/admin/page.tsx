@@ -91,17 +91,22 @@ function RegisterTab() {
     if (!rakutenQuery.trim()) return
     setRakutenSearching(true)
     setRakutenResults([])
-    const appId = process.env.NEXT_PUBLIC_RAKUTEN_APP_ID
-    const accessKey = process.env.NEXT_PUBLIC_RAKUTEN_ACCESS_KEY
-    const affiliateId = process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID
-    const res = await fetch(`https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey ?? '')}&format=json`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ applicationId: appId, accessKey, affiliateId, keyword: rakutenQuery + ' グミ', hits: 20 }),
-    })
-    const data = await res.json()
-    setRakutenResults(data.Items?.map((i: { Item: RakutenItem }) => i.Item) ?? [])
-    setRakutenSearching(false)
+    try {
+      const appId = process.env.NEXT_PUBLIC_RAKUTEN_APP_ID
+      const accessKey = process.env.NEXT_PUBLIC_RAKUTEN_ACCESS_KEY
+      const affiliateId = process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID
+      const res = await fetch(`https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey ?? '')}&format=json`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ applicationId: appId, accessKey, affiliateId, keyword: rakutenQuery, hits: 20 }),
+      })
+      const data = await res.json()
+      setRakutenResults(data.Items?.map((i: { Item: RakutenItem }) => i.Item) ?? [])
+    } catch (err) {
+      console.error('楽天検索エラー:', err)
+    } finally {
+      setRakutenSearching(false)
+    }
   }
 
   async function handleSearch(e: React.FormEvent) {
@@ -321,6 +326,9 @@ function RegisterTab() {
                     {rakutenSearching ? '...' : '検索'}
                   </button>
                 </div>
+                {!rakutenSearching && rakutenResults.length === 0 && rakutenQuery.trim() && (
+                  <p className="text-xs text-gray-400 text-center py-2">検索結果がありません</p>
+                )}
                 {rakutenResults.length > 0 && (
                   <div className="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto">
                     {rakutenResults.map((item, i) => (
@@ -682,17 +690,22 @@ function GummiesTab() {
     if (!rakutenQuery.trim()) return
     setRakutenSearching(true)
     setRakutenResults([])
-    const appId = process.env.NEXT_PUBLIC_RAKUTEN_APP_ID
-    const accessKey = process.env.NEXT_PUBLIC_RAKUTEN_ACCESS_KEY
-    const affiliateId = process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID
-    const res = await fetch(`https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey ?? '')}&format=json`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ applicationId: appId, accessKey, affiliateId, keyword: rakutenQuery + ' グミ', hits: 20 }),
-    })
-    const data = await res.json()
-    setRakutenResults(data.Items?.map((i: { Item: RakutenItem }) => i.Item) ?? [])
-    setRakutenSearching(false)
+    try {
+      const appId = process.env.NEXT_PUBLIC_RAKUTEN_APP_ID
+      const accessKey = process.env.NEXT_PUBLIC_RAKUTEN_ACCESS_KEY
+      const affiliateId = process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID
+      const res = await fetch(`https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey ?? '')}&format=json`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ applicationId: appId, accessKey, affiliateId, keyword: rakutenQuery, hits: 20 }),
+      })
+      const data = await res.json()
+      setRakutenResults(data.Items?.map((i: { Item: RakutenItem }) => i.Item) ?? [])
+    } catch (err) {
+      console.error('楽天検索エラー:', err)
+    } finally {
+      setRakutenSearching(false)
+    }
   }
 
   async function handleDelete(id: number) {
@@ -837,6 +850,9 @@ function GummiesTab() {
                 {rakutenSearching ? '...' : '検索'}
               </button>
             </div>
+            {!rakutenSearching && rakutenResults.length === 0 && rakutenQuery.trim() && (
+              <p className="text-xs text-gray-400 text-center py-2">検索結果がありません</p>
+            )}
             {rakutenResults.length > 0 && (
               <div className="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto">
                 {rakutenResults.map((item, i) => (
