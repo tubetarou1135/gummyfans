@@ -1,42 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: NextRequest) {
-  const query = request.nextUrl.searchParams.get('query')
-  if (!query) return NextResponse.json({ error: 'query required' }, { status: 400 })
+export async function GET(req: NextRequest) {
+  const keyword = req.nextUrl.searchParams.get('keyword') ?? ''
+  const appId = process.env.NEXT_PUBLIC_RAKUTEN_APP_ID ?? ''
+  const affiliateId = process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID ?? ''
 
-  const appId = process.env.RAKUTEN_APP_ID ?? process.env.NEXT_PUBLIC_RAKUTEN_APP_ID
-  const accessKey = process.env.RAKUTEN_ACCESS_KEY
-  const affiliateId = process.env.RAKUTEN_AFFILIATE_ID ?? process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID
-
-  const siteUrl = 'https://gummyfans.vercel.app'
-  const body = {
-    applicationId: appId,
-    accessKey: accessKey,
-    affiliateId: affiliateId,
-    keyword: query + ' グミ',
-    format: 'json',
-    httpReferrer: siteUrl,
-    httpReferer: siteUrl,
-    referrer: siteUrl,
-    referer: siteUrl,
-    hits: 20,
-  }
-
-  const res = await fetch(`https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey ?? '')}&httpReferrer=${encodeURIComponent(siteUrl)}&referrer=${encodeURIComponent(siteUrl)}`, {
-    method: 'POST',
-    referrer: siteUrl,
-    headers: {
-      'Content-Type': 'application/json',
-      'Referer': siteUrl,
-      'Authorization': `Bearer ${accessKey}`,
-    },
-    body: JSON.stringify(body),
-  })
+  const params = new URLSearchParams({ applicationId: appId, affiliateId, keyword, hits: '20', format: 'json' })
+  const res = await fetch(`https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706?${params}`)
   const data = await res.json()
-
-  if (!res.ok) {
-    return NextResponse.json(data, { status: res.status })
-  }
 
   return NextResponse.json(data)
 }

@@ -92,10 +92,7 @@ function RegisterTab() {
     setRakutenSearching(true)
     setRakutenResults([])
     try {
-      const appId = process.env.NEXT_PUBLIC_RAKUTEN_APP_ID
-      const affiliateId = process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID
-      const params = new URLSearchParams({ applicationId: appId ?? '', affiliateId: affiliateId ?? '', keyword: rakutenQuery, hits: '20', format: 'json' })
-      const res = await fetch(`https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706?${params}`)
+      const res = await fetch(`/api/rakuten-search?keyword=${encodeURIComponent(rakutenQuery)}`)
       const data = await res.json()
       setRakutenResults(data.Items?.map((i: { Item: RakutenItem }) => i.Item) ?? [])
     } catch (err) {
@@ -687,10 +684,7 @@ function GummiesTab() {
     setRakutenSearching(true)
     setRakutenResults([])
     try {
-      const appId = process.env.NEXT_PUBLIC_RAKUTEN_APP_ID
-      const affiliateId = process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID
-      const params = new URLSearchParams({ applicationId: appId ?? '', affiliateId: affiliateId ?? '', keyword: rakutenQuery, hits: '20', format: 'json' })
-      const res = await fetch(`https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706?${params}`)
+      const res = await fetch(`/api/rakuten-search?keyword=${encodeURIComponent(rakutenQuery)}`)
       const data = await res.json()
       setRakutenResults(data.Items?.map((i: { Item: RakutenItem }) => i.Item) ?? [])
     } catch (err) {
