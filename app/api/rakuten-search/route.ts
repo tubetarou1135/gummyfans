@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
           'Content-Type': 'application/json',
           'Referer': 'https://www.gummyfans.jp/',
         },
-        body: JSON.stringify({ applicationId: ACCESS_KEY, accessKey: ACCESS_KEY, affiliateId, keyword, hits: 20 }),
+        body: JSON.stringify({ applicationId: ACCESS_KEY, accessKey: ACCESS_KEY, affiliateId, keyword, hits: 20, httpReferrer: 'https://www.gummyfans.jp/' }),
       }
     )
     const data = await res.json()
