@@ -108,12 +108,14 @@ function RegisterTab() {
 
   function handleSelect(item: RakutenItem) {
     setSelected(item)
+    const imgUrl = item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0]?.imageUrl ?? ''
+    if (imgUrl) setPendingImages([imgUrl])
     setForm({
       name: item.itemName,
       maker: item.shopName,
       flavor: '',
       description: '',
-      image_url: item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0]?.imageUrl ?? '',
+      image_url: '',
       rakuten_url: item.itemUrl,
       source_url: '',
       source_label: '',
@@ -301,6 +303,15 @@ function RegisterTab() {
                 <PasteImageArea onUploaded={(url) => setPendingImages((p) => [...p, url])} />
               </div>
             )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">楽天アフィリエイトURL</label>
+            <input
+              value={form.rakuten_url}
+              onChange={(e) => set('rakuten_url', e.target.value)}
+              placeholder="https://hb.afl.rakuten.co.jp/..."
+              className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">引用元URL（X投稿など）</label>
@@ -727,6 +738,16 @@ function GummiesTab() {
         onImagesChange={setEditingImages}
       />
 
+      {/* 楽天アフィリエイトURL */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">楽天アフィリエイトURL</label>
+        <input
+          value={editing.rakuten_url ?? ''}
+          onChange={(e) => setEditing((prev) => prev ? { ...prev, rakuten_url: e.target.value || null } : prev)}
+          placeholder="https://hb.afl.rakuten.co.jp/..."
+          className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+        />
+      </div>
       {/* 引用元URL */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">引用元URL（X投稿など）</label>
