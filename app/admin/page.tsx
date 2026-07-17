@@ -202,54 +202,7 @@ function RegisterTab() {
 
   return (
     <div className="space-y-4">
-      {/* モード切替 */}
-      <div className="flex rounded-full bg-pink-50 p-1 gap-1">
-        <button onClick={() => setMode('rakuten')} className={`flex-1 py-2 rounded-full text-xs font-semibold transition-colors ${mode === 'rakuten' ? 'bg-pink-500 text-white' : 'text-gray-500'}`}>楽天から検索</button>
-        <button onClick={() => setMode('manual')} className={`flex-1 py-2 rounded-full text-xs font-semibold transition-colors ${mode === 'manual' ? 'bg-pink-500 text-white' : 'text-gray-500'}`}>手動入力</button>
-      </div>
-
-      {mode === 'rakuten' && !selected && (
-        <div className="space-y-4">
-          <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2">
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="グミ名で検索..."
-              className="flex-1 border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
-            />
-            <button type="submit" disabled={searching} className="bg-pink-500 text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-pink-600 disabled:opacity-50">
-              {searching ? '検索中...' : '検索'}
-            </button>
-          </form>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[600px] overflow-y-auto pr-1">
-            {results.map((item, i) => (
-              <button key={i} onClick={() => handleSelect(item)} className="flex items-center gap-3 border-2 border-pink-100 rounded-2xl p-3 hover:border-pink-400 hover:bg-pink-50 transition-colors text-left">
-                {( item.largeImageUrls?.[0] || item.mediumImageUrls[0]) && (
-                  <Image src={item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0].imageUrl} alt={item.itemName} width={64} height={64} className="rounded-xl object-contain shrink-0" />
-                )}
-                <div className="min-w-0">
-                  <p className="text-xs font-semibold text-gray-800 line-clamp-3">{item.itemName}</p>
-                  <p className="text-xs text-gray-400 mt-1">{item.shopName}</p>
-                  <p className="text-sm font-bold text-pink-500 mt-0.5">¥{item.itemPrice.toLocaleString()}</p>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {(mode === 'manual' || selected) && (
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {selected && (
-            <div className="flex items-center gap-3 bg-pink-50 rounded-2xl p-3">
-              {form.image_url && <Image src={form.image_url} alt={form.name} width={48} height={48} className="rounded-xl object-contain shrink-0" />}
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold text-gray-700 line-clamp-1">{selected.itemName}</p>
-                <p className="text-xs text-gray-400">選択中</p>
-              </div>
-              <button type="button" onClick={() => { setSelected(null); setForm({ name: '', maker: '', flavor: '', description: '', image_url: '', rakuten_url: '', source_url: '', source_label: '', source_url_2: '', source_label_2: '', source_url_3: '', source_label_3: '', show_citation_card: false, show_jga_card: false, show_mushatter_card: false, published: true, new_until: null }) }} className="text-xs text-gray-400 hover:text-red-400">変更</button>
-            </div>
-          )}
+      <form onSubmit={handleSubmit} className="space-y-4">
           {[
             { key: 'name', label: '商品名 *', placeholder: '' },
             { key: 'flavor', label: 'フレーバー', placeholder: '' },
@@ -484,7 +437,6 @@ function RegisterTab() {
             {loading ? '登録中...' : '登録する'}
           </button>
         </form>
-      )}
     </div>
   )
 }
