@@ -605,6 +605,10 @@ function GummiesTab() {
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
   const [loading, setLoading] = useState(false)
   const [makerFilter, setMakerFilter] = useState('')
+  const [rakutenQuery, setRakutenQuery] = useState('')
+  const [rakutenSearching, setRakutenSearching] = useState(false)
+  const [rakutenResults, setRakutenResults] = useState<RakutenItem[]>([])
+  const [showRakutenSearch, setShowRakutenSearch] = useState(false)
   const [imageFilter, setImageFilter] = useState<'all' | 'with' | 'without'>('all')
   const [publishedFilter, setPublishedFilter] = useState<'all' | 'published' | 'unpublished'>('all')
   const [sortAsc, setSortAsc] = useState(true)
@@ -643,6 +647,24 @@ function GummiesTab() {
       const cmp = a.name.localeCompare(b.name, 'ja')
       return sortAsc ? cmp : -cmp
     })
+
+  async function handleRakutenSearch(e: React.FormEvent) {
+    e.preventDefault()
+    if (!rakutenQuery.trim()) return
+    setRakutenSearching(true)
+    setRakutenResults([])
+    const appId = process.env.NEXT_PUBLIC_RAKUTEN_APP_ID
+    const accessKey = process.env.NEXT_PUBLIC_RAKUTEN_ACCESS_KEY
+    const affiliateId = process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID
+    const res = await fetch(`https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey ?? '')}&format=json`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ applicationId: appId, accessKey, affiliateId, keyword: rakutenQuery + ' グミ', hits: 20 }),
+    })
+    const data = await res.json()
+    setRakutenResults(data.Items?.map((i: { Item: RakutenItem }) => i.Item) ?? [])
+    setRakutenSearching(false)
+  }
 
   async function handleDelete(id: number) {
     if (!confirm('本当に削除しますか？')) return
@@ -737,14 +759,53 @@ function GummiesTab() {
       />
 
       {/* 楽天アフィリエイトURL */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">楽天アフィリエイトURL</label>
-        <input
-          value={editing.rakuten_url ?? ''}
-          onChange={(e) => setEditing((prev) => prev ? { ...prev, rakuten_url: e.target.value || null } : prev)}
-          placeholder="https://hb.afl.rakuten.co.jp/..."
-          className="w-full border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
-        />
+      <div className="space-y-2">
+        <label className="block text-sm font-medium text-gray-700">楽天アフィリエイトURL</label>
+        <div className="flex gap-2">
+          <input
+            value={editing.rakuten_url ?? ''}
+            onChange={(e) => setEditing((prev) => prev ? { ...prev, rakuten_url: e.target.value || null } : prev)}
+            placeholder="https://hb.afl.rakuten.co.jp/..."
+            className="flex-1 border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
+          />
+          <button type="button" onClick={() => setShowRakutenSearch(v => !v)}
+            className="shrink-0 bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-pink-600">
+            楽天検索
+          </button>
+        </div>
+        {showRakutenSearch && (
+          <div className="border-2 border-pink-100 rounded-2xl p-3 space-y-3 bg-pink-50">
+            <form onSubmit={handleRakutenSearch} className="flex gap-2">
+              <input
+                value={rakutenQuery}
+                onChange={(e) => setRakutenQuery(e.target.value)}
+                placeholder="商品名で検索..."
+                className="flex-1 border-2 border-pink-100 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:border-pink-400 bg-white"
+              />
+              <button type="submit" disabled={rakutenSearching}
+                className="bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-pink-600 disabled:opacity-50">
+                {rakutenSearching ? '...' : '検索'}
+              </button>
+            </form>
+            {rakutenResults.length > 0 && (
+              <div className="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto">
+                {rakutenResults.map((item, i) => (
+                  <button key={i} type="button"
+                    onClick={() => { setEditing(prev => prev ? { ...prev, rakuten_url: item.itemUrl } : prev); setShowRakutenSearch(false); setRakutenResults([]) }}
+                    className="flex items-center gap-2 bg-white border-2 border-pink-100 rounded-xl p-2 hover:border-pink-400 text-left transition-colors">
+                    {(item.largeImageUrls?.[0] || item.mediumImageUrls[0]) && (
+                      <Image src={item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0].imageUrl} alt={item.itemName} width={48} height={48} className="rounded-lg object-contain shrink-0" />
+                    )}
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold text-gray-800 line-clamp-2">{item.itemName}</p>
+                      <p className="text-xs text-pink-500 font-bold">¥{item.itemPrice.toLocaleString()}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
       {/* 引用元URL */}
       <div>
