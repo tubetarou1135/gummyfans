@@ -87,8 +87,7 @@ function RegisterTab() {
     setForm((prev) => ({ ...prev, [key]: value }))
   }
 
-  async function handleRakutenUrlSearch(e: React.FormEvent) {
-    e.preventDefault()
+  async function handleRakutenUrlSearch() {
     if (!rakutenQuery.trim()) return
     setRakutenSearching(true)
     setRakutenResults([])
@@ -309,18 +308,19 @@ function RegisterTab() {
             </div>
             {showRakutenSearch && (
               <div className="border-2 border-pink-100 rounded-2xl p-3 space-y-3 bg-pink-50">
-                <form onSubmit={handleRakutenUrlSearch} className="flex gap-2">
+                <div className="flex gap-2">
                   <input
                     value={rakutenQuery}
                     onChange={(e) => setRakutenQuery(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleRakutenUrlSearch() } }}
                     placeholder="商品名で検索..."
                     className="flex-1 border-2 border-pink-100 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:border-pink-400 bg-white"
                   />
-                  <button type="submit" disabled={rakutenSearching}
+                  <button type="button" onClick={handleRakutenUrlSearch} disabled={rakutenSearching}
                     className="bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-pink-600 disabled:opacity-50">
                     {rakutenSearching ? '...' : '検索'}
                   </button>
-                </form>
+                </div>
                 {rakutenResults.length > 0 && (
                   <div className="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto">
                     {rakutenResults.map((item, i) => (
@@ -678,8 +678,7 @@ function GummiesTab() {
       return sortAsc ? cmp : -cmp
     })
 
-  async function handleRakutenSearch(e: React.FormEvent) {
-    e.preventDefault()
+  async function handleRakutenSearch() {
     if (!rakutenQuery.trim()) return
     setRakutenSearching(true)
     setRakutenResults([])
@@ -825,18 +824,19 @@ function GummiesTab() {
         </div>
         {showRakutenSearch && (
           <div className="border-2 border-pink-100 rounded-2xl p-3 space-y-3 bg-pink-50">
-            <form onSubmit={handleRakutenSearch} className="flex gap-2">
+            <div className="flex gap-2">
               <input
                 value={rakutenQuery}
                 onChange={(e) => setRakutenQuery(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleRakutenSearch() } }}
                 placeholder="商品名で検索..."
                 className="flex-1 border-2 border-pink-100 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:border-pink-400 bg-white"
               />
-              <button type="submit" disabled={rakutenSearching}
+              <button type="button" onClick={handleRakutenSearch} disabled={rakutenSearching}
                 className="bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-pink-600 disabled:opacity-50">
                 {rakutenSearching ? '...' : '検索'}
               </button>
-            </form>
+            </div>
             {rakutenResults.length > 0 && (
               <div className="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto">
                 {rakutenResults.map((item, i) => (
