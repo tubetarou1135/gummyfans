@@ -108,14 +108,12 @@ function RegisterTab() {
 
   function handleSelect(item: RakutenItem) {
     setSelected(item)
-    const imgUrl = item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0]?.imageUrl ?? ''
-    if (imgUrl) setPendingImages([imgUrl])
     setForm({
       name: item.itemName,
       maker: item.shopName,
       flavor: '',
       description: '',
-      image_url: '',
+      image_url: item.largeImageUrls?.[0]?.imageUrl ?? item.mediumImageUrls[0]?.imageUrl ?? '',
       rakuten_url: item.itemUrl,
       source_url: '',
       source_label: '',
