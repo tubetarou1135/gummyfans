@@ -92,17 +92,7 @@ function RegisterTab() {
     setRakutenSearching(true)
     setRakutenResults([])
     try {
-      const accessKey = 'pk_NqeOiyYlRyXKylDuyJVo13T1KJ3JieoYoPAmH8Uvg48'
-      const appId = accessKey
-      const affiliateId = process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID ?? ''
-      const res = await fetch(
-        `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey)}&format=json`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Referer': 'https://www.gummyfans.jp/' },
-          body: JSON.stringify({ applicationId: appId, accessKey, affiliateId, keyword: rakutenQuery, hits: 20 }),
-        }
-      )
+      const res = await fetch(`/api/rakuten-search?keyword=${encodeURIComponent(rakutenQuery)}`)
       const data = await res.json()
       setRakutenResults(data.Items?.map((i: { Item: RakutenItem }) => i.Item) ?? [])
     } catch (err) {
@@ -694,17 +684,7 @@ function GummiesTab() {
     setRakutenSearching(true)
     setRakutenResults([])
     try {
-      const accessKey = 'pk_NqeOiyYlRyXKylDuyJVo13T1KJ3JieoYoPAmH8Uvg48'
-      const appId = accessKey
-      const affiliateId = process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID ?? ''
-      const res = await fetch(
-        `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey)}&format=json`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Referer': 'https://www.gummyfans.jp/' },
-          body: JSON.stringify({ applicationId: appId, accessKey, affiliateId, keyword: rakutenQuery, hits: 20 }),
-        }
-      )
+      const res = await fetch(`/api/rakuten-search?keyword=${encodeURIComponent(rakutenQuery)}`)
       const data = await res.json()
       setRakutenResults(data.Items?.map((i: { Item: RakutenItem }) => i.Item) ?? [])
     } catch (err) {

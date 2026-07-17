@@ -4,7 +4,6 @@ const ACCESS_KEY = 'pk_NqeOiyYlRyXKylDuyJVo13T1KJ3JieoYoPAmH8Uvg48'
 
 export async function GET(req: NextRequest) {
   const keyword = req.nextUrl.searchParams.get('keyword') ?? ''
-  const appId = process.env.NEXT_PUBLIC_RAKUTEN_APP_ID ?? ''
   const affiliateId = process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID ?? ''
 
   try {
@@ -12,8 +11,11 @@ export async function GET(req: NextRequest) {
       `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${ACCESS_KEY}&format=json`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Referer': 'https://www.gummyfans.jp/' },
-        body: JSON.stringify({ applicationId: appId, accessKey: ACCESS_KEY, affiliateId, keyword, hits: 20 }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Referer': 'https://www.gummyfans.jp/',
+        },
+        body: JSON.stringify({ applicationId: ACCESS_KEY, accessKey: ACCESS_KEY, affiliateId, keyword, hits: 20 }),
       }
     )
     const data = await res.json()
