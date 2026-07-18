@@ -23,6 +23,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.gummyfans.jp"),
   title: { default: "グミファンズ-GummyFans-", template: "%s | グミファンズ-GummyFans-" },
   description: "グミの評価・レビューサイト。880種類以上のグミを掲載。硬さ・甘さ・酸っぱさ・果汁感などをレビュー。",
   verification: { google: "skHlp7c6AijCO6b1CtbegCNzjTCdf03bd4nW6oICiI4" },
