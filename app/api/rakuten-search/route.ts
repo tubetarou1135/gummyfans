@@ -14,12 +14,13 @@ export async function GET(req: NextRequest) {
     keyword,
     hits: '20',
     format: 'json',
+    httpReferrer: 'https://www.gummyfans.jp/',
   })
 
   try {
     const res = await fetch(
       `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701?${params}`,
-      { method: 'GET' }
+      { method: 'GET', headers: { 'Referer': 'https://www.gummyfans.jp/' } }
     )
     const data = await res.json()
     if (!res.ok) {
