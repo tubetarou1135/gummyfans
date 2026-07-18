@@ -48,6 +48,10 @@ type GummyRequest = {
   created_at: string
 }
 
+function rakutenHiRes(url: string | undefined): string | undefined {
+  return url?.replace(/_ex=\d+x\d+/, '_ex=600x600')
+}
+
 type RakutenItem = {
   itemName: string
   shopName: string
@@ -146,7 +150,7 @@ function RegisterTab() {
       maker: item.shopName,
       flavor: '',
       description: '',
-      image_url: item.largeImageUrls?.[0] ?? item.mediumImageUrls[0] ?? '',
+      image_url: rakutenHiRes(item.largeImageUrls?.[0] ?? item.mediumImageUrls[0]) ?? '',
       rakuten_url: item.itemUrl,
       source_url: '',
       source_label: '',
@@ -339,10 +343,10 @@ function RegisterTab() {
                   <div className="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto">
                     {rakutenResults.map((item, i) => (
                       <button key={i} type="button"
-                        onClick={() => { set('rakuten_url', item.itemUrl); setRakutenImageUrl(item.largeImageUrls?.[0] ?? item.mediumImageUrls[0] ?? null); setShowRakutenSearch(false); setRakutenResults([]) }}
+                        onClick={() => { set('rakuten_url', item.itemUrl); setRakutenImageUrl(rakutenHiRes(item.largeImageUrls?.[0] ?? item.mediumImageUrls[0]) ?? null); setShowRakutenSearch(false); setRakutenResults([]) }}
                         className="flex items-center gap-2 bg-white border-2 border-pink-100 rounded-xl p-2 hover:border-pink-400 text-left transition-colors">
                         {(item.largeImageUrls?.[0] || item.mediumImageUrls[0]) && (
-                          <Image src={item.largeImageUrls?.[0] ?? item.mediumImageUrls[0]} alt={item.itemName} width={48} height={48} className="rounded-lg object-contain shrink-0" />
+                          <Image src={rakutenHiRes(item.largeImageUrls?.[0] ?? item.mediumImageUrls[0]) ?? ''} alt={item.itemName} width={48} height={48} className="rounded-lg object-contain shrink-0" />
                         )}
                         <div className="min-w-0">
                           <p className="text-xs font-semibold text-gray-800 line-clamp-2">{item.itemName}</p>
@@ -869,10 +873,10 @@ function GummiesTab() {
               <div className="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto">
                 {rakutenResults.map((item, i) => (
                   <button key={i} type="button"
-                    onClick={() => { setEditing(prev => prev ? { ...prev, rakuten_url: item.itemUrl } : prev); setRakutenImageUrl(item.largeImageUrls?.[0] ?? item.mediumImageUrls[0] ?? null); setShowRakutenSearch(false); setRakutenResults([]) }}
+                    onClick={() => { setEditing(prev => prev ? { ...prev, rakuten_url: item.itemUrl } : prev); setRakutenImageUrl(rakutenHiRes(item.largeImageUrls?.[0] ?? item.mediumImageUrls[0]) ?? null); setShowRakutenSearch(false); setRakutenResults([]) }}
                     className="flex items-center gap-2 bg-white border-2 border-pink-100 rounded-xl p-2 hover:border-pink-400 text-left transition-colors">
                     {(item.largeImageUrls?.[0] || item.mediumImageUrls[0]) && (
-                      <Image src={item.largeImageUrls?.[0] ?? item.mediumImageUrls[0]} alt={item.itemName} width={48} height={48} className="rounded-lg object-contain shrink-0" />
+                      <Image src={rakutenHiRes(item.largeImageUrls?.[0] ?? item.mediumImageUrls[0]) ?? ''} alt={item.itemName} width={48} height={48} className="rounded-lg object-contain shrink-0" />
                     )}
                     <div className="min-w-0">
                       <p className="text-xs font-semibold text-gray-800 line-clamp-2">{item.itemName}</p>
