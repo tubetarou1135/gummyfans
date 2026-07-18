@@ -92,7 +92,18 @@ function RegisterTab() {
     setRakutenSearching(true)
     setRakutenResults([])
     try {
-      const res = await fetch(`/api/rakuten-search?keyword=${encodeURIComponent(rakutenQuery)}`)
+      const accessKey = 'pk_NqeOiyYlRyXKylDuyJVo13T1KJ3JieoYoPAmH8Uvg48'
+      const appId = 'beef9ec2-6740-42ab-a5ee-5926c52a4742'
+      const affiliateId = '54d8d00c.93236e4d.54d8d00c.f72fc719'
+      const res = await fetch(
+        `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey)}&format=json`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          referrerPolicy: 'no-referrer-when-downgrade',
+          body: JSON.stringify({ applicationId: appId, accessKey, affiliateId, keyword: rakutenQuery, hits: 20 }),
+        }
+      )
       const data = await res.json()
       setRakutenResults(data.Items?.map((i: { Item: RakutenItem }) => i.Item) ?? [])
     } catch (err) {
@@ -684,7 +695,18 @@ function GummiesTab() {
     setRakutenSearching(true)
     setRakutenResults([])
     try {
-      const res = await fetch(`/api/rakuten-search?keyword=${encodeURIComponent(rakutenQuery)}`)
+      const accessKey = 'pk_NqeOiyYlRyXKylDuyJVo13T1KJ3JieoYoPAmH8Uvg48'
+      const appId = 'beef9ec2-6740-42ab-a5ee-5926c52a4742'
+      const affiliateId = '54d8d00c.93236e4d.54d8d00c.f72fc719'
+      const res = await fetch(
+        `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey)}&format=json`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          referrerPolicy: 'no-referrer-when-downgrade',
+          body: JSON.stringify({ applicationId: appId, accessKey, affiliateId, keyword: rakutenQuery, hits: 20 }),
+        }
+      )
       const data = await res.json()
       setRakutenResults(data.Items?.map((i: { Item: RakutenItem }) => i.Item) ?? [])
     } catch (err) {
