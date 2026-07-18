@@ -92,20 +92,22 @@ function RegisterTab() {
     setRakutenSearching(true)
     setRakutenResults([])
     try {
-      const accessKey = 'pk_NqeOiyYlRyXKylDuyJVo13T1KJ3JieoYoPAmH8Uvg48'
-      const appId = 'beef9ec2-6740-42ab-a5ee-5926c52a4742'
-      const affiliateId = '54d8d00c.93236e4d.54d8d00c.f72fc719'
+      const params = new URLSearchParams({
+        applicationId: 'beef9ec2-6740-42ab-a5ee-5926c52a4742',
+        accessKey: 'pk_NqeOiyYlRyXKylDuyJVo13T1KJ3JieoYoPAmH8Uvg48',
+        affiliateId: '54d8d00c.93236e4d.54d8d00c.f72fc719',
+        keyword: rakutenQuery,
+        hits: '20',
+        format: 'json',
+        formatVersion: '2',
+      })
       const res = await fetch(
-        `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey)}&format=json`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          referrerPolicy: 'no-referrer-when-downgrade',
-          body: JSON.stringify({ applicationId: appId, accessKey, affiliateId, keyword: rakutenQuery, hits: 20 }),
-        }
+        `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701?${params}`,
+        { method: 'GET' }
       )
       const data = await res.json()
-      setRakutenResults(data.Items?.map((i: { Item: RakutenItem }) => i.Item) ?? [])
+      console.log('[楽天API] status:', res.status, 'response:', data)
+      setRakutenResults(data.Items ?? [])
     } catch (err) {
       console.error('楽天検索エラー:', err)
     } finally {
@@ -695,20 +697,22 @@ function GummiesTab() {
     setRakutenSearching(true)
     setRakutenResults([])
     try {
-      const accessKey = 'pk_NqeOiyYlRyXKylDuyJVo13T1KJ3JieoYoPAmH8Uvg48'
-      const appId = 'beef9ec2-6740-42ab-a5ee-5926c52a4742'
-      const affiliateId = '54d8d00c.93236e4d.54d8d00c.f72fc719'
+      const params = new URLSearchParams({
+        applicationId: 'beef9ec2-6740-42ab-a5ee-5926c52a4742',
+        accessKey: 'pk_NqeOiyYlRyXKylDuyJVo13T1KJ3JieoYoPAmH8Uvg48',
+        affiliateId: '54d8d00c.93236e4d.54d8d00c.f72fc719',
+        keyword: rakutenQuery,
+        hits: '20',
+        format: 'json',
+        formatVersion: '2',
+      })
       const res = await fetch(
-        `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?accessKey=${encodeURIComponent(accessKey)}&format=json`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          referrerPolicy: 'no-referrer-when-downgrade',
-          body: JSON.stringify({ applicationId: appId, accessKey, affiliateId, keyword: rakutenQuery, hits: 20 }),
-        }
+        `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701?${params}`,
+        { method: 'GET' }
       )
       const data = await res.json()
-      setRakutenResults(data.Items?.map((i: { Item: RakutenItem }) => i.Item) ?? [])
+      console.log('[楽天API] status:', res.status, 'response:', data)
+      setRakutenResults(data.Items ?? [])
     } catch (err) {
       console.error('楽天検索エラー:', err)
     } finally {
