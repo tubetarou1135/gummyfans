@@ -312,7 +312,7 @@ function RegisterTab() {
                 placeholder="https://hb.afl.rakuten.co.jp/..."
                 className="flex-1 border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
               />
-              <button type="button" onClick={() => setShowRakutenSearch(v => !v)}
+              <button type="button" onClick={() => { setShowRakutenSearch(v => !v); if (!showRakutenSearch && form.name) setRakutenQuery(form.name) }}
                 className="shrink-0 bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-pink-600">
                 楽天検索
               </button>
@@ -842,7 +842,7 @@ function GummiesTab() {
             placeholder="https://hb.afl.rakuten.co.jp/..."
             className="flex-1 border-2 border-pink-100 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-400 bg-pink-50"
           />
-          <button type="button" onClick={() => setShowRakutenSearch(v => !v)}
+          <button type="button" onClick={() => { setShowRakutenSearch(v => !v); if (!showRakutenSearch && editing?.name) setRakutenQuery(editing.name) }}
             className="shrink-0 bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-pink-600">
             楽天検索
           </button>
