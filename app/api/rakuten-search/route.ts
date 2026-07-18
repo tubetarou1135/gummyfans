@@ -9,18 +9,21 @@ export async function GET(req: NextRequest) {
 
   const params = new URLSearchParams({
     applicationId: APP_ID,
-    accessKey: ACCESS_KEY,
     affiliateId,
     keyword,
     hits: '20',
     format: 'json',
-    httpReferrer: 'https://www.gummyfans.jp/',
   })
 
   try {
     const res = await fetch(
       `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701?${params}`,
-      { method: 'GET', headers: { 'Referer': 'https://www.gummyfans.jp/' } }
+      {
+        method: 'GET',
+        headers: {
+          'accessKey': ACCESS_KEY,
+        },
+      }
     )
     const data = await res.json()
     if (!res.ok) {
