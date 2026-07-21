@@ -17,23 +17,35 @@ async function uploadClipboardImage(file: File): Promise<string | null> {
 
 function PasteImageArea({ onUploaded }: { onUploaded: (url: string) => void }) {
   const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  async function handlePaste(e: React.ClipboardEvent) {
-    const file = Array.from(e.clipboardData.items).find(i => i.type.startsWith('image/'))?.getAsFile()
-    if (!file) return
+  async function upload(file: File) {
     setUploading(true)
     const url = await uploadClipboardImage(file)
     setUploading(false)
     if (url) onUploaded(url)
   }
 
+  async function handlePaste(e: React.ClipboardEvent) {
+    const file = Array.from(e.clipboardData.items).find(i => i.type.startsWith('image/'))?.getAsFile()
+    if (file) upload(file)
+  }
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) upload(file)
+    e.target.value = ''
+  }
+
   return (
     <div
       onPaste={handlePaste}
       tabIndex={0}
+      onClick={() => fileInputRef.current?.click()}
       className="w-full border-2 border-dashed border-pink-200 rounded-2xl px-4 py-4 text-sm text-center text-gray-400 bg-pink-50 cursor-pointer focus:outline-none focus:border-pink-400"
     >
-      {uploading ? 'アップロード中...' : '📋 ここにCtrl+Vで画像を貼り付け'}
+      <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+      {uploading ? 'アップロード中...' : '📷 タップして画像を選択 / Ctrl+Vで貼り付け'}
     </div>
   )
 }
